@@ -1,4 +1,4 @@
-[compass]([COMPASS/blob/main/docs/OIP.jpg])
+![Compass](/docs/OIP.jpg)
 
 # COMPASS
 
