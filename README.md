@@ -14,6 +14,7 @@ external policy database, and language-model connection are still future work.
 **Start here:** [Simple user guide](#simple-user-guide) |
 [Engineering guide](#engineering-guide) |
 [Database map](#database-map) |
+[Policy materials](#policy-materials) |
 [Current boundaries and next inputs](#current-boundaries-and-next-inputs)
 
 ## Simple user guide
@@ -273,6 +274,33 @@ and transactional writes. Tenant-qualified queries and composite ownership
 constraints support local isolation. SQLite has no production row-level-security
 policy in this application.
 
+## Policy materials
+
+The uploaded review cycle is now separated into a reusable method and a Georgia
+case study. These documents are not automatically loaded into the application's
+synthetic demo database.
+
+```text
+  method/                       case-studies/georgia/
+  |-- prompts/                  |-- instruments/ + registers/
+  |-- templates/                |-- prompts/ + guides/
+  `-- README.md                 |-- runs/ + proposed outputs/
+                                `-- archive/ + provenance/
+       Reusable workflow             Jurisdiction-specific evidence
+```
+
+Start with the [jurisdiction-neutral method](method/README.md) for a new state.
+Use the [Georgia pack](case-studies/georgia/README.md) for the original GTA
+instruments, registers, baseline, and worked outputs. Its
+[catalog](case-studies/georgia/CATALOG.md) locates each file; the
+[provenance manifest](case-studies/georgia/provenance/upload-manifest.csv) records
+every original upload path and retained file hash.
+
+The original Georgia prompts and worked template contain local assumptions, so
+they remain in the case study. The neutral Markdown versions are clearly marked
+adaptations. Original acceptance statements and legal claims remain subject to
+the [document review backlog](case-studies/georgia/REVIEW-STATUS.md).
+
 ## Current boundaries and next inputs
 
 The demo grants persona access without production authentication. Keep it local
@@ -287,13 +315,15 @@ checks do not establish semantic contradiction, legal force, a compliance
 percentage, or complete coverage. Audit records retain application history but
 are not a tamper-proof ledger.
 
-The next useful inputs are the old prompts/registers, authoritative instruments
-with history and provenance, the future database contract/sample export, a
-second-state partner corpus, and independently reviewed evaluation cases.
+The Georgia prompts, registers, seven instrument PDFs, and BASE-1 report have
+been received and organized. Their legal currency, decision records, and internal
+consistency still need review. Next inputs include the future database contract,
+additional authoritative version history, a second-state partner corpus, and
+independently reviewed evaluation cases.
 
-Place the original document package in
-[`data/intake/policy-review-package/`](data/intake/policy-review-package/).
-Its checklist records the files needed and the corrections pending their upload.
+Future uploads can use
+[`data/intake/policy-review-package/`](data/intake/policy-review-package/README.md).
+The intake index points to the organized materials and outstanding review work.
 
 | Read next | Purpose |
 |---|---|
@@ -301,6 +331,8 @@ Its checklist records the files needed and the corrections pending their upload.
 | [ANALYSIS.md](docs/ANALYSIS.md) | Check behavior, limitations, settings, and monitoring |
 | [DATABASE.md](docs/DATABASE.md) | Complete schema and product-to-storage mapping |
 | [ROADMAP.md](docs/ROADMAP.md) | Phased delivery, implementation choices, and production gates |
+| [Method](method/README.md) | Reusable review workflow and jurisdiction-neutral templates |
+| [Georgia case study](case-studies/georgia/README.md) | Uploaded source pack, BASE-1, variants, and review status |
 
 ---
 
@@ -324,9 +356,25 @@ COMPASS/
 |   |-- demo.py              Synthetic demo fixtures
 |   |-- __init__.py          Package version
 |   `-- __main__.py          Local application entry point
+|-- method/                  Jurisdiction-neutral review method
+|   |-- prompts/             Portable workflow adaptations
+|   `-- templates/           Jurisdiction intake and package outline
+|-- case-studies/
+|   `-- georgia/             Original GTA reference materials
+|       |-- instruments/    Seven policy/principles PDFs
+|       |-- prompts/        Georgia-specific Word prompts
+|       |-- registers/      Workbooks and original register documents
+|       |-- runs/           Uploaded BASE-1 report
+|       |-- outputs/        Historical proposed amendments
+|       |-- guides/         Uploaded operator guides
+|       |-- templates/      Georgia worked amendment example
+|       |-- research/       Horizon-scan draft
+|       |-- maintenance/    Historical task checklist
+|       |-- archive/        Distinct variants and upload metadata
+|       `-- provenance/     Original paths and preservation hashes
 |-- data/
 |   `-- intake/
-|       `-- policy-review-package/  Original package uploads (local intake)
+|       `-- policy-review-package/  Future uploads and routing index
 |-- docs/                    Reference documentation
 |   |-- ANALYSIS.md          Analysis controls, behavior, and limits
 |   |-- DATABASE.md          Tables, relationships, and data lifecycle

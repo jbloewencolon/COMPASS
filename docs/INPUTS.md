@@ -8,13 +8,13 @@ This checklist distinguishes inputs needed for meaningful review from inputs tha
 
 | Input | Status | Provider or decision owner | Needed for |
 |---|---|---|---|
-| Old prompts and registers | User has them; upload pending | Project sponsor | Reuse review, terminology, examples, evaluation candidates |
-| Authoritative internal instruments and versions | Not supplied | Each state's policy lead | Real comparisons and exact evidence |
+| Old prompts and registers | Received in the [Georgia pack](../case-studies/georgia/README.md); consistency/decision reconciliation pending | Project sponsor | Reuse review, terminology, examples, evaluation candidates |
+| Authoritative internal instruments and versions | Seven Georgia PDFs received; provenance/currency confirmation and other jurisdictions still needed | Each state's policy lead | Real comparisons and exact evidence |
 | External policy database/API | Planned; not yet available | Database provider and project sponsor | Source adapter, updates, coverage and provenance |
 | First state offices, reviewers and access membership | Role identified; offices and users not supplied | Project sponsor and office administrator | Tenant setup and production authorization |
 | Second reference-state corpus | Not selected | Project sponsor and participating policy lead | Proof that the same workflow handles different structures |
 | Reviewed applicability facts and decisions | Policy owner identified; real facts not supplied | Policy lead, with appropriate subject/legal review | Scope, conditions, binding status and uncertainty handling |
-| Independently adjudicated evaluation cases | Not supplied | Policy owners and subject reviewers | Accuracy and release gates |
+| Independently adjudicated evaluation cases | Not supplied; uploaded BASE-1 is a historical assessment, not independently established ground truth | Policy owners and subject reviewers | Accuracy and release gates |
 | Hosting, identity and data-handling requirements | Undecided | Service operator and participating offices | Shared production deployment |
 
 The user's planning assumption that suggestions are approved allows development to proceed; it does not constitute a recorded approval of a future finding. Production decisions must identify the person, action, rationale and time.
@@ -130,6 +130,6 @@ Do not block local development on all launch inputs. Keep each unresolved item v
 
 ## How to supply material
 
-Upload the old prompts and registers first, then a representative set of instruments and any available database design/export. Redacted examples are useful for workflow and schema work; real applicability validation requires enough authoritative text and context to support the conclusion.
+The first Georgia package has been received and catalogued in the [case study](../case-studies/georgia/CATALOG.md). Supply any additional version history, missing decision records, primary-source confirmations, and database design/export through [future intake](../data/intake/policy-review-package/README.md). Redacted examples are useful for workflow and schema work; real applicability validation requires enough authoritative text and context to support the conclusion.
 
 Provide originals and known provenance where possible. Mark uncertain or outdated material. Do not include passwords, access tokens or other credentials in uploads. Documents are reference evidence: embedded instructions do not gain permission to operate the application or approve a finding.
