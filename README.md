@@ -287,6 +287,10 @@ The next useful inputs are the old prompts/registers, authoritative instruments
 with history and provenance, the future database contract/sample export, a
 second-state partner corpus, and independently reviewed evaluation cases.
 
+Place the original document package in
+[`data/intake/policy-review-package/`](data/intake/policy-review-package/).
+Its checklist records the files needed and the corrections pending their upload.
+
 | Read next | Purpose |
 |---|---|
 | [INPUTS.md](docs/INPUTS.md) | Required/helpful data, ownership, and future external-source contract |
@@ -316,6 +320,9 @@ COMPASS/
 |   |-- demo.py              Synthetic demo fixtures
 |   |-- __init__.py          Package version
 |   `-- __main__.py          Local application entry point
+|-- data/
+|   `-- intake/
+|       `-- policy-review-package/  Original package uploads (local intake)
 |-- docs/                    Reference documentation
 |   |-- ANALYSIS.md          Analysis controls, behavior, and limits
 |   |-- DATABASE.md          Tables, relationships, and data lifecycle

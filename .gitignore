@@ -10,3 +10,7 @@ test-results/
 *.egg-info/
 build/
 dist/
+
+# Preserve raw policy-package uploads locally during intake.
+data/intake/policy-review-package/*
+!data/intake/policy-review-package/README.md
