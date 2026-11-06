@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="COMPASS policy review workspace: trace findings to evidence and record policy-owner decisions.">
+  <title>COMPASS · Policy review workspace</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Workspace navigation">
+      <a class="brand" href="/" aria-label="COMPASS home">
+        <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="16.5" stroke="currentColor"/><path d="m26 13-3 10-10 4 4-10 9-4Z" stroke="currentColor" stroke-width="1.5"/><path d="m17 17 6 6" stroke="currentColor"/></svg>
+        <span>COMPASS<small>POLICY REVIEW</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav id="navigation" aria-label="Primary">
+        <button class="nav-item active" data-view="overview" type="button"><span aria-hidden="true">◫</span>Home</button>
+        <button class="nav-item" data-view="reviews" type="button"><span aria-hidden="true">▤</span>Reviews</button>
+        <button class="nav-item" data-view="sources" type="button"><span aria-hidden="true">▧</span>Source library</button>
+        <button class="nav-item" data-view="activity" type="button"><span aria-hidden="true">◷</span>Activity</button>
+      </nav>
+      <div class="sidebar-note"><span class="status-dot" aria-hidden="true"></span><strong>Evidence first.</strong><p>Clear sources. Deliberate decisions. An accountable review trail.</p></div>
+      <div class="sidebar-footer">Built for public policy<br><span>Local review and analysis</span></div>
+    </aside>
+    <div class="workspace-shell">
+      <header class="topbar">
+        <div class="breadcrumb">Workspace <span aria-hidden="true">/</span> <span id="breadcrumb-label">Overview</span></div>
+        <div class="account"><div id="view-control" class="view-control" hidden><label for="view-mode">View</label><select id="view-mode"><option value="simple">Simple</option><option value="advanced">Advanced</option></select></div><div id="account-label" class="account-label">Local development</div><button id="logout" class="button button-quiet small" type="button" hidden>Switch workspace</button></div>
+      </header>
+      <div class="demo-banner"><span class="demo-label">DEVELOPMENT DEMO</span><span>Synthetic examples. Local analysis; external database not connected.</span></div>
+      <div id="announcement" class="announcement" role="status" aria-live="polite"></div>
+      <main id="main" tabindex="-1"><div class="loading" role="status">Loading your workspace…</div></main>
+      <footer class="page-footer"><span>COMPASS / A clearer path from evidence to decision.</span><span>Amendment drafting is planned for a later release.</span></footer>
+    </div>
+  </div>
+  <dialog id="form-dialog" aria-labelledby="dialog-title"><div id="dialog-content"></div></dialog>
+  <noscript><p class="noscript">JavaScript is required for the review workspace. Source records and decisions are served by the local API.</p></noscript>
+</body>
+</html>
