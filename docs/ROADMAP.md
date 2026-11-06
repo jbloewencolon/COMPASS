@@ -1,6 +1,6 @@
 # Development roadmap
 
-The first release is a shared policy-review service for policy leads at state government offices. It must support multiple states. Amendment drafting is deferred. The external policy database is planned but not yet available; old prompts and registers will be reviewed as inspiration when supplied.
+The first release is a shared policy-review service for policy leads at state government offices. It must support multiple states. Amendment drafting is deferred. The external policy database is planned but not yet available. Uploaded prompts, registers, instruments, and BASE-1 are organized in the [Georgia case study](../case-studies/georgia/README.md); neutral adaptations live in the [reusable method](../method/README.md). Their presence does not establish legal currency or independently validated findings.
 
 The local application now combines an evidence-linked review workflow, nine standard-library rule-based review aids, personal Simple/Advanced views, workspace controls, assignment and local monitoring. It uses synthetic sample data. This is a foundation for the shared service, not a claim of legal accuracy or production readiness. Detailed check behavior and limitations are in [ANALYSIS.md](ANALYSIS.md).
 
@@ -66,4 +66,4 @@ Test meaningful behaviors: tenant and role boundaries; immutable run/source evid
 
 ## Next inputs
 
-The full checklist and proposed external-source contract are in [INPUTS.md](INPUTS.md). Highest-value additions are the old prompts/registers, authoritative instruments with provenance, an external database sample/design, a second-state partner and a small independently reviewed evaluation set.
+The full checklist and proposed external-source contract are in [INPUTS.md](INPUTS.md). Next priorities are reconciliation of the uploaded Georgia pack, authoritative source/version confirmation, an external database sample/design, a second-state partner, and a small independently reviewed evaluation set. File organization is complete; the [Georgia review backlog](../case-studies/georgia/REVIEW-STATUS.md) identifies content checks still pending.
