@@ -1,3 +1,5 @@
+![compass]([COMPASS/blob/main/docs/OIP.jpg])
+
 # COMPASS
 
 COMPASS helps policy leads at state government offices review policies, inspect
