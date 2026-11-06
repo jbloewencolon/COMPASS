@@ -1,4 +1,7 @@
 ![Compass](/docs/OIP.jpg)
+<p align="center">
+  <img src="/docs/OIP.jpg" alt="Compass" width="300">
+</p>
 
 # COMPASS
 
