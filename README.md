@@ -293,3 +293,44 @@ second-state partner corpus, and independently reviewed evaluation cases.
 | [ANALYSIS.md](docs/ANALYSIS.md) | Check behavior, limitations, settings, and monitoring |
 | [DATABASE.md](docs/DATABASE.md) | Complete schema and product-to-storage mapping |
 | [ROADMAP.md](docs/ROADMAP.md) | Phased delivery, implementation choices, and production gates |
+
+---
+
+## Questions?
+
+Further questions? Contact Jordan Loewen-Colón at
+[jbl](mailto:jbloewen@syr.edu).
+
+## Repository structure
+
+```text
+COMPASS/
+|-- compass/                 Application code
+|   |-- static/              Browser interface, styles, and scripts
+|   |-- app.py               API, authorization, and review workflow
+|   |-- analysis.py          Rule-based analysis checks
+|   |-- monitoring.py        Jobs, schedules, and in-app notices
+|   |-- models.py            Validated input and settings contracts
+|   |-- configuration.py     Workspace settings and context
+|   |-- store.py             SQLite schema and storage helpers
+|   |-- demo.py              Synthetic demo fixtures
+|   |-- __init__.py          Package version
+|   `-- __main__.py          Local application entry point
+|-- docs/                    Reference documentation
+|   |-- ANALYSIS.md          Analysis controls, behavior, and limits
+|   |-- DATABASE.md          Tables, relationships, and data lifecycle
+|   |-- INPUTS.md            Required inputs and integration contract
+|   `-- ROADMAP.md           Development phases and release gates
+|-- tests/                   Automated regression tests
+|-- README.md                User and engineering guides
+|-- pyproject.toml           Package metadata and dependencies
+|-- uv.lock                  Locked dependency versions
+`-- .gitignore               Local files excluded from version control
+```
+
+Browse the [application](compass/), [documentation](docs/), and [tests](tests/).
+For specific references, see the [analysis guide](docs/ANALYSIS.md),
+[database map](docs/DATABASE.md), [input checklist](docs/INPUTS.md), and
+[roadmap](docs/ROADMAP.md).
+
+---
