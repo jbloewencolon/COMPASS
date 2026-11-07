@@ -24,6 +24,21 @@ Changes affect new reports. Previously saved reports retain their settings/conte
 
 ## The nine checks
 
+`rules-v3` adds a small abbreviation-aware splitter, prohibition handling,
+additional candidate drafting forms, and federal/bill reference patterns.
+Recognizing a form does not verify its legal status or meaning. State-specific
+patterns come from the pinned profile's `citation_patterns` list; literal
+`sentence_abbreviations` entries extend the default abbreviation list. Invalid
+profile patterns are skipped with a warning. Georgia's patterns are in its
+synthetic demo profile, not a universal state identifier rule.
+
+Foreign source text is retained under its supplied jurisdiction and source type,
+with context labels. It is not silently relabelled as US guidance. Such a source
+alone cannot establish a binding or conditional US duty in the decision API.
+Refer any claimed US contract/program route to its actual supporting authority.
+The import form warns against importing restricted material; it does not encrypt
+or automatically classify source text.
+
 | Check | Evidence/input needed | What it returns | What it cannot establish |
 |---|---|---|---|
 | **1. Version changes** (`change_detection`) | Current text, an earlier timestamped snapshot, and either a stable `source_key` or explicit `replaces_source_id` | Exact line-oriented differences and links/excerpts from the old and new snapshots | Whether a change is legally substantive; history when no verified earlier snapshot exists; semantic equivalence of rewritten text |

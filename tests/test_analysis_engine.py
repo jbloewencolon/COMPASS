@@ -10,6 +10,9 @@ import unittest
 from compass.analysis import ADVANCED, FEATURES, analyze
 
 
+GA_TEST_PROFILE = {"jurisdiction_id": "US-GA", "citation_patterns": [r"\b[A-Z]{1,8}-\d{2,4}-\d{2,6}(?:-[A-Z0-9]+)?\b"]}
+
+
 def source(source_id="internal", text="The office maintains an AI inventory.", **changes):
     value = {
         "id": source_id, "title": f"Synthetic source {source_id}", "kind": "instrument", "jurisdiction_id": "US-GA",
@@ -23,7 +26,7 @@ def source(source_id="internal", text="The office maintains an AI inventory.", *
 
 class AnalysisEngineTests(unittest.TestCase):
     def report(self, sources=None, history=None, context=None, settings=None, findings=None, audit=None, as_of="2026-02-01"):
-        return analyze(sources or [], history or [], settings if settings is not None else {"advanced_analysis": True}, context or {}, as_of, findings or [], audit or [], "US-GA")
+        return analyze(sources or [], history or [], settings if settings is not None else {"advanced_analysis": True}, context or {}, as_of, findings or [], audit or [], "US-GA", profile=GA_TEST_PROFILE)
 
     def items(self, report, feature):
         return report["features"][feature]["items"]

@@ -6,6 +6,12 @@ Georgia law, agency names, instrument numbers, legislative dates, or past
 findings as defaults. Original Georgia documents remain in the
 [case study](../case-studies/georgia/README.md).
 
+The primary legal review scope is U.S. federal, state and District of Columbia
+authority. Retain EU/other foreign material with a clear non-U.S. comparative or
+vendor-context label; do not presume it binds an agency or erase it from preserved
+sources. Any specifically supported foreign applicability question needs its own
+scope review.
+
 These are document templates, not new executable application features. In
 particular, amendment drafting remains outside the current application's scope.
 
@@ -15,6 +21,8 @@ Complete the [jurisdiction intake worksheet](templates/jurisdiction-intake.md)
 with the responsible policy owner. Establish the in-scope offices, instruments,
 local terminology, authority, records requirements, calendars, and decision
 roles before running a review. An unresolved fact stays unknown.
+Each agency appoints its responsible review lead and any legal reviewer; these
+templates do not presume a central counsel, an appointment or completed approval.
 
 ## Review cycle
 
@@ -25,10 +33,14 @@ roles before running a review. An unresolved fact stays unknown.
 | Assess an event | [03: Trigger assessment](prompts/03-trigger-assessment.md) | Verified event, relevant text, and existing findings |
 | Prepare proposed amendments | [04: Amendment preparation](prompts/04-amendment-preparation.md) | Recorded decisions and complete current instrument text |
 | Prepare for the legislature | [05: Session readiness](prompts/05-session-readiness.md) | Baseline, registers, and the jurisdiction's actual session rules |
+| Refresh external evidence | [06: Horizon scan](prompts/06-horizon-scan.md) | Intake, current source register, standing briefs, unresolved checks and the latest relevant baseline |
 
 Use the [amendment package outline](templates/amendment-package.md) for document
 organization. Cadence, deadlines, instrument tiers, and legal applicability must
 come from the jurisdiction intake, not from another state's example.
+Run 06 at the locally agreed cadence, normally before scheduled surveillance.
+Its neutral number avoids the historical Georgia scan's “Prompt 03” collision;
+that original remains preserved and neutral Prompt 03 still assesses triggers.
 
 ## Shared controls
 

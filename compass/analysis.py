@@ -11,16 +11,17 @@ import hashlib
 import json
 import re
 
+from .jurisdictions import is_us_authority
 
-ENGINE_VERSION = "rules-v2"
+
+ENGINE_VERSION = "rules-v3"
 FEATURES = (
     "change_detection", "obligations", "citations", "terminology", "coverage",
     "impact", "language", "deadlines", "peer_research",
 )
 ADVANCED = {"terminology", "impact", "language", "peer_research"}
 MAX_ITEMS = 100
-IDENTIFIER = re.compile(r"\b[A-Z]{1,8}-\d{2,4}-\d{2,6}(?:-[A-Z0-9]+)?\b")
-MODAL = re.compile(r"\b(shall|must|should|may|is required to|are required to|is prohibited from|are prohibited from)\b", re.I)
+MODAL = re.compile(r"\b(shall|must|should|may|will|is\s+required\s+to|are\s+required\s+to|is\s+prohibited\s+from|are\s+prohibited\s+from|is\s+responsible\s+for|are\s+responsible\s+for|is\s+to|are\s+to)\b", re.I)
 EXCEPTION = re.compile(r"\b(except(?:ions?)?|unless|exclud(?:ing|e[ds]?)|exempt(?:ions?|ed)?|does not apply|not applicable|other than)\b", re.I)
 CONDITION = re.compile(r"\b(if|when|provided that|subject to|upon|only if|for recipients)\b", re.I)
 TIMING = re.compile(r"\b(?:within\s+\d+\s+(?:(?:business|calendar)\s+)?(?:days?|months?|years?)|by\s+\d{4}-\d{2}-\d{2}|annual(?:ly)?|quarterly|monthly|every\s+\d+\s+(?:days?|months?|years?))\b", re.I)
@@ -28,6 +29,27 @@ TEXT_DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b|\b(?:January|February|March|April
 DEFINITION = re.compile(r'''(?:[“"'](?P<quoted>[^”"'\n]{2,80})[”"']|(?P<plain>[A-Za-z][A-Za-z /-]{1,70}))\s+(?:means|is defined as|refers to)\s+(?P<meaning>[^\n.]+(?:\.(?=\s|$))?)''', re.I)
 STOPWORDS = set("a an the and or of to in for by on with from as at this that these those is are be been it its their shall must may should section policy office state system systems applies apply".split())
 CHANGE_METADATA = ("legal_status", "effective_from", "effective_to", "authority_type", "adoption_reference")
+SENTENCE_ABBREVIATIONS = (
+    "U.S.C.", "U.S.", "C.F.R.", "Fed. Reg.", "Fed.Reg.", "Pub. L.", "Pub.L.",
+    "O.C.G.A.", "Stat.", "Sec.", "No.", "e.g.", "i.e.", "Inc.", "Co.", "Corp.",
+    "Dr.", "Mr.", "Ms.", "vs.", "et al.", "H.R.", "S.", "pt.", "subpt.", "ch.",
+)
+VAGUE_WORDING = (
+    "timely", "as needed", "appropriate", "reasonable", "promptly", "periodically", "regularly",
+    "where possible", "rigorous", "robust", "sufficient", "adequate", "best efforts",
+    "as appropriate", "to the extent practicable", "to extent practicable",
+)
+VAGUE_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(value) for value in sorted(VAGUE_WORDING, key=len, reverse=True)) + r")\b", re.I)
+# Federal citation syntax is shared. State code and instrument patterns are
+# office-profile configuration, rather than assumptions in this pipeline.
+FEDERAL_CITATION_PATTERNS = (
+    ("us_code", r"\b\d{1,3}\s+U\.?\s*S\.?\s*C\.?(?:\s*§{1,2}\s*|\s+)\d+[A-Za-z]*(?:[-–.]\d+[A-Za-z]*)*(?:\([A-Za-z0-9]+\))*(?:\s+et\s+seq\.?)?"),
+    ("regulation", r"\b\d{1,3}\s+C\.?\s*F\.?\s*R\.?(?:\s*§{1,2}\s*|\s+(?:(?:pt|part)\.?\s+)?)\d+(?:\.\d+)*(?:[-–]\d+(?:\.\d+)*)?(?:\([A-Za-z0-9]+\))*"),
+    ("federal_register", r"\b\d{1,3}\s+Fed\.?\s*Reg\.?\s+\d[\d,]*(?:[-–]\d[\d,]*)?"),
+    ("public_law", r"\b(?:Pub\.?\s*L\.?|Public\s+Law)\s+(?:No\.?\s+)?\d{1,3}[-–]\d{1,4}\b"),
+    ("statutes_at_large", r"\b\d{1,4}\s+Stat\.?\s+\d+(?:[-–]\d+)?\b"),
+    ("bill", r"(?<![\w.])(?:H\.?\s*R\.?|S\.|H\.?\s*B\.?|S\.?\s*B\.?|A\.?\s*B\.?|L\.?\s*B\.?|H\.?\s*F\.?|S\.?\s*F\.?)\s*\d{1,6}\b"),
+)
 
 
 def _timestamp(value):
@@ -47,13 +69,30 @@ def _date(value):
         return None
 
 
-def _sentences(source):
+def _sentences(source, profile=None):
+    """Small abbreviation-aware splitter, preserving original character spans."""
     text = source.get("text", "")
+    extras = (profile or {}).get("sentence_abbreviations", [])
+    if not isinstance(extras, list):
+        extras = []
+    abbreviations = [*SENTENCE_ABBREVIATIONS, *(value for value in extras if isinstance(value, str) and value)]
+    pattern = re.compile(r"(?<!\w)(?:" + "|".join(re.escape(value) for value in sorted(set(abbreviations), key=len, reverse=True)) + r")", re.I)
+    protected = {position for match in pattern.finditer(text) for position in range(match.start(), match.end()) if text[position] == "."}
     result = []
-    for line in re.finditer(r"[^\n]+", text):
-        for sentence in re.finditer(r"\S.*?(?:[.!?](?=\s|$)|$)", line.group()):
-            if sentence.group().strip():
-                result.append((line.start() + sentence.start(), line.start() + sentence.end(), sentence.group()))
+    start = 0
+    for boundary in re.finditer(r"[.!?]+(?=\s|$)|\n[ \t]*\n", text):
+        if boundary.start() in protected:
+            continue
+        raw = text[start:boundary.end()]
+        left = start + len(raw) - len(raw.lstrip())
+        right = start + len(raw.rstrip())
+        if left < right:
+            result.append((left, right, text[left:right]))
+        start = boundary.end()
+    raw = text[start:]
+    left, right = start + len(raw) - len(raw.lstrip()), len(text.rstrip())
+    if left < right:
+        result.append((left, right, text[left:right]))
     return result
 
 
@@ -80,12 +119,14 @@ def _words(text):
     return {word.casefold() for word in re.findall(r"[A-Za-z][A-Za-z-]{2,}", text) if word.casefold() not in STOPWORDS}
 
 
-def _phrase_evidence(source, phrase):
+def _phrase_evidence(source, phrase, profile=None):
     match = re.search(re.escape(phrase), source.get("text", ""), re.I)
     if not match:
         return None
-    for start, end, _ in _sentences(source):
+    for start, end, _ in _sentences(source, profile):
         if start <= match.start() < end:
+            if match.start() - start > 1000:
+                start = max(start, match.start() - 300)
             return _evidence(source, start, end)
     return _evidence(source, match.start(), match.end())
 
@@ -103,7 +144,7 @@ def _predecessor(current, candidates):
     return max(prior, key=lambda source: (_timestamp(source["created_at"]), source["id"])) if prior else None
 
 
-def _change_types(previous, current, metadata_changes):
+def _change_types(previous, current, metadata_changes, profile=None):
     """Classify possible changes using surface rules, not legal interpretation."""
     old, new = previous.get("text", ""), current.get("text", "")
     result = ["metadata"] if metadata_changes else []
@@ -119,7 +160,7 @@ def _change_types(previous, current, metadata_changes):
     for name, pattern in (("timing", TIMING), ("date", TEXT_DATE)):
         if [match.group().casefold() for match in pattern.finditer(old)] != [match.group().casefold() for match in pattern.finditer(new)]:
             result.append(name)
-    exceptions = lambda source: [tokens(sentence[match.start():]) for _, _, sentence in _sentences(source) if (match := EXCEPTION.search(sentence))]
+    exceptions = lambda source: [tokens(sentence[match.start():]) for _, _, sentence in _sentences(source, profile) if (match := EXCEPTION.search(sentence))]
     if exceptions(previous) != exceptions(current):
         result.append("exception")
     definitions = lambda text: [(tokens(match.group("quoted") or match.group("plain")), tokens(match.group("meaning"))) for match in DEFINITION.finditer(text)]
@@ -128,14 +169,62 @@ def _change_types(previous, current, metadata_changes):
     return result
 
 
-def analyze(sources, history, settings, context, as_of, findings, audit_events, jurisdiction_id):
+def _citation_key(value):
+    value = str(value).strip()
+    # Normalize recognized federal forms only. Punctuation in an arbitrary
+    # declared/profile identifier is identity, not optional abbreviation syntax.
+    if any(re.fullmatch(pattern, value, re.I) for _, pattern in FEDERAL_CITATION_PATTERNS):
+        value = re.sub(r"(?<=[A-Za-z])\.", "", value).replace("–", "-").replace("—", "-")
+        value = re.sub(r"(?<=\d),(?=\d)", "", value)
+        value = re.sub(r"[\s§]", "", value)
+    return value.casefold()
+
+
+def _citation_patterns(profile, warnings):
+    patterns = [(name, re.compile(pattern, re.I)) for name, pattern in FEDERAL_CITATION_PATTERNS]
+    additions = (profile or {}).get("citation_patterns", [])
+    if not isinstance(additions, list):
+        warnings.append("Profile citation_patterns must be a list; federal defaults remain active.")
+        return patterns
+    for index, expression in enumerate(additions):
+        try:
+            pattern = re.compile(expression, re.I)
+            if pattern.match(""):
+                raise ValueError("empty citation matches")
+            patterns.append(("profile_pattern", pattern))
+        except (re.error, TypeError, ValueError):
+            warnings.append(f"Invalid profile citation pattern {index + 1} was skipped; federal defaults remain active.")
+    return patterns
+
+
+def _detected_citations(text, patterns):
+    result = []
+    for name, pattern in patterns:
+        for match in pattern.finditer(text):
+            if match.group().strip():
+                result.append((match.start(), match.end(), match.group(), name))
+    return sorted(result, key=lambda item: (item[0], -(item[1] - item[0]), item[3]))
+
+
+def _context_scope(source, jurisdiction_id):
+    scope = str(source.get("jurisdiction_id") or "unknown")
+    if not is_us_authority(scope):
+        return "foreign_or_unspecified_context"
+    if scope == jurisdiction_id:
+        return "active_jurisdiction"
+    if scope == "US-FED":
+        return "us_federal_context"
+    return "other_us_jurisdiction_context"
+
+
+def analyze(sources, history, settings, context, as_of, findings, audit_events, jurisdiction_id, profile=None):
     """Return bounded, reproducible review aids from explicitly supplied inputs.
 
     `as_of` is legal calendar time. Snapshot history is separately bounded by each
     selected source's creation time, so retrospective runs cannot see later text.
     """
     day = date.fromisoformat(as_of)
-    settings, context = settings or {}, context or {}
+    settings, context, profile = settings or {}, context or {}, profile or {}
     sources, history = sources or [], history or []
     findings, audit_events = findings or [], audit_events or []
     flags = settings.get("features", {})
@@ -165,7 +254,7 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
         report["features"][feature]["summary"] = message
 
     selected = {source["id"]: source for source in sources}
-    spans = {source["id"]: _sentences(source) for source in sources}
+    spans = {source["id"]: _sentences(source, profile) for source in sources}
     changed_ids = set()
     unresolved = 0
     dates_count = 0
@@ -212,7 +301,7 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
                 "Exact snapshot differences and rule-based change categories are review candidates. Even formatting-only candidates need owner confirmation of substantive effect; no legal force is inferred.",
                 [previous["id"], current["id"]], evidence,
                 {"previous_source_id": previous["id"], "current_source_id": current["id"], "changes": changes[:25], "change_count": len(changes),
-                 "metadata_changes": metadata_changes, "text_changed": old != new, "change_types": _change_types(previous, current, metadata_changes), "substantive_status": "unreviewed"}))
+                 "metadata_changes": metadata_changes, "text_changed": old != new, "change_types": _change_types(previous, current, metadata_changes, profile), "substantive_status": "unreviewed"}))
             if changes and (len(changes) > 25 or any(len("".join(part)) > 4000 for part in (old_lines, new_lines))):
                 report["warnings"].append(f"Version difference for {current['id']} is excerpted; consult both preserved full snapshots.")
         if not comparisons:
@@ -222,9 +311,14 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
         for source in sources:
             sentences = spans[source["id"]]
             for index, (start, end, sentence) in enumerate(sentences):
-                modal = MODAL.search(sentence)
-                if not modal:
+                modals = list(MODAL.finditer(sentence))
+                if not modals:
                     continue
+                # Mixed permission/prohibition sentences occur in actual policy
+                # text. Keep the prohibition visible rather than downgrading the
+                # whole sentence to the first permissive modal.
+                modal = next((match for match in modals if "prohibited" in match.group().casefold()
+                              or re.match(r"\s+(?:not|never|no longer)\b", sentence[match.end():], re.I)), modals[0])
                 actor = re.sub(r"^(?:Section|§)\s*[\w().-]+\s*[:.]?\s*", "", sentence[:modal.start()].strip(), flags=re.I)
                 exceptions = [sentence[match.start():] for match in [EXCEPTION.search(sentence)] if match]
                 evidence = [_evidence(source, start, end)]
@@ -238,36 +332,56 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
                     if not re.fullmatch(r"(?:Section|§)\s*[\w().-]+[.:]?", following[2], re.I):
                         break
                 conditions = [sentence[match.start():] for match in [CONDITION.search(sentence)] if match]
-                wording = modal.group().casefold()
-                candidate_type = "permission" if wording == "may" else "advisory_wording" if wording == "should" else "mandatory_wording"
-                negated = bool(re.search(r"\b(not|never|no longer)\b", sentence[modal.end():], re.I)) or "prohibited" in wording
+                wording = " ".join(modal.group().casefold().split())
+                negated = bool(re.match(r"\s+(?:not|never|no longer)\b", sentence[modal.end():], re.I)) or "prohibited" in wording
+                basis = "commitment" if wording == "will" else "responsibility" if "responsible for" in wording else "drafting" if wording in {"is to", "are to"} else "explicit_modal"
+                candidate_type = "prohibition_wording" if negated and wording != "should" else (
+                    "permission" if wording == "may" else "advisory_wording" if wording == "should" else
+                    "commitment_wording" if basis == "commitment" else "responsibility_wording" if basis == "responsibility" else
+                    "drafting_wording" if basis == "drafting" else "mandatory_wording")
+                context_scope = _context_scope(source, jurisdiction_id)
+                scope_note = " Foreign or unspecified source context is retained; applicability to U.S. offices is unassessed." if context_scope == "foreign_or_unspecified_context" else ""
                 add("obligations", _item(f"Candidate action: {source.get('title', 'source')}",
-                    "Wording extracted for review; actor, scope, conditions, exceptions and actual applicability remain unconfirmed.", [source["id"]], evidence,
+                    "Wording extracted for review; actor, scope, conditions, exceptions and actual applicability remain unconfirmed." + scope_note, [source["id"]], evidence,
                     {"actor": actor or None, "modal": modal.group(), "action": sentence[modal.end():].strip(), "candidate_type": candidate_type,
+                     "wording_basis": basis, "wording_evidence": "weaker_candidate" if basis != "explicit_modal" else "explicit_modal_candidate",
                      "timing": [match.group() for match in TIMING.finditer(sentence)], "conditions": conditions, "exceptions": exceptions,
-                     "negated_or_prohibited": negated, "applicability": "unknown", "source_status": source.get("legal_status", "unknown")},
+                     "negated_or_prohibited": negated, "applicability": "unknown", "source_status": source.get("legal_status", "unknown"),
+                     "jurisdiction_id": source.get("jurisdiction_id"), "context_scope": context_scope},
                     severity="info" if candidate_type == "permission" else "review"))
 
     if active("citations"):
+        patterns = _citation_patterns(profile, report["warnings"])
         registry = defaultdict(list)
         for source in sources:
-            aliases = [source.get("source_key"), *IDENTIFIER.findall(source.get("title", ""))]
-            for alias in dict.fromkeys(alias.casefold() for alias in aliases if alias):
+            aliases = [source.get("source_key"), *(item[2] for item in _detected_citations(source.get("title", ""), patterns))]
+            for alias in dict.fromkeys(_citation_key(alias) for alias in aliases if alias):
                 registry[alias].append(source)
         for source in sources:
-            own = {str(source.get("source_key") or "").casefold(), *(value.casefold() for value in IDENTIFIER.findall(source.get("title", "")))}
-            references = dict.fromkeys([*source.get("reference_keys", []), *IDENTIFIER.findall(source.get("text", ""))])
-            for key in references:
-                if key.casefold() in own:
+            own = {_citation_key(source.get("source_key") or ""), *(_citation_key(item[2]) for item in _detected_citations(source.get("title", ""), patterns))}
+            detected = _detected_citations(source.get("text", ""), patterns)
+            references = {_citation_key(value): (value, "declared_reference", True) for value in source.get("reference_keys", [])}
+            for _, _, value, citation_type in detected:
+                references.setdefault(_citation_key(value), (value, citation_type, False))
+            for normalized, (key, citation_type, declared) in references.items():
+                if normalized in own:
                     continue
-                matches = registry.get(key.casefold(), [])
+                matches = registry.get(normalized, [])
                 status = "unresolved_in_selected_corpus" if not matches else "candidate_match" if len(matches) == 1 else "multiple_selected_versions_or_matches"
                 if not matches:
                     unresolved += 1
+                actual = next((item[2] for item in detected if _citation_key(item[2]) == normalized), key)
+                context_scope = _context_scope(source, jurisdiction_id)
+                detail = "No matching selected source was found; this does not establish that the referenced authority is invalid." if not matches else "A selected record matches this citation candidate; its legal accuracy, scope and current status remain unverified."
+                if citation_type == "bill":
+                    detail += " A bill reference does not establish enactment or binding authority."
+                if context_scope == "foreign_or_unspecified_context":
+                    detail += " Foreign or unspecified source context is retained; applicability to U.S. offices is unassessed."
                 add("citations", _item(f"Reference {key}",
-                    "No matching selected source was found; this does not establish that the referenced authority is invalid." if not matches else "Check the identified source and version before relying on this reference.",
-                    [source["id"], *(match["id"] for match in matches)], [_phrase_evidence(source, key)],
-                    {"reference": key, "resolution": status, "matched_source_ids": [match["id"] for match in matches], "origin": "declared_metadata" if key in source.get("reference_keys", []) else "identifier_pattern"},
+                    detail, [source["id"], *(match["id"] for match in matches)], [_phrase_evidence(source, actual, profile)],
+                    {"reference": key, "resolution": status, "matched_source_ids": [match["id"] for match in matches],
+                     "origin": "declared_metadata" if declared else "profile_pattern" if citation_type == "profile_pattern" else "federal_or_bill_pattern",
+                     "citation_type": citation_type, "jurisdiction_id": source.get("jurisdiction_id"), "context_scope": context_scope, "verification": "unverified"},
                     severity="info" if len(matches) == 1 else "review"))
 
     if active("terminology"):
@@ -294,7 +408,7 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
             matches = []
             for source in sources:
                 tagged = topic.casefold() in {str(value).casefold() for value in source.get("topics", [])}
-                quoted = _phrase_evidence(source, topic)
+                quoted = _phrase_evidence(source, topic, profile)
                 if tagged or quoted:
                     matches.append((source, quoted, "explicit_topic_tag" if tagged else "text_mention"))
             internal = [source["id"] for source, _, _ in matches if source.get("kind") == "instrument"]
@@ -339,7 +453,7 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
                 word_count = len(re.findall(r"\b[\w'-]+\b", sentence))
                 if word_count > 40:
                     reasons.append(f"Long sentence ({word_count} words)")
-                vague = re.findall(r"\b(?:timely|as needed|appropriate|reasonable|promptly|periodically|regularly|where possible)\b", sentence, re.I)
+                vague = VAGUE_PATTERN.findall(sentence)
                 if vague:
                     reasons.append("Potentially vague wording: " + ", ".join(dict.fromkeys(vague)))
                 if re.search(r"^(?:shall|must|should)\b|\bit is (?:required|expected)|\b(?:shall|must|should) be\b", sentence, re.I):
@@ -413,7 +527,17 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
                 local_quote = next((_evidence(internal, a, b) for a, b, sentence in spans[internal["id"]] if len(_words(sentence) & shared) >= 2), None)
                 add("peer_research", _item(f"Optional public comparison: {peer.get('title', 'reference')}", "Shared vocabulary suggests a passage worth reading. This public peer/research reference is nonbinding for this comparison and does not establish applicability or equivalence.", [internal["id"], peer["id"]], [local_quote, _evidence(peer, start, end)], {"shared_terms": sorted(shared)[:12], "reference_scope": "public", "comparison_type": "lexical_related_passage", "applicability": "unconfirmed"}, severity="info"))
 
+    all_sources = {source["id"]: source for source in [*history, *sources]}
     for feature, result in report["features"].items():
+        for item in result["items"]:
+            context_ids = sorted(key for key in item["source_ids"]
+                                 if key in all_sources and not is_us_authority(all_sources[key].get("jurisdiction_id")))
+            if context_ids:
+                jurisdictions = {key: all_sources[key].get("jurisdiction_id", "unknown") for key in context_ids}
+                item["data"]["context_only_source_ids"] = context_ids
+                item["data"]["source_jurisdictions"] = jurisdictions
+                item["detail"] += " Non-US or unrecognized jurisdiction context (" + ", ".join(sorted(set(jurisdictions.values()))) + "); this record does not establish US authority."
+                item["id"] = _item(item["title"], item["detail"], item["source_ids"], item["evidence"], item["data"], item["severity"])["id"]
         if result["enabled"] and result["status"] == "completed":
             result["summary"] = f"{counts[feature]} review aid{'s' if counts[feature] != 1 else ''} identified in the selected inputs."
         if counts[feature] > MAX_ITEMS:

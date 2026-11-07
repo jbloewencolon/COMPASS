@@ -17,6 +17,11 @@ external policy database, and language-model connection are still future work.
 [Policy materials](#policy-materials) |
 [Current boundaries and next inputs](#current-boundaries-and-next-inputs)
 
+The current delivery starts with correctness Milestones 0–1:
+[implementation plan](docs/IMPLEMENTATION-PLAN.md). Legal errata are drafts for
+each agency's appointed reviewers; no central counsel or completed approval is
+assumed. Historical files remain unchanged.
+
 ## Simple user guide
 
 ### What does COMPASS do?
@@ -140,6 +145,12 @@ restart and is ignored by Git. Demo seeding is repeatable and preserves existing
 demo work. Fixtures include two Georgia offices and one California office to
 exercise office isolation independently of jurisdiction.
 
+The current engine is `rules-v3`. Default federal/bill reference patterns can be
+extended through a profile's `citation_patterns` list and literal
+`sentence_abbreviations` list. Georgia identifier patterns are explicit profile
+data. Original synthetic demo profiles upgrade to `demo-2` without changing
+stored run/report profile snapshots or replacing real agency configuration.
+
 `create_app(db_path, demo=True, run_worker=False)` constructs the test/local app
 without a background loop. CLI startup explicitly requests the worker. Starting
 without `--demo` disables persona login and new fixture seeding; production
@@ -214,6 +225,7 @@ evidence prerequisites, heuristics, output limits, and scheduling semantics.
 
 ```sh
 .venv/bin/python -m unittest discover -s tests -v
+python3 scripts/check_case_study.py
 node --check compass/static/app.js
 ```
 
@@ -321,9 +333,9 @@ consistency still need review. Next inputs include the future database contract,
 additional authoritative version history, a second-state partner corpus, and
 independently reviewed evaluation cases.
 
-Future uploads can use
-[`data/intake/policy-review-package/`](data/intake/policy-review-package/README.md).
-The intake index points to the organized materials and outstanding review work.
+The former intake folder was removed from `main` after organization. Use the
+case-study catalog and preservation manifest to find the uploaded materials;
+additional uploads should identify their jurisdiction, source version and purpose.
 
 | Read next | Purpose |
 |---|---|
@@ -333,6 +345,8 @@ The intake index points to the organized materials and outstanding review work.
 | [ROADMAP.md](docs/ROADMAP.md) | Phased delivery, implementation choices, and production gates |
 | [Method](method/README.md) | Reusable review workflow and jurisdiction-neutral templates |
 | [Georgia case study](case-studies/georgia/README.md) | Uploaded source pack, BASE-1, variants, and review status |
+| [Implementation plan](docs/IMPLEMENTATION-PLAN.md) | Milestone 0–1 delivery, agreed decisions, subsequent work and deferral triggers |
+| [Georgia errata](case-studies/georgia/ERRATA.md) | Snapshot-keyed legal/content review items, all pending agency review |
 
 ---
 
@@ -372,9 +386,6 @@ COMPASS/
 |       |-- maintenance/    Historical task checklist
 |       |-- archive/        Distinct variants and upload metadata
 |       `-- provenance/     Original paths and preservation hashes
-|-- data/
-|   `-- intake/
-|       `-- policy-review-package/  Future uploads and routing index
 |-- docs/                    Reference documentation
 |   |-- ANALYSIS.md          Analysis controls, behavior, and limits
 |   |-- DATABASE.md          Tables, relationships, and data lifecycle

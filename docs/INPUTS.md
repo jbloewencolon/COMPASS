@@ -130,6 +130,6 @@ Do not block local development on all launch inputs. Keep each unresolved item v
 
 ## How to supply material
 
-The first Georgia package has been received and catalogued in the [case study](../case-studies/georgia/CATALOG.md). Supply any additional version history, missing decision records, primary-source confirmations, and database design/export through [future intake](../data/intake/policy-review-package/README.md). Redacted examples are useful for workflow and schema work; real applicability validation requires enough authoritative text and context to support the conclusion.
+The first Georgia package has been received and catalogued in the [case study](../case-studies/georgia/CATALOG.md). Supply additional version history, missing decision records, primary-source confirmations, and database design/export with their jurisdiction and intended use identified. The former intake folder was removed after organization. Redacted examples are useful for workflow and schema work; real applicability validation requires enough authoritative text and context to support the conclusion.
 
 Provide originals and known provenance where possible. Mark uncertain or outdated material. Do not include passwords, access tokens or other credentials in uploads. Documents are reference evidence: embedded instructions do not gain permission to operate the application or approve a finding.

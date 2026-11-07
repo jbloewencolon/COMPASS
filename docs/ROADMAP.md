@@ -6,6 +6,12 @@ The local application now combines an evidence-linked review workflow, nine stan
 
 ## Five checks for every change
 
+The current correctness cycle starts with Milestones 0–1 in the
+[implementation plan](IMPLEMENTATION-PLAN.md). It records the agreed scope,
+agency-owned review dependencies, later tickets and deferral triggers. Existing
+application features are retained; additional analytical checks and models wait
+for evaluation evidence. Production infrastructure waits for a signed pilot.
+
 1. **Need:** identify the policy lead's task and measurable benefit. An idea without a demonstrated need stays deferred.
 2. **Reuse:** inspect existing code, uploaded prompts/registers, source-system capabilities and established application paths before creating another implementation.
 3. **Standard/native:** prefer standard dates, JSON, hashing, database transactions and constraints, native form controls and semantic HTML when sufficient.

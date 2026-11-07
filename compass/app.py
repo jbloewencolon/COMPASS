@@ -20,6 +20,7 @@ from .models import AnalysisSettings, AssignmentInput, ContextInput, Preferences
 from .configuration import get_context, get_settings
 from .monitoring import MonitoringService
 from .analysis import ENGINE_VERSION
+from .jurisdictions import is_us_authority
 from .store import Store, audit, audit_dict, canonical, digest, item_dict, new_id, now, source_dict
 
 
@@ -52,6 +53,8 @@ def require_owner(actor):
 
 def validate_binding(source, as_of):
     """Conservative data guards, not an automated determination of law."""
+    if not is_us_authority(source.get("jurisdiction_id")):
+        raise HTTPException(422, "This source is retained as non-US context, not US binding authority")
     if source["authority_type"] not in {"statute", "regulation", "executive_order", "internal_policy", "adopted_standard"}:
         raise HTTPException(422, "Research, guidance and voluntary standards cannot establish binding authority")
     if source["authority_type"] == "adopted_standard" and not source.get("adoption_reference"):
@@ -441,6 +444,10 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
             require_owner(actor)
             finding = item_dict(row)
             run = item_dict(require_row(db, "runs", tenant, row["run_id"]))
+            if payload.determination in {"binding", "conditional"}:
+                reference = source_dict(require_row(db, "sources", tenant, row["external_source_id"]))
+                if not is_us_authority(reference.get("jurisdiction_id")):
+                    raise HTTPException(422, "Non-US context cannot establish a binding or conditional US duty; cite the applicable US authority or agreement")
             if payload.determination == "binding":
                 reference = source_dict(require_row(db, "sources", tenant, row["external_source_id"]))
                 validate_binding(reference, run["as_of"])

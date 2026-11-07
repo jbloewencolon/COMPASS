@@ -247,6 +247,7 @@ class MonitoringService:
         result = analyze(
             snapshot["sources"], snapshot["history"], snapshot["settings"], snapshot["context"],
             snapshot["as_of"], snapshot["findings"], snapshot["workflow_audit"], snapshot["jurisdiction_id"],
+            profile=snapshot["profile"],
         )
         evidence_ids = {s["id"] for s in snapshot["sources"]}
         for feature in result.get("features", {}).values():
