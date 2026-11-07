@@ -7,7 +7,7 @@ name = "compass-policy-review"
 version = "0.1.0"
 description = "Evidence-linked, jurisdiction-aware policy review foundation"
 requires-python = ">=3.12"
-dependencies = ["fastapi==0.141.1", "uvicorn==0.52.1"]
+dependencies = ["fastapi==0.141.1", "uvicorn==0.52.1", "pypdf==7.0.0"]
 
 [project.optional-dependencies]
 test = ["httpx==0.28.1"]

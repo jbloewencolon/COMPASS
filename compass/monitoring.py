@@ -13,7 +13,7 @@ from zoneinfo import ZoneInfo
 from fastapi import HTTPException
 
 from . import __version__
-from .analysis import ENGINE_VERSION, analyze
+from .analysis import ENGINE_VERSION, METHOD_CATALOGUE, analyze
 from .configuration import get_context, get_settings
 from .store import audit, audit_dict, canonical, digest, item_dict, new_id, now, source_dict
 
@@ -127,6 +127,7 @@ def _basis(snapshot):
         "settings": snapshot["settings"], "context": snapshot["context"],
         "workflow": digest({"findings": snapshot["findings"], "audit": snapshot["workflow_audit"]}),
         "as_of": snapshot["as_of"], "engine_version": ENGINE_VERSION,
+        "method_catalogue": snapshot.get("method_catalogue", METHOD_CATALOGUE),
     })
 
 
@@ -187,6 +188,7 @@ class MonitoringService:
             "as_of": str(as_of or _local_date(settings)), "settings": settings, "context": context,
             "profile": profile, "profile_hash": profile_hash, "sources": sources, "history": history,
             "findings": findings, "workflow_audit": workflow_events,
+            "method_catalogue": json.loads(canonical(METHOD_CATALOGUE)),
             "snapshot_at": now(),
         }
 
@@ -203,7 +205,7 @@ class MonitoringService:
                 return None
             if trigger == "effective_date" and not monitoring["effective_dates"]:
                 return None
-            if {s["kind"] for s in snapshot["sources"]} != {"instrument", "external"}:
+            if not any(s["kind"] == "instrument" for s in snapshot["sources"]):
                 return None
             basis_hash = _basis(snapshot)
             existing = db.execute("SELECT * FROM monitoring_jobs WHERE tenant_id=? AND basis_hash=?", (tenant_id, basis_hash)).fetchone()
@@ -247,6 +249,7 @@ class MonitoringService:
         result = analyze(
             snapshot["sources"], snapshot["history"], snapshot["settings"], snapshot["context"],
             snapshot["as_of"], snapshot["findings"], snapshot["workflow_audit"], snapshot["jurisdiction_id"],
+            profile=snapshot["profile"], method_catalogue=snapshot.get("method_catalogue"),
         )
         evidence_ids = {s["id"] for s in snapshot["sources"]}
         for feature in result.get("features", {}).values():

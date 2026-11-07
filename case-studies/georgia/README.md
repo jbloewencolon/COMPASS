@@ -10,6 +10,12 @@ assertions and acceptance statements have not been validated by organizing the
 files. Treat proposed outputs as material for review, not evidence of authorized
 approval or adopted policy. See [open review items](REVIEW-STATUS.md).
 
+The [draft errata](ERRATA.md) now identifies three legal-source/scope checks and
+the SB-01 contestability research correction against exact original basenames and
+SHA-256 hashes. Those corrections remain **unverified and agency-review pending**;
+they are not edits or approvals of the historical files. Each agency appoints its
+own review lead. No central lead counsel is presumed.
+
 ## Find the right material
 
 | Folder | Contents |
@@ -29,6 +35,10 @@ approval or adopted policy. See [open review items](REVIEW-STATUS.md).
 | [provenance/](provenance/) | Original-to-organized path mapping and SHA-256 hashes |
 
 Use the [complete file catalog](CATALOG.md) for individual documents.
+
+The historical horizon scan calls itself “Prompt 03.” That title remains in the
+original. New neutral work uses [06: Horizon scan](../../method/prompts/06-horizon-scan.md)
+so it does not collide with the existing neutral Prompt 03 trigger assessment.
 
 ## BASE-1 and dependent reviews
 
@@ -70,5 +80,9 @@ has been written into those originals.
 Start from the [neutral method](../../method/README.md), supply a new jurisdiction
 intake, and verify the applicable instruments and sources. Do not carry over GTA
 instrument numbers, Georgia legislative dates, authorities, findings, or decisions.
+Use U.S. federal, state and District of Columbia authority as the primary legal
+scope. Retain EU/other foreign material with a clear non-U.S. comparative/vendor
+context label and separately assess any supported applicability claim; do not
+silently discard it or presume it binds a state agency.
 The document pack is not automatically imported into the application; its demo
 database continues to contain synthetic fixtures.

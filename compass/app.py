@@ -13,13 +13,17 @@ from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
+from pydantic import ValidationError
 
 from . import __version__
 from .demo import PERSONAS, seed
-from .models import AnalysisSettings, AssignmentInput, ContextInput, PreferencesInput, RetryInput, ApplicabilityInput, DecisionInput, DemoSessionInput, FindingInput, RunInput, SourceInput
+from .models import AnalysisSettings, AssignmentInput, ContextInput, PreferencesInput, RetryInput, ApplicabilityInput, DecisionInput, DemoSessionInput, FindingInput, RunInput, SourceInput, MembershipInput, SourceReviewInput
 from .configuration import get_context, get_settings
 from .monitoring import MonitoringService
 from .analysis import ENGINE_VERSION
+from .jurisdictions import is_us_authority
+from .pdf_import import MAX_PDF_BYTES, PDFImportError, extract_pdf
+from .method_import import validate_import_bundle
 from .store import Store, audit, audit_dict, canonical, digest, item_dict, new_id, now, source_dict
 
 
@@ -42,7 +46,7 @@ def require_row(db, table, tenant, entity_id):
 
 
 def workspace(actor):
-    return {"id": actor["tenant_id"], "name": actor["workspace_name"], "jurisdiction_id": actor["jurisdiction_id"], "role": actor["role"]}
+    return {"id": actor["tenant_id"], "name": actor["workspace_name"], "jurisdiction_id": actor["jurisdiction_id"], "role": actor["role"], "can_determine_applicability": bool(actor.get("can_determine_applicability"))}
 
 
 def require_owner(actor):
@@ -50,9 +54,45 @@ def require_owner(actor):
         raise HTTPException(403, "A policy owner must perform this action")
 
 
-def validate_binding(source, as_of):
+def require_applicability_reviewer(actor):
+    if not actor.get("can_determine_applicability"):
+        raise HTTPException(403, "Your agency must explicitly grant applicability-review permission for this action")
+
+
+def stamp_verification(data, actor):
+    verification = dict(data.get("verification") or {"status": "unverified", "primary_source_location": None})
+    if verification["status"] == "verified":
+        require_applicability_reviewer(actor)
+        verification.update(verified_by=actor["name"], verified_by_id=actor["id"], verified_at=now())
+    else:
+        verification.update(verified_by=None, verified_by_id=None, verified_at=None)
+    data["verification"] = verification
+    return data
+
+
+def source_identity(data):
+    """Repeated import is not a new verification action; explicit review is."""
+    value = {**data, "verification": dict(data.get("verification") or {})}
+    value["verification"].pop("verified_at", None)
+    return value
+
+
+def finding_authorities(db, tenant, finding):
+    sources = [source_dict(require_row(db, "sources", tenant, piece["source_id"])) for piece in finding.get("evidence", [])]
+    return [source for source in sources if source["kind"] == "external"] if finding.get("finding_type", "external_gap") == "external_gap" else sources
+
+
+def validate_binding(source, as_of, program_or_contract=None):
     """Conservative data guards, not an automated determination of law."""
-    if source["authority_type"] not in {"statute", "regulation", "executive_order", "internal_policy", "adopted_standard"}:
+    if not is_us_authority(source.get("jurisdiction_id")):
+        raise HTTPException(422, "This source is retained as non-US context, not US binding authority")
+    if source.get("verification", {}).get("status") != "verified":
+        raise HTTPException(422, "Binding determination requires a verified source revision pinned in this review")
+    if source["authority_type"] == "court_or_ag":
+        raise HTTPException(422, "Court and Attorney General material is flagged for agency review, not automatically binding")
+    if source["authority_type"] in {"funding_condition", "agreement"} and not program_or_contract:
+        raise HTTPException(422, "Funding conditions and agreements require the attached program or contract")
+    if source["authority_type"] not in {"statute", "regulation", "executive_order", "internal_policy", "adopted_standard", "funding_condition", "agreement"}:
         raise HTTPException(422, "Research, guidance and voluntary standards cannot establish binding authority")
     if source["authority_type"] == "adopted_standard" and not source.get("adoption_reference"):
         raise HTTPException(422, "An adopted standard needs an adoption reference and scope")
@@ -126,7 +166,7 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
         token_hash = hashlib.sha256(token.encode()).hexdigest()
         with store.connect() as db:
             row = db.execute(
-                """SELECT u.id,u.name,s.tenant_id,m.role,t.name AS workspace_name,t.jurisdiction_id
+                """SELECT u.id,u.name,s.tenant_id,m.role,m.can_determine_applicability,t.name AS workspace_name,t.jurisdiction_id
                 FROM sessions s JOIN users u ON u.id=s.user_id
                 JOIN memberships m ON m.tenant_id=s.tenant_id AND m.user_id=s.user_id
                 JOIN tenants t ON t.id=s.tenant_id
@@ -134,6 +174,8 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
             ).fetchone()
         if row is None:
             raise HTTPException(401, "Session expired; sign in again")
+        if not is_us_authority(row["jurisdiction_id"]):
+            raise HTTPException(422, "Workspace jurisdiction must be a US state, DC, or US-FED identifier")
         return dict(row)
 
     @app.get("/api/health")
@@ -181,6 +223,25 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
     @app.get("/api/session")
     def session(actor=Depends(current_actor)):
         return {"user": {"id": actor["id"], "name": actor["name"]}, "workspace": workspace(actor), "demo": demo}
+
+    @app.get("/api/memberships")
+    def memberships(actor=Depends(current_actor)):
+        with store.connect() as db:
+            rows = db.execute("SELECT m.user_id,u.name,m.role,m.can_determine_applicability FROM memberships m JOIN users u ON u.id=m.user_id WHERE m.tenant_id=? ORDER BY u.name", (actor["tenant_id"],)).fetchall()
+        return {"memberships": [{**dict(row), "can_determine_applicability": bool(row["can_determine_applicability"])} for row in rows]}
+
+    @app.patch("/api/memberships/{user_id}")
+    def change_membership(user_id: str, payload: MembershipInput, actor=Depends(current_actor)):
+        with store.connect(write=True) as db:
+            row = db.execute("SELECT * FROM memberships WHERE tenant_id=? AND user_id=?", (actor["tenant_id"], user_id)).fetchone()
+            if row is None:
+                raise HTTPException(404, "Not found")
+            require_owner(actor)
+            previous = bool(row["can_determine_applicability"])
+            if previous != payload.can_determine_applicability:
+                db.execute("UPDATE memberships SET can_determine_applicability=? WHERE tenant_id=? AND user_id=?", (int(payload.can_determine_applicability), actor["tenant_id"], user_id))
+                audit(db, actor, "membership.applicability_permission_changed", "membership", user_id, {"previous": previous, "current": payload.can_determine_applicability})
+        return {"user_id": user_id, "can_determine_applicability": payload.can_determine_applicability}
 
     @app.get("/api/preferences")
     def preferences(actor=Depends(current_actor)):
@@ -291,7 +352,9 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
     def add_source(payload: SourceInput, response: Response, actor=Depends(current_actor)):
         if payload.kind == "instrument" and payload.jurisdiction_id != actor["jurisdiction_id"]:
             raise HTTPException(422, "Internal instruments must belong to the workspace's jurisdiction")
-        data = payload.model_dump(mode="json")
+        if payload.legal_status == "in_force":
+            require_applicability_reviewer(actor)
+        data = stamp_verification(payload.model_dump(mode="json"), actor)
         content_hash = digest(data)
         tenant = actor["tenant_id"]
         with store.connect(write=True) as db:
@@ -304,7 +367,11 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
                 if not payload.source_key and prior.get("source_key"):
                     data["source_key"] = prior["source_key"]
                     content_hash = digest(data)
+                if prior["legal_status"] != payload.legal_status:
+                    require_applicability_reviewer(actor)
             existing = db.execute("SELECT * FROM sources WHERE tenant_id=? AND content_hash=?", (tenant, content_hash)).fetchone()
+            if not existing and data["verification"]["status"] == "verified":
+                existing = next((row for row in db.execute("SELECT * FROM sources WHERE tenant_id=?", (tenant,)) if source_identity(json.loads(row["payload"])) == source_identity(data)), None)
             if existing:
                 response.status_code = 200
                 return source_dict(existing)
@@ -316,6 +383,28 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
             if controls["monitoring"]["source_changes"]:
                 monitoring.enqueue(tenant, actor, "source_changed", db=db)
         return result
+
+    @app.patch("/api/sources/{source_id}/review", status_code=201)
+    def review_source(source_id: str, payload: SourceReviewInput, response: Response, actor=Depends(current_actor)):
+        with store.connect(write=True) as db:
+            prior = source_dict(require_row(db, "sources", actor["tenant_id"], source_id))
+            require_applicability_reviewer(actor)
+            data = {key: value for key, value in prior.items() if key not in {"id", "hash", "created_at"}}
+            data.update(verification=payload.verification.model_dump(mode="json"), legal_status=payload.legal_status, replaces_source_id=source_id)
+            try:
+                data = SourceInput.model_validate(data).model_dump(mode="json")
+            except ValidationError as error:
+                raise HTTPException(422, "Historical source metadata does not meet current validation. Preserve this snapshot and import a corrected source revision with an eligible identifier and provenance.") from error
+            data = stamp_verification(data, actor)
+            existing = db.execute("SELECT * FROM sources WHERE tenant_id=? AND content_hash=?", (actor["tenant_id"], digest(data))).fetchone()
+            if existing:
+                response.status_code = 200
+                return source_dict(existing)
+            revised_id = new_id()
+            db.execute("INSERT INTO sources VALUES(?,?,?,?,?)", (revised_id, actor["tenant_id"], canonical(data), digest(data), now()))
+            audit(db, actor, "source.reviewed", "source", source_id, {"revised_source_id": revised_id, "previous_legal_status": prior["legal_status"], "current_legal_status": data["legal_status"], "previous_verification": prior.get("verification", {"status": "unverified"}), "current_verification": data["verification"], "rationale": payload.rationale})
+            monitoring.enqueue(actor["tenant_id"], actor, "source_changed", db=db)
+            return source_dict(require_row(db, "sources", actor["tenant_id"], revised_id))
 
     @app.get("/api/runs")
     def runs(actor=Depends(current_actor)):
@@ -329,8 +418,8 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
         tenant = actor["tenant_id"]
         with store.connect(write=True) as db:
             selected = [source_dict(require_row(db, "sources", tenant, key)) for key in payload.source_ids]
-            if {s["kind"] for s in selected} != {"instrument", "external"}:
-                raise HTTPException(422, "A review needs an internal instrument and an external reference")
+            if not any(source["kind"] == "instrument" for source in selected):
+                raise HTTPException(422, "A review needs at least one internal instrument")
             profile_row = db.execute("SELECT profile,profile_hash FROM tenants WHERE id=?", (tenant,)).fetchone()
             run_id = new_id()
             data = {**payload.model_dump(mode="json"), "profile": json.loads(profile_row["profile"]), "profile_hash": profile_row["profile_hash"], "analysis_method": "manual", "coverage_status": "unverified", "code_version": __version__}
@@ -400,7 +489,7 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
         run_sources = run.pop("sources")
         findings = run.pop("findings")
         profile = {**run["profile"], "hash": run["profile_hash"]}
-        bundle = {"schema_version": 1, "run": run, "profile": profile, "sources": run_sources, "findings": findings, "audit": events, "analysis_method": run.get("analysis_method", "manual"), "analyses": analyses, "coverage": COVERAGE}
+        bundle = {"schema_version": 2, "run": run, "profile": profile, "sources": run_sources, "findings": findings, "audit": events, "analysis_method": run.get("analysis_method", "manual"), "analyses": analyses, "coverage": COVERAGE}
         # Always derive the filename from the verified entity, not request text.
         return Response(canonical(bundle), media_type="application/json", headers={"Content-Disposition": f'attachment; filename="compass-review-{run["id"]}.json"'})
 
@@ -415,21 +504,31 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
         with store.connect(write=True) as db:
             run = item_dict(require_row(db, "runs", tenant, run_id))
             evidence = []
-            for kind in ("instrument", "external"):
-                source_id = getattr(payload, f"{kind}_source_id")
-                source = source_dict(require_row(db, "sources", tenant, source_id))
-                if source_id not in run["source_ids"]:
+            for piece in payload.evidence:
+                source = source_dict(require_row(db, "sources", tenant, piece.source_id))
+                if (payload.instrument_source_id == piece.source_id and source["kind"] != "instrument") or (payload.external_source_id == piece.source_id and source["kind"] != "external"):
+                    raise HTTPException(422, "Evidence source kind does not match its legacy role")
+                if piece.source_id not in run["source_ids"]:
                     raise HTTPException(422, "Evidence must belong to this run's pinned inputs")
-                if source["kind"] != kind:
-                    raise HTTPException(422, "Evidence source kind does not match its role")
-                quote = getattr(payload, f"{kind}_quote")
-                if quote not in source["text"]:
-                    raise HTTPException(422, f"The {kind} quote must be an exact excerpt from its source")
-                evidence.append({"source_id": source_id, "title": source["title"], "kind": kind, "quote": quote, "location": getattr(payload, f"{kind}_location")})
+                if piece.quote not in source["text"]:
+                    raise HTTPException(422, "The quote must be an exact excerpt from its source")
+                evidence.append({**piece.model_dump(), "title": source["title"], "kind": source["kind"]})
+            if payload.finding_type == "external_gap" and {piece["kind"] for piece in evidence} != {"instrument", "external"}:
+                raise HTTPException(422, "An external gap needs instrument and external-source passages")
+            if payload.finding_type == "internal_conflict" and any(piece["kind"] != "instrument" for piece in evidence):
+                raise HTTPException(422, "An internal conflict needs at least two instrument passages")
+            if len({(piece["source_id"], piece["quote"]) for piece in evidence}) != len(evidence):
+                raise HTTPException(422, "Do not duplicate the same evidence passage")
+            for source_id in payload.search_source_ids:
+                require_row(db, "sources", tenant, source_id)
+                if source_id not in run["source_ids"]:
+                    raise HTTPException(422, "Searched sources must belong to this run's pinned inputs")
             finding_id = new_id()
-            data = {"run_id": run_id, "summary": payload.summary, "category": payload.category, "severity": payload.severity, "rationale": payload.rationale, "status": "pending", "analysis_method": "manual", "applicability": {"determination": "unknown", "rationale": "Needs policy-owner applicability review.", "reviewed_by": None, "reviewed_at": None}, "evidence": evidence}
-            db.execute("INSERT INTO findings VALUES(?,?,?,?,?,?,?)", (finding_id, tenant, run_id, payload.instrument_source_id, payload.external_source_id, canonical(data), now()))
-            audit(db, actor, "finding.created", "finding", finding_id, {"run_id": run_id, "summary": data["summary"]})
+            data = {"run_id": run_id, "summary": payload.summary, "category": payload.category, "severity": payload.severity, "rationale": payload.rationale, "finding_type": payload.finding_type, "status": "pending", "analysis_method": "manual", "applicability": {"determination": "unknown", "rationale": "Needs agency applicability review.", "authority_relied_on": None, "scope_complete": False, "reviewed_by": None, "reviewed_at": None}, "evidence": evidence, "search_source_ids": payload.search_source_ids, "search_description": payload.search_description, "program_or_contract": payload.program_or_contract, "concentrated_harm": payload.concentrated_harm, "irreversible": payload.irreversible}
+            internal_id = next((piece["source_id"] for piece in evidence if piece["kind"] == "instrument"), None)
+            external_id = next((piece["source_id"] for piece in evidence if piece["kind"] == "external"), None)
+            db.execute("INSERT INTO findings VALUES(?,?,?,?,?,?,?)", (finding_id, tenant, run_id, internal_id, external_id, canonical(data), now()))
+            audit(db, actor, "finding.created", "finding", finding_id, {"run_id": run_id, "summary": data["summary"], "finding_type": payload.finding_type})
             monitoring.enqueue(tenant, actor, "workflow_changed", db=db)
             return item_dict(require_row(db, "findings", tenant, finding_id))
 
@@ -438,21 +537,39 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
         tenant = actor["tenant_id"]
         with store.connect(write=True) as db:
             row = require_row(db, "findings", tenant, finding_id)
-            require_owner(actor)
             finding = item_dict(row)
-            run = item_dict(require_row(db, "runs", tenant, row["run_id"]))
-            if payload.determination == "binding":
-                reference = source_dict(require_row(db, "sources", tenant, row["external_source_id"]))
-                validate_binding(reference, run["as_of"])
+            if payload.determination in {"binding", "conditional"} or payload.scope_complete:
+                require_applicability_reviewer(actor)
+            elif actor["role"] != "owner" and not actor.get("can_determine_applicability"):
+                raise HTTPException(403, "An owner or appointed applicability reviewer must record applicability")
+            if payload.scope_complete and finding.get("finding_type", "external_gap") != "absence":
+                raise HTTPException(422, "Completeness confirmation belongs to an absence finding")
+            if payload.scope_complete:
+                run = item_dict(require_row(db, "runs", tenant, finding["run_id"]))
+                if set(finding.get("search_source_ids", [])) != set(run["source_ids"]):
+                    raise HTTPException(422, "Completeness confirmation requires searching every source in the declared pinned review corpus")
+            if payload.determination in {"binding", "conditional"}:
+                if finding.get("evidence_gaps"):
+                    raise HTTPException(422, "Resolve imported evidence gaps in a supported new finding before determining a duty")
+                run = item_dict(require_row(db, "runs", tenant, row["run_id"]))
+                references = finding_authorities(db, tenant, finding)
+                if not references:
+                    raise HTTPException(422, "A duty determination needs exact supporting passages; an absence search alone is not a legal duty")
+                for reference in references:
+                    if not is_us_authority(reference.get("jurisdiction_id")):
+                        raise HTTPException(422, "Non-US context cannot establish a binding or conditional US duty; cite the applicable US authority or agreement")
+                    if reference["authority_type"] == "court_or_ag":
+                        raise HTTPException(422, "Court and Attorney General material is flagged for agency review, not automatically binding or conditional")
+                    if payload.determination == "binding":
+                        validate_binding(reference, run["as_of"], finding.get("program_or_contract"))
             previous = finding["applicability"]
-            finding["applicability"] = {**payload.model_dump(), "reviewed_by": actor["name"], "reviewed_at": now()}
-            # A changed premise requires a fresh decision. Retain the old event.
+            finding["applicability"] = {**payload.model_dump(), "reviewed_by": actor["name"], "reviewed_by_id": actor["id"], "reviewed_at": now(), "reviewer_had_applicability_permission": bool(actor.get("can_determine_applicability")), "completeness_confirmed_by": actor["id"] if payload.scope_complete else None}
             previous_status = finding["status"]
             finding["status"] = "pending"
             previous_decision = finding.pop("decision", None)
-            data = {k: v for k, v in finding.items() if k not in {"id", "created_at"}}
+            data = {key: value for key, value in finding.items() if key not in {"id", "created_at"}}
             db.execute("UPDATE findings SET payload=? WHERE tenant_id=? AND id=?", (canonical(data), tenant, finding_id))
-            audit(db, actor, "applicability.reviewed", "finding", finding_id, {"run_id": run["id"], "previous": previous, "current": finding["applicability"], "invalidated_status": previous_status, "invalidated_decision": previous_decision})
+            audit(db, actor, "applicability.reviewed", "finding", finding_id, {"run_id": finding["run_id"], "previous": previous, "current": finding["applicability"], "invalidated_status": previous_status, "invalidated_decision": previous_decision})
             monitoring.enqueue(tenant, actor, "workflow_changed", db=db)
             return item_dict(require_row(db, "findings", tenant, finding_id))
 
@@ -462,6 +579,26 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
         with store.connect(write=True) as db:
             finding = item_dict(require_row(db, "findings", tenant, finding_id))
             require_owner(actor)
+            if payload.outcome == "accept" and finding.get("evidence_gaps"):
+                raise HTTPException(409, "Resolve imported evidence gaps in a supported new finding before acceptance")
+            premise = finding["applicability"]
+            if payload.outcome == "accept":
+                if not premise.get("reviewed_by_id") or len(premise.get("authority_relied_on") or "") < 3 or len(premise.get("rationale") or "") < 30:
+                    raise HTTPException(409, "Record a fresh applicability review under the current verification controls before acceptance")
+                if premise["determination"] in {"binding", "conditional"}:
+                    if not premise.get("reviewer_had_applicability_permission"):
+                        raise HTTPException(409, "An appointed applicability reviewer must record the duty determination before acceptance")
+                    run = item_dict(require_row(db, "runs", tenant, finding["run_id"]))
+                    references = finding_authorities(db, tenant, finding)
+                    if not references:
+                        raise HTTPException(409, "A duty determination needs exact supporting authority passages before acceptance")
+                    for reference in references:
+                        if not is_us_authority(reference.get("jurisdiction_id")) or reference["authority_type"] == "court_or_ag":
+                            raise HTTPException(409, "The pinned source does not establish an eligible US duty")
+                        if premise["determination"] == "binding":
+                            validate_binding(reference, run["as_of"], finding.get("program_or_contract"))
+            if payload.outcome == "accept" and finding.get("finding_type") == "absence" and not (finding["applicability"].get("scope_complete") and finding["applicability"].get("completeness_confirmed_by")):
+                raise HTTPException(409, "An appointed applicability reviewer must confirm the complete in-scope search set before accepting an absence")
             if payload.outcome == "accept" and finding["applicability"]["determination"] in {"unknown", "not_applicable"}:
                 raise HTTPException(409, "Resolve applicability before accepting this finding")
             finding["status"] = {"accept": "accepted", "reject": "rejected", "needs_information": "needs_information"}[payload.outcome]
@@ -484,6 +621,59 @@ def create_app(db_path=".compass/development.sqlite3", demo=False, run_worker=Fa
             audit(db, actor, "finding.assigned", "finding", finding_id, finding["assignment"])
             monitoring.enqueue(tenant, actor, "workflow_changed", db=db)
             return item_dict(require_row(db, "findings", tenant, finding_id))
+
+    @app.post("/api/import/pdf-text")
+    async def preview_pdf(request: Request, actor=Depends(current_actor)):
+        if request.headers.get("content-type", "").split(";", 1)[0].strip().lower() != "application/pdf":
+            raise HTTPException(415, "Send PDF bytes with Content-Type application/pdf")
+        chunks, size = [], 0
+        async for chunk in request.stream():
+            size += len(chunk)
+            if size > MAX_PDF_BYTES:
+                raise HTTPException(413, "Choose a PDF no larger than 15 MiB")
+            chunks.append(chunk)
+        try:
+            # Preview is bounded and does not create a source or imply review.
+            return await asyncio.to_thread(extract_pdf, b"".join(chunks))
+        except PDFImportError as error:
+            return JSONResponse({"detail": str(error), "failed_pages": error.failed_pages,
+                                 "page_count": error.page_count}, status_code=422)
+
+    @app.post("/api/runs/{run_id}/method-findings", status_code=201)
+    def import_method_findings(run_id: str, payload: dict, actor=Depends(current_actor)):
+        tenant = actor["tenant_id"]
+        with store.connect(write=True) as db:
+            run = item_dict(require_row(db, "runs", tenant, run_id))
+            if actor["jurisdiction_id"] != "US-GA":
+                raise HTTPException(422, "This producer contains Georgia case-study findings; use a Georgia workspace")
+            try:
+                bundle = validate_import_bundle(payload)
+            except ValueError as error:
+                raise HTTPException(422, str(error)) from error
+            prior = [item_dict(row) for row in db.execute("SELECT * FROM findings WHERE tenant_id=? AND run_id=?", (tenant, run_id))]
+            known = {item.get("original_finding_id") for item in prior
+                     if item.get("origin") == "method_run" and item.get("method_run_id") == bundle["run_id"]
+                     and item.get("provenance") == bundle["provenance"]}
+            imported, skipped = [], []
+            for item in bundle["findings"]:
+                if item["original_finding_id"] in known:
+                    skipped.append(item["original_finding_id"])
+                    continue
+                finding_id = new_id()
+                data = {**item, "run_id": run_id, "origin": "method_run", "method_run_id": bundle["run_id"],
+                        "provenance": bundle["provenance"], "analysis_method": "method_import",
+                        "applicability": {"determination": "unknown", "rationale": "Historical suggestion; current applicability and evidence remain unreviewed.",
+                                          "authority_relied_on": None, "reviewed_by": None, "reviewed_at": None},
+                        "scope_complete": False}
+                db.execute("INSERT INTO findings VALUES(?,?,?,?,?,?,?)", (finding_id, tenant, run_id, None, None, canonical(data), now()))
+                audit(db, actor, "finding.imported", "finding", finding_id,
+                      {"run_id": run["id"], "method_run_id": bundle["run_id"], "original_finding_id": item["original_finding_id"],
+                       "origin": "method_run", "provenance": bundle["provenance"], "status": "pending"})
+                imported.append(item_dict(require_row(db, "findings", tenant, finding_id)))
+            if imported:
+                monitoring.enqueue(tenant, actor, "workflow_changed", db=db)
+        return {"imported": imported, "skipped": skipped, "imported_count": len(imported),
+                "skipped_count": len(skipped), "import_report": bundle["import_report"]}
 
     @app.get("/api/audit")
     def get_audit(actor=Depends(current_actor)):

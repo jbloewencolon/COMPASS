@@ -1,5 +1,8 @@
 # 05: Legislative session readiness
 
+**Method version:** `0.1.0-draft`
+**Policy review status:** draft — agency review pending; no approval recorded.
+
 Schedule this review using the jurisdiction's actual legislative calendar,
 prefiling rules, carryover rules, and policy owner's planning window.
 

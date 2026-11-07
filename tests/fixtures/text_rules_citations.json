@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "purpose": "Parser regression fixtures, not a legal correctness benchmark or verification of current authority.",
+  "designed_cases_provenance": {
+    "kind": "manually_designed_US_citation_syntax_cases",
+    "context": "All surrounding prose is synthetic. Citation forms exercise real US legal notation; these strings were not retrieved as twenty official statutory quotations.",
+    "verification": "No independent validation of current legal status, scope, citation accuracy, or enactment is claimed."
+  },
+  "designed_cases": [
+    {
+      "id": "us-form-01",
+      "citation": "42 U.S.C. § 12132",
+      "citation_type": "us_code",
+      "text": "The office reviews 42 U.S.C. § 12132 before recording a finding."
+    },
+    {
+      "id": "us-form-02",
+      "citation": "42 USC 12132",
+      "citation_type": "us_code",
+      "text": "The office reviews 42 USC 12132 before recording a finding."
+    },
+    {
+      "id": "us-form-03",
+      "citation": "42 U.S.C. §§ 12131–12134",
+      "citation_type": "us_code",
+      "text": "The office reviews 42 U.S.C. §§ 12131–12134 before recording a finding."
+    },
+    {
+      "id": "us-form-04",
+      "citation": "42 U.S.C. § 2000d",
+      "citation_type": "us_code",
+      "text": "The office reviews 42 U.S.C. § 2000d before recording a finding."
+    },
+    {
+      "id": "us-form-05",
+      "citation": "29 U.S.C. § 794(a)",
+      "citation_type": "us_code",
+      "text": "The office reviews 29 U.S.C. § 794(a) before recording a finding."
+    },
+    {
+      "id": "us-form-06",
+      "citation": "20 U.S.C. § 1232g",
+      "citation_type": "us_code",
+      "text": "The office reviews 20 U.S.C. § 1232g before recording a finding."
+    },
+    {
+      "id": "us-form-07",
+      "citation": "5 U.S.C. § 552(a)(1)",
+      "citation_type": "us_code",
+      "text": "The office reviews 5 U.S.C. § 552(a)(1) before recording a finding."
+    },
+    {
+      "id": "us-form-08",
+      "citation": "28 C.F.R. § 35.130(b)(7)(i)",
+      "citation_type": "regulation",
+      "text": "The office reviews 28 C.F.R. § 35.130(b)(7)(i) before recording a finding."
+    },
+    {
+      "id": "us-form-09",
+      "citation": "45 CFR 84.4",
+      "citation_type": "regulation",
+      "text": "The office reviews 45 CFR 84.4 before recording a finding."
+    },
+    {
+      "id": "us-form-10",
+      "citation": "34 C.F.R. § 99.31(a)(1)",
+      "citation_type": "regulation",
+      "text": "The office reviews 34 C.F.R. § 99.31(a)(1) before recording a finding."
+    },
+    {
+      "id": "us-form-11",
+      "citation": "28 C.F.R. pt. 35",
+      "citation_type": "regulation",
+      "text": "The office reviews 28 C.F.R. pt. 35 before recording a finding."
+    },
+    {
+      "id": "us-form-12",
+      "citation": "89 Fed. Reg. 31,320",
+      "citation_type": "federal_register",
+      "text": "The office reviews 89 Fed. Reg. 31,320 before recording a finding."
+    },
+    {
+      "id": "us-form-13",
+      "citation": "88 Fed.Reg. 75191",
+      "citation_type": "federal_register",
+      "text": "The office reviews 88 Fed.Reg. 75191 before recording a finding."
+    },
+    {
+      "id": "us-form-14",
+      "citation": "Pub. L. No. 101-336",
+      "citation_type": "public_law",
+      "text": "The office reviews Pub. L. No. 101-336 before recording a finding."
+    },
+    {
+      "id": "us-form-15",
+      "citation": "Public Law 93-112",
+      "citation_type": "public_law",
+      "text": "The office reviews Public Law 93-112 before recording a finding."
+    },
+    {
+      "id": "us-form-16",
+      "citation": "136 Stat. 1366",
+      "citation_type": "statutes_at_large",
+      "text": "The office reviews 136 Stat. 1366 before recording a finding."
+    },
+    {
+      "id": "us-form-17",
+      "citation": "H.R. 815",
+      "citation_type": "bill",
+      "text": "The office reviews H.R. 815 before recording a finding."
+    },
+    {
+      "id": "us-form-18",
+      "citation": "S. 686",
+      "citation_type": "bill",
+      "text": "The office reviews S. 686 before recording a finding."
+    },
+    {
+      "id": "us-form-19",
+      "citation": "SB 444",
+      "citation_type": "bill",
+      "text": "The office reviews SB 444 before recording a finding."
+    },
+    {
+      "id": "us-form-20",
+      "citation": "AB 2013",
+      "citation_type": "bill",
+      "text": "The office reviews AB 2013 before recording a finding."
+    }
+  ],
+  "uploaded_pdf_provenance": {
+    "kind": "exact_lines_from_user_supplied_PDFs",
+    "extraction": "System pdftotext -layout; page numbering one-based; line text preserved from the extracted text.",
+    "verification": "Text extraction and source SHA-256 association only. User-supplied PDFs were not independently checked against current official publications."
+  },
+  "uploaded_pdf_cases": [
+    {
+      "source": "case-studies/georgia/instruments/GS-23-001_Artificial Intelligence Responsible Use Guidelines_ Enterprise Policies, Standards, and Guidelines.pdf",
+      "page": 1,
+      "text": "O.C.G.A 50-25-4(a)(8), State Government, Georgia",
+      "sha256": "b88a15f239ba647a5df88347c458b2f75044625c45c14974f8dc426c502774a0"
+    },
+    {
+      "source": "case-studies/georgia/instruments/GS-23-001_Artificial Intelligence Responsible Use Guidelines_ Enterprise Policies, Standards, and Guidelines.pdf",
+      "page": 1,
+      "text": "O.C.G.A 50-25-4(a)(20), State Government, Georgia",
+      "sha256": "b88a15f239ba647a5df88347c458b2f75044625c45c14974f8dc426c502774a0"
+    },
+    {
+      "source": "case-studies/georgia/instruments/Generative AI Guidelines for Responsible Use GS-25-001.pdf",
+      "page": 1,
+      "text": "O.C.G.A 50-25-4(a)(10) – State Government, Georgia Technology, General Powers",
+      "sha256": "7c0d86318d84790a36526f0efab543f3cdab139d5a4afbd1fc36bd957786ac0d"
+    },
+    {
+      "source": "case-studies/georgia/instruments/Generative AI Guidelines for Responsible Use GS-25-001.pdf",
+      "page": 1,
+      "text": "O.C.G.A 50-25-4(a)(21) - State Government, Georgia Technology, General Powers",
+      "sha256": "7c0d86318d84790a36526f0efab543f3cdab139d5a4afbd1fc36bd957786ac0d"
+    },
+    {
+      "source": "case-studies/georgia/instruments/Generative AI Responsible Use SS-25-001.pdf",
+      "page": 1,
+      "text": "O.C.G.A 50-25-4(a)(8) – State Government, Georgia Technology, General Powers",
+      "sha256": "d5317fc53891a79001c909140278f35de28750860d7b1e119b6b3e7a64273c61"
+    },
+    {
+      "source": "case-studies/georgia/instruments/Generative AI Responsible Use SS-25-001.pdf",
+      "page": 1,
+      "text": "O.C.G.A 50-25-4(a)(20) - State Government, Georgia Technology, General Powers",
+      "sha256": "d5317fc53891a79001c909140278f35de28750860d7b1e119b6b3e7a64273c61"
+    },
+    {
+      "source": "case-studies/georgia/instruments/PS-23-001_Enterprise Artificial Intelligence Responsible Use_ Enterprise Policies, Standards, and Guidelines.pdf",
+      "page": 2,
+      "text": "O.C.G.A 50-25-4(a)(28), State Government, Georgia",
+      "sha256": "69fc308cb9409a22da5d25a146a83a043b8a7a250659fbafb6635c18816d89c1"
+    },
+    {
+      "source": "case-studies/georgia/instruments/SS-23-002_Artificial Intelligence Responsible Use_ Enterprise Policies, Standards, and Guidelines.pdf",
+      "page": 10,
+      "text": "Georgia Open Records Act, O.C.G.A. 50-18-72 (25) and (44).",
+      "sha256": "e2cf98ebdccdaecfbf9cd70889ba74b71f63af1bd531d3f6786149d14ed19992"
+    }
+  ],
+  "uploaded_georgia_obligation_provenance": {
+    "kind": "exact_sentence_extracts_from_user_supplied_PDFs",
+    "extraction": "System pdftotext -layout, preserving line wraps and interior spacing; page numbering is one-based.",
+    "verification": "Regression evidence from supplied documents, not independent verification of current legal force or applicability."
+  },
+  "uploaded_georgia_obligation_cases": [
+    {
+      "source": "case-studies/georgia/instruments/Generative AI Guidelines for Responsible Use GS-25-001.pdf",
+      "page": 2,
+      "text": "For instance, while an HR department may consult with AI\nplatforms in making hiring decisions, it may not use AI to scan and reject resumes\nautomatically.",
+      "sha256": "7c0d86318d84790a36526f0efab543f3cdab139d5a4afbd1fc36bd957786ac0d"
+    },
+    {
+      "source": "case-studies/georgia/instruments/Generative AI Responsible Use SS-25-001.pdf",
+      "page": 3,
+      "text": "Personally identifiable information (PII), protected health information (PHI),\n     or other regulated data shall not be used as inputs to GenAI tools unless\n     formally approved by the GTA’s Office of Artificial Intelligence.",
+      "sha256": "d5317fc53891a79001c909140278f35de28750860d7b1e119b6b3e7a64273c61"
+    }
+  ]
+}

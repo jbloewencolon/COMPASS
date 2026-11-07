@@ -36,7 +36,9 @@ CREATE TABLE IF NOT EXISTS tenants (
 CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, name TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS memberships (
     tenant_id TEXT NOT NULL REFERENCES tenants(id), user_id TEXT NOT NULL REFERENCES users(id),
-    role TEXT NOT NULL CHECK(role IN ('owner','reviewer')), PRIMARY KEY(tenant_id,user_id)
+    role TEXT NOT NULL CHECK(role IN ('owner','reviewer')),
+    can_determine_applicability INTEGER NOT NULL DEFAULT 0 CHECK(can_determine_applicability IN (0,1)),
+    PRIMARY KEY(tenant_id,user_id)
 );
 CREATE TABLE IF NOT EXISTS sessions (
     token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, tenant_id TEXT NOT NULL, expires_at TEXT NOT NULL,
@@ -59,7 +61,7 @@ CREATE TABLE IF NOT EXISTS run_sources (
 );
 CREATE TABLE IF NOT EXISTS findings (
     id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL, run_id TEXT NOT NULL,
-    instrument_source_id TEXT NOT NULL, external_source_id TEXT NOT NULL,
+    instrument_source_id TEXT, external_source_id TEXT,
     payload TEXT NOT NULL, created_at TEXT NOT NULL, UNIQUE(tenant_id,id),
     FOREIGN KEY(tenant_id,run_id) REFERENCES runs(tenant_id,id),
     FOREIGN KEY(tenant_id,instrument_source_id) REFERENCES sources(tenant_id,id),
@@ -97,6 +99,23 @@ class Store:
         with sqlite3.connect(self.path, timeout=10) as db:
             db.execute("PRAGMA journal_mode=WAL")
             db.executescript(SCHEMA)
+            # Extend the existing schema in one transaction; never rewrite
+            # historical source/run/finding JSON to manufacture verification.
+            db.execute("BEGIN IMMEDIATE")
+            membership_columns = {row[1] for row in db.execute("PRAGMA table_info(memberships)")}
+            if "can_determine_applicability" not in membership_columns:
+                db.execute("ALTER TABLE memberships ADD COLUMN can_determine_applicability INTEGER NOT NULL DEFAULT 0 CHECK(can_determine_applicability IN (0,1))")
+            finding_columns = {row[1]: row for row in db.execute("PRAGMA table_info(findings)")}
+            if finding_columns["instrument_source_id"][3] or finding_columns["external_source_id"][3]:
+                definition = SCHEMA.split("CREATE TABLE IF NOT EXISTS findings (", 1)[1].split("\n);", 1)[0]
+                db.execute("CREATE TABLE findings_migration (" + definition + ")")
+                db.execute("INSERT INTO findings_migration SELECT * FROM findings")
+                db.execute("DROP TABLE findings")
+                db.execute("ALTER TABLE findings_migration RENAME TO findings")
+                db.execute("CREATE INDEX findings_run ON findings(tenant_id,run_id)")
+            if db.execute("PRAGMA foreign_key_check").fetchone():
+                raise sqlite3.IntegrityError("Existing database references are invalid; migration was rolled back")
+            db.commit()
 
     @contextmanager
     def connect(self, write=False):

@@ -262,6 +262,7 @@ class AnalysisAPITests(unittest.TestCase):
             if key not in {"id", "hash", "created_at"}
         }
         payload.update(version="fixture-v2", replaces_source_id=original["id"])
+        payload["verification"] = {key: value for key, value in payload["verification"].items() if key in {"status", "primary_source_location"}}
         wrong_kind = {**payload, "kind": "instrument", "jurisdiction_id": "US-GA"}
         self.assertEqual(self.client.post("/api/sources", json=wrong_kind).status_code, 422)
         wrong_jurisdiction = {**payload, "jurisdiction_id": "US-CA"}

@@ -1,5 +1,7 @@
 """Synthetic fixtures only. These texts describe no real legal obligation."""
 
+import json
+
 from .store import audit, canonical, digest, new_id, now
 
 
@@ -18,14 +20,27 @@ def seed(store):
             profile = {
                 "jurisdiction_id": persona["jurisdiction_id"],
                 "name": "Georgia" if persona["jurisdiction_id"] == "US-GA" else "California",
-                "version": "demo-1", "status": "synthetic",
+                "version": "demo-2", "status": "synthetic",
                 "notice": "Synthetic demonstration configuration; not a legally approved jurisdiction profile.",
                 "terms": {"covered_entity": "office"},
                 "families": [{"local_name": "Demo policy", "canonical_tier": "binding_policy"}],
+                "citation_patterns": [
+                    r"\b(?:PS|SS|GS|PM)-\d{2}-\d{3}\b",
+                    r"\bO\.C\.G\.A\.?\s*(?:§\s*)?\d+-\d+-\d+(?:\([^)]+\))*",
+                ] if persona["jurisdiction_id"] == "US-GA" else [],
+                "sentence_abbreviations": ["Ga."] if persona["jurisdiction_id"] == "US-GA" else [],
             }
             db.execute("INSERT OR IGNORE INTO tenants VALUES(?,?,?,?,?)", (tenant, persona["workspace"], persona["jurisdiction_id"], canonical(profile), digest(profile)))
             db.execute("INSERT OR IGNORE INTO users VALUES(?,?)", (user_id, persona["name"]))
-            db.execute("INSERT OR IGNORE INTO memberships VALUES(?,?,?)", (tenant, user_id, persona["role"]))
+            db.execute("INSERT OR IGNORE INTO memberships(tenant_id,user_id,role) VALUES(?,?,?)", (tenant, user_id, persona["role"]))
+            current = db.execute("SELECT profile FROM tenants WHERE id=?", (tenant,)).fetchone()
+            previous = json.loads(current["profile"])
+            if previous.get("status") == "synthetic" and previous.get("version") == "demo-1" and "citation_patterns" not in previous:
+                # Upgrade only the original synthetic fixture. Saved runs/reports
+                # contain their own profile copies and retain their old hashes.
+                updated = {**previous, "version": "demo-2", "citation_patterns": profile["citation_patterns"], "sentence_abbreviations": previous.get("sentence_abbreviations", profile["sentence_abbreviations"])}
+                db.execute("UPDATE tenants SET profile=?,profile_hash=? WHERE id=?", (canonical(updated), digest(updated), tenant))
+                audit(db, {"id": user_id, "name": persona["name"], "tenant_id": tenant}, "profile.updated", "workspace", tenant, {"synthetic": True, "previous_hash": digest(previous), "current_hash": digest(updated), "reason": "Add explicit citation and abbreviation configuration; historical snapshots retained"})
             if db.execute("SELECT 1 FROM runs WHERE tenant_id=?", (tenant,)).fetchone():
                 continue
             stamp = now()

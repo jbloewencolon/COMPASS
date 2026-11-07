@@ -104,7 +104,7 @@ input:focus,select:focus,textarea:focus {
   font-size:10px;
   letter-spacing:1.8px;
   font-weight:700;
-  color:#84908a;
+  color:var(--muted);
   margin:0 14px 13px
 }
 nav {
@@ -168,7 +168,7 @@ nav {
   line-height:1.8
 }
 .sidebar-footer span {
-  color:#8b9690;
+  color:var(--muted);
   font-size:10px
 }
 .workspace-shell {
@@ -606,7 +606,7 @@ p {
   justify-content:space-between;
   gap:15px;
   font-size:10px;
-  color:#849088;
+  color:var(--muted);
   padding:20px 38px;
   border-top:1px solid var(--line);
   line-height:1.6

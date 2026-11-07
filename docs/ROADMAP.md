@@ -2,9 +2,15 @@
 
 The first release is a shared policy-review service for policy leads at state government offices. It must support multiple states. Amendment drafting is deferred. The external policy database is planned but not yet available. Uploaded prompts, registers, instruments, and BASE-1 are organized in the [Georgia case study](../case-studies/georgia/README.md); neutral adaptations live in the [reusable method](../method/README.md). Their presence does not establish legal currency or independently validated findings.
 
-The local application now combines an evidence-linked review workflow, nine standard-library rule-based review aids, personal Simple/Advanced views, workspace controls, assignment and local monitoring. It uses synthetic sample data. This is a foundation for the shared service, not a claim of legal accuracy or production readiness. Detailed check behavior and limitations are in [ANALYSIS.md](ANALYSIS.md).
+The local application combines an evidence-linked review workflow, nine standard-library rule-based review aids, personal Simple/Advanced views, workspace controls, delegated applicability review, immutable verification revisions, assignment, PDF extraction and local monitoring. It uses synthetic sample data. This is a foundation for the shared service, not a claim of legal accuracy or production readiness. Detailed check behavior and limitations are in [ANALYSIS.md](ANALYSIS.md).
 
 ## Five checks for every change
+
+The current correctness cycle starts with Milestones 0–1 in the
+[implementation plan](IMPLEMENTATION-PLAN.md). It records the agreed scope,
+agency-owned review dependencies, later tickets and deferral triggers. Existing
+application features are retained; additional analytical checks and models wait
+for evaluation evidence. Production infrastructure waits for a signed pilot.
 
 1. **Need:** identify the policy lead's task and measurable benefit. An idea without a demonstrated need stays deferred.
 2. **Reuse:** inspect existing code, uploaded prompts/registers, source-system capabilities and established application paths before creating another implementation.
@@ -19,7 +25,7 @@ The local application now combines an evidence-linked review workflow, nine stan
 | One FastAPI application | Reuses available tooling and supports a typed API without separate pipeline services | Hosting architecture remains open |
 | Python standard-library SQLite store | Transactions and a runnable local development environment without another service | Not the selected shared production database; production migration and isolation review remain required |
 | Native HTML/CSS/JavaScript | Adequate for forms, evidence review and navigation; avoids an unnecessary frontend framework | Validate keyboard, screen-reader and export use as the UI grows |
-| Curated text files/paste and explicit source versions | Proves evidence handling without pretending that rich document ingestion or the future database already works | PDF/DOCX parsers/OCR and a live source adapter are later increments |
+| Text/paste, bounded PDF extraction and explicit source revisions | Real Georgia PDFs establish the need for pypdf; original hashes, page spans and extraction failures are retained | R-1 is the sole new runtime dependency exception; DOCX/OCR and live source adapters remain gated |
 | Local demo personas and synthetic examples | Enables development and isolation tests without fabricated real customer data or a custom production identity system | Demo login must not be exposed as production authentication |
 | Deterministic rule-based review aids | Reuses standard-library text differences, regex, dates and explicit mappings to surface bounded candidates | No LLM, embeddings, semantic legal inference or external-source collection |
 | Human-entered findings and policy-lead review | Keeps review suggestions separate from attributed applicability and decisions | Analysis controls never bypass approval; amendment generation remains deferred |
@@ -67,3 +73,8 @@ Test meaningful behaviors: tenant and role boundaries; immutable run/source evid
 ## Next inputs
 
 The full checklist and proposed external-source contract are in [INPUTS.md](INPUTS.md). Next priorities are reconciliation of the uploaded Georgia pack, authoritative source/version confirmation, an external database sample/design, a second-state partner, and a small independently reviewed evaluation set. File organization is complete; the [Georgia review backlog](../case-studies/georgia/REVIEW-STATUS.md) identifies content checks still pending.
+
+The correctness-cycle delivery and remaining human gates are tracked by ticket in
+[IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md). No new semantic analytical check,
+model, production service or extra role system is introduced by preparing the
+method catalogue, evaluation templates or imported suggestions.

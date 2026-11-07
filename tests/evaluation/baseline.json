@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "corpus_id": "georgia-language-v1",
+  "corpus_sha256": "18df75d18f0f33eeceb3f69d909ef13ff59e277e1ec1dc67ed0c1a770bb53c32",
+  "engine_version": "rules-v4",
+  "status": "awaiting_independent_labels",
+  "case_count": 150,
+  "prediction_count": 150,
+  "completed_labels": {
+    "labeler_a": 0,
+    "labeler_b": 0,
+    "adjudicator": 0
+  },
+  "metrics": null,
+  "interrater_agreement": null,
+  "severe_misses": null,
+  "label_set_sha256": null,
+  "limits": "Stratified sample metrics do not estimate prevalence. Unknown temporal/binding cases cannot establish legal-status accuracy. Candidate wording is not a legal determination."
+}

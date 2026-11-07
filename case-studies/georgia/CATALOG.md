@@ -2,6 +2,10 @@
 
 Original upload files organized by purpose. These are historical case-study
 materials; see [review status](REVIEW-STATUS.md) before operational reuse.
+The [draft errata sidecar](ERRATA.md) keys affected assertions and dependencies
+to actual original basenames and SHA-256 hashes. Its four items remain unverified
+and agency-review pending. This catalog is an index, not source verification or
+approval of the indexed content.
 
 The [provenance manifest](provenance/upload-manifest.csv) maps every former path
 and exact duplicate to the retained bytes.
@@ -62,7 +66,11 @@ and exact duplicate to the retained bytes.
 
 ## research
 
-- [Anchor-horizon-scan-v1.0.md](research/Anchor-horizon-scan-v1.0.md)
+- [Anchor-horizon-scan-v1.0.md](research/Anchor-horizon-scan-v1.0.md) — historical
+  “Prompt 03,” preserved unchanged; SB-01/Appendix A and the date queue have
+  draft review notes in [E2-01/E1-02](ERRATA.md). New reusable scans use
+  [neutral Prompt 06](../../method/prompts/06-horizon-scan.md). Existing EU/foreign
+  references remain historical non-U.S. context, not presumed state obligations.
 
 ## maintenance
 

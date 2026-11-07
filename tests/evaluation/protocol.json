@@ -1,0 +1,31 @@
+{
+  "protocol_version": "1.0-draft",
+  "status": "defined_before_labeling; agency reviewers not yet appointed",
+  "independence": "Two people label every case independently without reading model predictions or one another's labels. A distinct third person adjudicates all cases after comparing both submissions. Record stable person IDs, actual completion timestamps and independence attestations; do not invent them.",
+  "unit": "One preserved candidate sentence, with neighboring extracted context and the original PDF/page. Approve segmentation only after checking the original. If the unit is incomplete or wrongly split, mark segmentation_approved false and request a new versioned corpus; do not silently exclude difficult cases.",
+  "labels": {
+    "obligation_present": "Whether the passage expresses an affirmative duty, prohibition or commitment, as wording. Permission or advice alone is false. This is not a legal-binding determination.",
+    "actor": "Shortest exact subject text identifying the actor responsible for the relevant duty/action; empty string if no actor is stated. Null means not labeled. Exclude a leading condition or legal citation from the actor unless part of its name.",
+    "modality": "prohibition, permission, obligation, advisory or none. When several appear, prioritize the prohibition for this sentence-level summary and explain other forms in notes. The corpus is a surface-wording extraction evaluation, not a legal interpreter.",
+    "condition_present": "Whether an explicit condition or applicability trigger qualifies the passage, including if/when/subject-to wording. Review semantic content, not just keyword presence.",
+    "exception_present": "Whether the passage or explicitly attached context states an exception. Inspect neighboring context and the original page.",
+    "scope_changing_exception": "An exception that changes who, what, when or under which conditions the duty applies. Must also set exception_present true. Mere incidental use of an exception word is insufficient.",
+    "temporal_status": "in_force, future, not_applicable or unknown. Check the exact provision, review-as-of date and reliable status evidence. Do not infer current law from a historical header or the computer's date. Unknown is valid and is counted separately in the report.",
+    "binding_status": "binding, nonbinding, conditional or unknown for the agency/action in scope. A document's filename or sampling tier does not establish legal force. Unknown is valid and is counted separately in the report. Record actual authority/checks in notes.",
+    "notes": "Explain disagreements, mixed actors/modalities, ambiguous scope and any supporting authority/status checks actually performed. Never turn a missing input into a verified conclusion."
+  },
+  "severe_miss_definitions": {
+    "missed_prohibition": "Gold modality is prohibition and prediction does not report a prohibition candidate.",
+    "missed_scope_changing_exception": "Gold marks a scope-changing exception and prediction omits exception presence, including an exception attached in neighboring context.",
+    "future_reported_current": "Gold temporal status is future and the output presents it as an operative current duty. A mere candidate or unknown applicability is not a current-rule claim.",
+    "nonbinding_reported_binding": "Gold binding status is nonbinding and the output presents it as binding. Advisory wording or an unresolved review candidate is not a binding claim."
+  },
+  "limits": [
+    "Sampling overrepresents rare modal types; results do not estimate prevalence across all state policy text.",
+    "The seven uploaded Georgia snapshots do not establish current primary-law coverage.",
+    "The SS-25-001 filename contains a PS-25-001 header; its policy sampling stratum is provisional.",
+    "Unknown temporal or binding labels are reported as unassessed cases, not successful status checks.",
+    "No language model or new analytical check is justified by unlabeled predictions. Expansion requires adjudicated material misses that existing rules cannot reasonably address."
+  ],
+  "review_as_of": "2026-07-27"
+}
