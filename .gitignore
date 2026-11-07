@@ -1,5 +1,6 @@
 .venv/
 __pycache__/
+node_modules/
 *.py[cod]
 .compass/
 *.sqlite3

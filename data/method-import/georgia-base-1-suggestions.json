@@ -1,0 +1,1891 @@
+{
+  "origin": "method_run",
+  "run_id": "BASE-1",
+  "provenance": {
+    "workbook": {
+      "path": "case-studies/georgia/registers/governance-register-v1.0-BASE-1-2026-07-27.xlsx",
+      "sha256": "f42e3db3f470ad69d7906aa497f3ca00ab2c7ee4887d6ad07a6885914f6c47a4",
+      "sheet": "1 Active Findings"
+    },
+    "baseline": {
+      "path": "case-studies/georgia/runs/2026-07-27/GTA-BASE-1-baseline-assessment-2026-07-27.md",
+      "sha256": "23f01bfa281f65f3c71a614faf77b77a1184aef5bfcd9187609ea76a9a688ac9"
+    }
+  },
+  "findings": [
+    {
+      "original_finding_id": "BASE-2026-01-F01",
+      "summary": "No contestability, appeal, human re-determination, or human alternative for residents affected by an automated system",
+      "category": "missing_obligation",
+      "severity": "critical",
+      "rationale": "Historical BASE-1 suggestion for agency review: No contestability, appeal, human re-determination, or human alternative for residents affected by an automated system",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 2,
+        "fields": {
+          "ID": "BASE-2026-01-F01",
+          "Finding": "No contestability, appeal, human re-determination, or human alternative for residents affected by an automated system",
+          "Defect class": "D5 [D9]",
+          "Instrument / provision": "Family-wide; GS-23-001 V; absent from SS-23-002",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "5",
+          "Likelihood": "4",
+          "Tractability": "3",
+          "Priority": "20",
+          "Priority band": "P1",
+          "Destination instrument": "SS-23-002 new §13",
+          "Owner": "State CIO",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G2=\"\",H2=\"\"),\"\",G2*H2)",
+          "Priority band": "IF(J2=\"\",\"\",IF(J2>=20,\"P1\",IF(J2>=11,\"P2\",IF(J2>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N2=\"\",\"\",TODAY()-N2)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F02",
+      "summary": "The procurement gate's definition of \"Artificial Intelligence\" is verbatim the text the other instruments assign to Generative AI, so predictive and classificatory systems fall outside it",
+      "category": "conflict",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: The procurement gate's definition of \"Artificial Intelligence\" is verbatim the text the other instruments assign to Generative AI, so predictive and classificatory systems fall outside it",
+      "status": "pending",
+      "finding_type": "internal_conflict",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Two or more exact instrument passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 3,
+        "fields": {
+          "ID": "BASE-2026-01-F02",
+          "Finding": "The procurement gate's definition of \"Artificial Intelligence\" is verbatim the text the other instruments assign to Generative AI, so predictive and classificatory systems fall outside it",
+          "Defect class": "D6 [D7]",
+          "Instrument / provision": "PS-23-001 Terms and Definitions; PS-23-001 Policy",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "5",
+          "Tractability": "5",
+          "Priority": "20",
+          "Priority band": "P1",
+          "Destination instrument": "PS-23-001",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G3=\"\",H3=\"\"),\"\",G3*H3)",
+          "Priority band": "IF(J3=\"\",\"\",IF(J3>=20,\"P1\",IF(J3>=11,\"P2\",IF(J3>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N3=\"\",\"\",TODAY()-N3)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F03",
+      "summary": "Agentic operation is ungoverned in every binding instrument; the only statement is hortatory, categorical, and contradicted by deployment practice",
+      "category": "missing_obligation",
+      "severity": "critical",
+      "rationale": "Historical BASE-1 suggestion for agency review: Agentic operation is ungoverned in every binding instrument; the only statement is hortatory, categorical, and contradicted by deployment practice",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 4,
+        "fields": {
+          "ID": "BASE-2026-01-F03",
+          "Finding": "Agentic operation is ungoverned in every binding instrument; the only statement is hortatory, categorical, and contradicted by deployment practice",
+          "Defect class": "D1 [D5, D9]",
+          "Instrument / provision": "Family-wide; GS-25-001 rubric",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "5",
+          "Likelihood": "4",
+          "Tractability": "2",
+          "Priority": "20",
+          "Priority band": "P1",
+          "Destination instrument": "SS-23-002 new §14",
+          "Owner": "GTA OIS",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G4=\"\",H4=\"\"),\"\",G4*H4)",
+          "Priority band": "IF(J4=\"\",\"\",IF(J4>=20,\"P1\",IF(J4>=11,\"P2\",IF(J4>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N4=\"\",\"\",TODAY()-N4)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F04",
+      "summary": "Accessibility of AI-mediated interfaces and AI-generated content unaddressed but for one generic procurement clause; WCAG 2.1 AA becomes mandatory 26 April 2027",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Accessibility of AI-mediated interfaces and AI-generated content unaddressed but for one generic procurement clause; WCAG 2.1 AA becomes mandatory 26 April 2027",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings.",
+        "Review the linked Georgia ERRATA.md before relying on related legal premises or dates."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 5,
+        "fields": {
+          "ID": "BASE-2026-01-F04",
+          "Finding": "Accessibility of AI-mediated interfaces and AI-generated content unaddressed but for one generic procurement clause; WCAG 2.1 AA becomes mandatory 26 April 2027",
+          "Defect class": "D5 [D6]",
+          "Instrument / provision": "Family-wide; SS-25-001 §1.5 only",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "5",
+          "Tractability": "4",
+          "Priority": "20",
+          "Priority band": "P1",
+          "Destination instrument": "SS-23-002 §5; SS-25-001 §1.5",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G5=\"\",H5=\"\"),\"\",G5*H5)",
+          "Priority band": "IF(J5=\"\",\"\",IF(J5>=20,\"P1\",IF(J5>=11,\"P2\",IF(J5>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N5=\"\",\"\",TODAY()-N5)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F05",
+      "summary": "Notice that an automated system is in use, and explanation of an adverse outcome, exist only in the guideline tier and on the public website",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Notice that an automated system is in use, and explanation of an adverse outcome, exist only in the guideline tier and on the public website",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 6,
+        "fields": {
+          "ID": "BASE-2026-01-F05",
+          "Finding": "Notice that an automated system is in use, and explanation of an adverse outcome, exist only in the guideline tier and on the public website",
+          "Defect class": "D9",
+          "Instrument / provision": "GS-23-001 IV; ai.georgia.gov principles page",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "5",
+          "Tractability": "5",
+          "Priority": "20",
+          "Priority band": "P1",
+          "Destination instrument": "SS-23-002 new §13",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G6=\"\",H6=\"\"),\"\",G6*H6)",
+          "Priority band": "IF(J6=\"\",\"\",IF(J6>=20,\"P1\",IF(J6>=11,\"P2\",IF(J6>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N6=\"\",\"\",TODAY()-N6)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F06",
+      "summary": "\"Human review\" unspecified as to information set, override authority, competence, or time; binding human-in-the-loop attaches to generative content only",
+      "category": "missing_obligation",
+      "severity": "critical",
+      "rationale": "Historical BASE-1 suggestion for agency review: \"Human review\" unspecified as to information set, override authority, competence, or time; binding human-in-the-loop attaches to generative content only",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 7,
+        "fields": {
+          "ID": "BASE-2026-01-F06",
+          "Finding": "\"Human review\" unspecified as to information set, override authority, competence, or time; binding human-in-the-loop attaches to generative content only",
+          "Defect class": "D2 [D4]",
+          "Instrument / provision": "SS-23-002 §5; GS-23-001 V.3; SS-25-001 §1.1",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "5",
+          "Likelihood": "4",
+          "Tractability": "4",
+          "Priority": "20",
+          "Priority band": "P1",
+          "Destination instrument": "SS-23-002 §5",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G7=\"\",H7=\"\"),\"\",G7*H7)",
+          "Priority band": "IF(J7=\"\",\"\",IF(J7>=20,\"P1\",IF(J7>=11,\"P2\",IF(J7>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N7=\"\",\"\",TODAY()-N7)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F07",
+      "summary": "Detailed duties on non-agency parties with no contract clause or statutory hook; NIST adherence required with no publication, version, profile, or acceptance criterion",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Detailed duties on non-agency parties with no contract clause or statutory hook; NIST adherence required with no publication, version, profile, or acceptance criterion",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 8,
+        "fields": {
+          "ID": "BASE-2026-01-F07",
+          "Finding": "Detailed duties on non-agency parties with no contract clause or statutory hook; NIST adherence required with no publication, version, profile, or acceptance criterion",
+          "Defect class": "D4 [D2]",
+          "Instrument / provision": "SS-23-002 §2; SS-23-002 §3(b)",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "5",
+          "Tractability": "4",
+          "Priority": "20",
+          "Priority band": "P1",
+          "Destination instrument": "SS-23-002 §3; standard contract clause",
+          "Owner": "State Purchasing",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G8=\"\",H8=\"\"),\"\",G8*H8)",
+          "Priority band": "IF(J8=\"\",\"\",IF(J8>=20,\"P1\",IF(J8>=11,\"P2\",IF(J8>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N8=\"\",\"\",TODAY()-N8)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F08",
+      "summary": "Bias provisions written for classifiers and applied unmodified to generative systems; no method, cadence, protected-class disaggregation, or disparity threshold",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Bias provisions written for classifiers and applied unmodified to generative systems; no method, cadence, protected-class disaggregation, or disparity threshold",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings.",
+        "Review the linked Georgia ERRATA.md before relying on related legal premises or dates."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 9,
+        "fields": {
+          "ID": "BASE-2026-01-F08",
+          "Finding": "Bias provisions written for classifiers and applied unmodified to generative systems; no method, cadence, protected-class disaggregation, or disparity threshold",
+          "Defect class": "D1 [D2]",
+          "Instrument / provision": "SS-23-002 §4; GS-23-001 II",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "4",
+          "Tractability": "3",
+          "Priority": "16",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §4",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G9=\"\",H9=\"\"),\"\",G9*H9)",
+          "Priority band": "IF(J9=\"\",\"\",IF(J9>=20,\"P1\",IF(J9>=11,\"P2\",IF(J9>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N9=\"\",\"\",TODAY()-N9)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F09",
+      "summary": "A 48-hour reporting clock runs from an undefined \"significant incident\"; no AI incident definition, severity taxonomy, or statutory notification mapping",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: A 48-hour reporting clock runs from an undefined \"significant incident\"; no AI incident definition, severity taxonomy, or statutory notification mapping",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 10,
+        "fields": {
+          "ID": "BASE-2026-01-F09",
+          "Finding": "A 48-hour reporting clock runs from an undefined \"significant incident\"; no AI incident definition, severity taxonomy, or statutory notification mapping",
+          "Defect class": "D2 [D3]",
+          "Instrument / provision": "SS-25-001 §4.0; SS-23-002 §8",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "4",
+          "Tractability": "4",
+          "Priority": "16",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §8",
+          "Owner": "GTA OIS",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G10=\"\",H10=\"\"),\"\",G10*H10)",
+          "Priority band": "IF(J10=\"\",\"\",IF(J10>=20,\"P1\",IF(J10>=11,\"P2\",IF(J10>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N10=\"\",\"\",TODAY()-N10)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F10",
+      "summary": "No instrument bars an AI system from being the sole basis for an adverse determination; SB 444 imposes exactly that in health coverage from 1 January 2027",
+      "category": "missing_obligation",
+      "severity": "critical",
+      "rationale": "Historical BASE-1 suggestion for agency review: No instrument bars an AI system from being the sole basis for an adverse determination; SB 444 imposes exactly that in health coverage from 1 January 2027",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 11,
+        "fields": {
+          "ID": "BASE-2026-01-F10",
+          "Finding": "No instrument bars an AI system from being the sole basis for an adverse determination; SB 444 imposes exactly that in health coverage from 1 January 2027",
+          "Defect class": "D5",
+          "Instrument / provision": "Family-wide",
+          "Evidence tier": "E2",
+          "Status": "OPEN",
+          "Severity": "5",
+          "Likelihood": "3",
+          "Tractability": "5",
+          "Priority": "15",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §5",
+          "Owner": "Agency counsel",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G11=\"\",H11=\"\"),\"\",G11*H11)",
+          "Priority band": "IF(J11=\"\",\"\",IF(J11>=20,\"P1\",IF(J11>=11,\"P2\",IF(J11>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N11=\"\",\"\",TODAY()-N11)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F11",
+      "summary": "Directs compliance with the \"Georgia Computer Data Privacy Act,\" which was SB 394 (2021–22) and was never enacted",
+      "category": "stale_reference",
+      "severity": "medium",
+      "rationale": "Historical BASE-1 suggestion for agency review: Directs compliance with the \"Georgia Computer Data Privacy Act,\" which was SB 394 (2021–22) and was never enacted",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 12,
+        "fields": {
+          "ID": "BASE-2026-01-F11",
+          "Finding": "Directs compliance with the \"Georgia Computer Data Privacy Act,\" which was SB 394 (2021–22) and was never enacted",
+          "Defect class": "D7 [D2]",
+          "Instrument / provision": "GS-25-001, Strategies for Data Privacy and AI",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "3",
+          "Likelihood": "5",
+          "Tractability": "5",
+          "Priority": "15",
+          "Priority band": "P2",
+          "Destination instrument": "GS-25-001",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G12=\"\",H12=\"\"),\"\",G12*H12)",
+          "Priority band": "IF(J12=\"\",\"\",IF(J12>=20,\"P1\",IF(J12>=11,\"P2\",IF(J12>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N12=\"\",\"\",TODAY()-N12)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F12",
+      "summary": "State constituent-facing conversational systems permitted with no AI disclosure, age assurance, minors guardrails, or crisis-referral protocol",
+      "category": "missing_obligation",
+      "severity": "critical",
+      "rationale": "Historical BASE-1 suggestion for agency review: State constituent-facing conversational systems permitted with no AI disclosure, age assurance, minors guardrails, or crisis-referral protocol",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 13,
+        "fields": {
+          "ID": "BASE-2026-01-F12",
+          "Finding": "State constituent-facing conversational systems permitted with no AI disclosure, age assurance, minors guardrails, or crisis-referral protocol",
+          "Defect class": "D5 [D6]",
+          "Instrument / provision": "Family-wide; GS-25-001 User Interaction",
+          "Evidence tier": "E2",
+          "Status": "OPEN",
+          "Severity": "5",
+          "Likelihood": "3",
+          "Tractability": "3",
+          "Priority": "15",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 new §15",
+          "Owner": "Agency counsel",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G13=\"\",H13=\"\"),\"\",G13*H13)",
+          "Priority band": "IF(J13=\"\",\"\",IF(J13>=20,\"P1\",IF(J13>=11,\"P2\",IF(J13>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N13=\"\",\"\",TODAY()-N13)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F13",
+      "summary": "Independent evaluation is a reserved right with no trigger, cadence, resourcing, or evidence of exercise in three years; the audit duty's trigger is undefined",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Independent evaluation is a reserved right with no trigger, cadence, resourcing, or evidence of exercise in three years; the audit duty's trigger is undefined",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 14,
+        "fields": {
+          "ID": "BASE-2026-01-F13",
+          "Finding": "Independent evaluation is a reserved right with no trigger, cadence, resourcing, or evidence of exercise in three years; the audit duty's trigger is undefined",
+          "Defect class": "D4 [D9]",
+          "Instrument / provision": "GS-23-001 I.6; SS-23-002 §12; public principles page",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "4",
+          "Tractability": "2",
+          "Priority": "16",
+          "Priority band": "P2",
+          "Destination instrument": "PS-23-001; GS-23-001 I.6",
+          "Owner": "State CIO",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G14=\"\",H14=\"\"),\"\",G14*H14)",
+          "Priority band": "IF(J14=\"\",\"\",IF(J14>=20,\"P1\",IF(J14>=11,\"P2\",IF(J14>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N14=\"\",\"\",TODAY()-N14)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F14",
+      "summary": "Four roles are relied on and none is established in the PSG corpus: Ethics Officer, Data Protection Officer, department data privacy officer, designated compliance authority",
+      "category": "missing_obligation",
+      "severity": "medium",
+      "rationale": "Historical BASE-1 suggestion for agency review: Four roles are relied on and none is established in the PSG corpus: Ethics Officer, Data Protection Officer, department data privacy officer, designated compliance authority",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 15,
+        "fields": {
+          "ID": "BASE-2026-01-F14",
+          "Finding": "Four roles are relied on and none is established in the PSG corpus: Ethics Officer, Data Protection Officer, department data privacy officer, designated compliance authority",
+          "Defect class": "D3",
+          "Instrument / provision": "SS-23-002 §9(h), §6(d), §8; GS-25-001",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "3",
+          "Likelihood": "5",
+          "Tractability": "4",
+          "Priority": "15",
+          "Priority band": "P2",
+          "Destination instrument": "New GTA procedure; SS-23-002 §8",
+          "Owner": "State CIO",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G15=\"\",H15=\"\"),\"\",G15*H15)",
+          "Priority band": "IF(J15=\"\",\"\",IF(J15>=20,\"P1\",IF(J15>=11,\"P2\",IF(J15>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N15=\"\",\"\",TODAY()-N15)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F15",
+      "summary": "The AI inventory is operationalised as an email address for non-generative AI and an annual report line for GenAI; no schema, custodian, validation, or publication",
+      "category": "missing_obligation",
+      "severity": "medium",
+      "rationale": "Historical BASE-1 suggestion for agency review: The AI inventory is operationalised as an email address for non-generative AI and an annual report line for GenAI; no schema, custodian, validation, or publication",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 16,
+        "fields": {
+          "ID": "BASE-2026-01-F15",
+          "Finding": "The AI inventory is operationalised as an email address for non-generative AI and an annual report line for GenAI; no schema, custodian, validation, or publication",
+          "Defect class": "D4 [D3]",
+          "Instrument / provision": "SS-23-002 §1(d); SS-25-001 §1.6",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "3",
+          "Likelihood": "5",
+          "Tractability": "4",
+          "Priority": "15",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §1; register procedure",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G16=\"\",H16=\"\"),\"\",G16*H16)",
+          "Priority band": "IF(J16=\"\",\"\",IF(J16>=20,\"P1\",IF(J16>=11,\"P2\",IF(J16>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N16=\"\",\"\",TODAY()-N16)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F16",
+      "summary": "Prompts, outputs, logs, and model configurations unmapped to retention schedules; no litigation-hold procedure for AI artifacts",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Prompts, outputs, logs, and model configurations unmapped to retention schedules; no litigation-hold procedure for AI artifacts",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 17,
+        "fields": {
+          "ID": "BASE-2026-01-F16",
+          "Finding": "Prompts, outputs, logs, and model configurations unmapped to retention schedules; no litigation-hold procedure for AI artifacts",
+          "Defect class": "D5",
+          "Instrument / provision": "SS-25-001 §1.7; family-wide",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "3",
+          "Tractability": "4",
+          "Priority": "12",
+          "Priority band": "P2",
+          "Destination instrument": "SS-25-001 §1.7; retention schedule appendix",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G17=\"\",H17=\"\"),\"\",G17*H17)",
+          "Priority band": "IF(J17=\"\",\"\",IF(J17>=20,\"P1\",IF(J17>=11,\"P2\",IF(J17>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N17=\"\",\"\",TODAY()-N17)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F17",
+      "summary": "One of seven instruments carries a review date and it lapsed 18 months ago; no versioning, no off-cycle revision trigger, no named revision owner",
+      "category": "missing_obligation",
+      "severity": "medium",
+      "rationale": "Historical BASE-1 suggestion for agency review: One of seven instruments carries a review date and it lapsed 18 months ago; no versioning, no off-cycle revision trigger, no named revision owner",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 18,
+        "fields": {
+          "ID": "BASE-2026-01-F17",
+          "Finding": "One of seven instruments carries a review date and it lapsed 18 months ago; no versioning, no off-cycle revision trigger, no named revision owner",
+          "Defect class": "D3 [D1]",
+          "Instrument / provision": "PS-23-001 metadata; family-wide",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "3",
+          "Likelihood": "5",
+          "Tractability": "5",
+          "Priority": "15",
+          "Priority band": "P2",
+          "Destination instrument": "All seven instruments; PS-23-001 first",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G18=\"\",H18=\"\"),\"\",G18*H18)",
+          "Priority band": "IF(J18=\"\",\"\",IF(J18>=20,\"P1\",IF(J18>=11,\"P2\",IF(J18>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N18=\"\",\"\",TODAY()-N18)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F18",
+      "summary": "Two instruments conflict on when AI-assisted content must be disclosed — the product-versus-tool citation threshold",
+      "category": "conflict",
+      "severity": "low",
+      "rationale": "Historical BASE-1 suggestion for agency review: Two instruments conflict on when AI-assisted content must be disclosed — the product-versus-tool citation threshold",
+      "status": "pending",
+      "finding_type": "internal_conflict",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Two or more exact instrument passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 19,
+        "fields": {
+          "ID": "BASE-2026-01-F18",
+          "Finding": "Two instruments conflict on when AI-assisted content must be disclosed — the product-versus-tool citation threshold",
+          "Defect class": "D7",
+          "Instrument / provision": "SS-25-001 §1.2 vs GS-25-001",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "2",
+          "Likelihood": "5",
+          "Tractability": "5",
+          "Priority": "10",
+          "Priority band": "P3",
+          "Destination instrument": "GS-25-001; SS-25-001 §1.2",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G19=\"\",H19=\"\"),\"\",G19*H19)",
+          "Priority band": "IF(J19=\"\",\"\",IF(J19>=20,\"P1\",IF(J19>=11,\"P2\",IF(J19>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N19=\"\",\"\",TODAY()-N19)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F19",
+      "summary": "One instrument invites disclosure without fear of severe repercussions while the other mandates discipline up to termination; no non-retaliation protection exists",
+      "category": "conflict",
+      "severity": "medium",
+      "rationale": "Historical BASE-1 suggestion for agency review: One instrument invites disclosure without fear of severe repercussions while the other mandates discipline up to termination; no non-retaliation protection exists",
+      "status": "pending",
+      "finding_type": "internal_conflict",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Two or more exact instrument passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 20,
+        "fields": {
+          "ID": "BASE-2026-01-F19",
+          "Finding": "One instrument invites disclosure without fear of severe repercussions while the other mandates discipline up to termination; no non-retaliation protection exists",
+          "Defect class": "D7 [D5]",
+          "Instrument / provision": "GS-25-001 honour-system passage vs SS-23-002 §11",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "3",
+          "Likelihood": "4",
+          "Tractability": "5",
+          "Priority": "12",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §11; GS-25-001",
+          "Owner": "State CIO",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G20=\"\",H20=\"\"),\"\",G20*H20)",
+          "Priority band": "IF(J20=\"\",\"\",IF(J20>=20,\"P1\",IF(J20>=11,\"P2\",IF(J20>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N20=\"\",\"\",TODAY()-N20)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F20",
+      "summary": "The public restatement drops \"opportunities\" from the scope trigger and renders several \"shall\" obligations as \"should\"",
+      "category": "conflict",
+      "severity": "medium",
+      "rationale": "Historical BASE-1 suggestion for agency review: The public restatement drops \"opportunities\" from the scope trigger and renders several \"shall\" obligations as \"should\"",
+      "status": "pending",
+      "finding_type": "internal_conflict",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Two or more exact instrument passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 21,
+        "fields": {
+          "ID": "BASE-2026-01-F20",
+          "Finding": "The public restatement drops \"opportunities\" from the scope trigger and renders several \"shall\" obligations as \"should\"",
+          "Defect class": "D7 [D8]",
+          "Instrument / provision": "ai.georgia.gov principles page vs GS-23-001",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "3",
+          "Likelihood": "4",
+          "Tractability": "5",
+          "Priority": "12",
+          "Priority band": "P2",
+          "Destination instrument": "Public principles page",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G21=\"\",H21=\"\"),\"\",G21*H21)",
+          "Priority band": "IF(J21=\"\",\"\",IF(J21>=20,\"P1\",IF(J21>=11,\"P2\",IF(J21>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N21=\"\",\"\",TODAY()-N21)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F21",
+      "summary": "Four top-level guiding principles are published where five are asserted; Principle II is demoted to a sub-bullet",
+      "category": "conflict",
+      "severity": "low",
+      "rationale": "Historical BASE-1 suggestion for agency review: Four top-level guiding principles are published where five are asserted; Principle II is demoted to a sub-bullet",
+      "status": "pending",
+      "finding_type": "internal_conflict",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Two or more exact instrument passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 22,
+        "fields": {
+          "ID": "BASE-2026-01-F21",
+          "Finding": "Four top-level guiding principles are published where five are asserted; Principle II is demoted to a sub-bullet",
+          "Defect class": "D7",
+          "Instrument / provision": "GS-25-001, Guiding Principles",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "2",
+          "Likelihood": "5",
+          "Tractability": "5",
+          "Priority": "10",
+          "Priority band": "P3",
+          "Destination instrument": "GS-25-001",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G22=\"\",H22=\"\"),\"\",G22*H22)",
+          "Priority band": "IF(J22=\"\",\"\",IF(J22>=20,\"P1\",IF(J22>=11,\"P2\",IF(J22>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N22=\"\",\"\",TODAY()-N22)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F22",
+      "summary": "\"Anonymized, encrypted, or otherwise protected\" is undefined and not achievable for prompt and inference modalities; attribute inference and re-identification unaddressed",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: \"Anonymized, encrypted, or otherwise protected\" is undefined and not achievable for prompt and inference modalities; attribute inference and re-identification unaddressed",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 23,
+        "fields": {
+          "ID": "BASE-2026-01-F22",
+          "Finding": "\"Anonymized, encrypted, or otherwise protected\" is undefined and not achievable for prompt and inference modalities; attribute inference and re-identification unaddressed",
+          "Defect class": "D2 [D4]",
+          "Instrument / provision": "SS-23-002 §6(a)",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "4",
+          "Tractability": "3",
+          "Priority": "16",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §6",
+          "Owner": "GTA OIS",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G23=\"\",H23=\"\"),\"\",G23*H23)",
+          "Priority band": "IF(J23=\"\",\"\",IF(J23>=20,\"P1\",IF(J23>=11,\"P2\",IF(J23>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N23=\"\",\"\",TODAY()-N23)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F23",
+      "summary": "Pre-deployment evaluation has no performer, standard, blocking threshold, or artifact, and no re-evaluation trigger on model change, fine-tuning, prompt change, or tool addition",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Pre-deployment evaluation has no performer, standard, blocking threshold, or artifact, and no re-evaluation trigger on model change, fine-tuning, prompt change, or tool addition",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 24,
+        "fields": {
+          "ID": "BASE-2026-01-F23",
+          "Finding": "Pre-deployment evaluation has no performer, standard, blocking threshold, or artifact, and no re-evaluation trigger on model change, fine-tuning, prompt change, or tool addition",
+          "Defect class": "D5",
+          "Instrument / provision": "SS-23-002 §9(f), §9(g)",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "4",
+          "Tractability": "3",
+          "Priority": "16",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §9",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G24=\"\",H24=\"\"),\"\",G24*H24)",
+          "Priority band": "IF(J24=\"\",\"\",IF(J24>=20,\"P1\",IF(J24>=11,\"P2\",IF(J24>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N24=\"\",\"\",TODAY()-N24)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F24",
+      "summary": "Sectoral data regimes are not mapped to AI processing, though in federally funded programme areas the sectoral regime is usually the binding constraint",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Sectoral data regimes are not mapped to AI processing, though in federally funded programme areas the sectoral regime is usually the binding constraint",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 25,
+        "fields": {
+          "ID": "BASE-2026-01-F24",
+          "Finding": "Sectoral data regimes are not mapped to AI processing, though in federally funded programme areas the sectoral regime is usually the binding constraint",
+          "Defect class": "D5 [D6]",
+          "Instrument / provision": "Family-wide; SS-23-002 §6",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "4",
+          "Tractability": "3",
+          "Priority": "16",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §6",
+          "Owner": "Agency counsel",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G25=\"\",H25=\"\"),\"\",G25*H25)",
+          "Priority band": "IF(J25=\"\",\"\",IF(J25>=20,\"P1\",IF(J25>=11,\"P2\",IF(J25>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N25=\"\",\"\",TODAY()-N25)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F25",
+      "summary": "Cross-references a nonexistent \"SS-23-001\" and omits all three 2025 instruments from the related-PSG list",
+      "category": "stale_reference",
+      "severity": "low",
+      "rationale": "Historical BASE-1 suggestion for agency review: Cross-references a nonexistent \"SS-23-001\" and omits all three 2025 instruments from the related-PSG list",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 26,
+        "fields": {
+          "ID": "BASE-2026-01-F25",
+          "Finding": "Cross-references a nonexistent \"SS-23-001\" and omits all three 2025 instruments from the related-PSG list",
+          "Defect class": "D7",
+          "Instrument / provision": "PS-23-001, Related PSGs",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "2",
+          "Likelihood": "5",
+          "Tractability": "5",
+          "Priority": "10",
+          "Priority band": "P3",
+          "Destination instrument": "PS-23-001",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G26=\"\",H26=\"\"),\"\",G26*H26)",
+          "Priority band": "IF(J26=\"\",\"\",IF(J26>=20,\"P1\",IF(J26>=11,\"P2\",IF(J26>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N26=\"\",\"\",TODAY()-N26)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F26",
+      "summary": "Prompt injection is named once as an awareness item and produces no control; indirect injection through retrieved or emailed content is unaddressed",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Prompt injection is named once as an awareness item and produces no control; indirect injection through retrieved or emailed content is unaddressed",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 27,
+        "fields": {
+          "ID": "BASE-2026-01-F26",
+          "Finding": "Prompt injection is named once as an awareness item and produces no control; indirect injection through retrieved or emailed content is unaddressed",
+          "Defect class": "D5",
+          "Instrument / provision": "Family-wide; SS-23-002 §5(f)",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "4",
+          "Tractability": "3",
+          "Priority": "16",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §5; new §14",
+          "Owner": "GTA OIS",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G27=\"\",H27=\"\"),\"\",G27*H27)",
+          "Priority band": "IF(J27=\"\",\"\",IF(J27>=20,\"P1\",IF(J27>=11,\"P2\",IF(J27>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N27=\"\",\"\",TODAY()-N27)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F27",
+      "summary": "Shared services, shared data, and shared vendors at the boundary of the \"Agency\" exclusion are governed by no instrument at either end",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Shared services, shared data, and shared vendors at the boundary of the \"Agency\" exclusion are governed by no instrument at either end",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 28,
+        "fields": {
+          "ID": "BASE-2026-01-F27",
+          "Finding": "Shared services, shared data, and shared vendors at the boundary of the \"Agency\" exclusion are governed by no instrument at either end",
+          "Defect class": "D5 [D6]",
+          "Instrument / provision": "SS-23-002 Definitions (\"Agency\"); SS-23-002 §6",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "3",
+          "Tractability": "3",
+          "Priority": "12",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §6; interconnection agreements",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G28=\"\",H28=\"\"),\"\",G28*H28)",
+          "Priority band": "IF(J28=\"\",\"\",IF(J28>=20,\"P1\",IF(J28>=11,\"P2\",IF(J28>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N28=\"\",\"\",TODAY()-N28)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F28",
+      "summary": "Title VI language access and machine-translation reliability in consequential communications are unaddressed",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Title VI language access and machine-translation reliability in consequential communications are unaddressed",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings.",
+        "Review the linked Georgia ERRATA.md before relying on related legal premises or dates."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 29,
+        "fields": {
+          "ID": "BASE-2026-01-F28",
+          "Finding": "Title VI language access and machine-translation reliability in consequential communications are unaddressed",
+          "Defect class": "D5",
+          "Instrument / provision": "Family-wide; SS-23-002 §5",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "3",
+          "Tractability": "4",
+          "Priority": "12",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §5",
+          "Owner": "Agency counsel",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G29=\"\",H29=\"\"),\"\",G29*H29)",
+          "Priority band": "IF(J29=\"\",\"\",IF(J29>=20,\"P1\",IF(J29>=11,\"P2\",IF(J29>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N29=\"\",\"\",TODAY()-N29)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F29",
+      "summary": "Binding termination reaches privacy, security, reputational, and malicious risk; failure to meet safety or effectiveness standards grounds withdrawal only in hortatory guidance",
+      "category": "conflict",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Binding termination reaches privacy, security, reputational, and malicious risk; failure to meet safety or effectiveness standards grounds withdrawal only in hortatory guidance",
+      "status": "pending",
+      "finding_type": "internal_conflict",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Two or more exact instrument passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 30,
+        "fields": {
+          "ID": "BASE-2026-01-F29",
+          "Finding": "Binding termination reaches privacy, security, reputational, and malicious risk; failure to meet safety or effectiveness standards grounds withdrawal only in hortatory guidance",
+          "Defect class": "D7 [D3]",
+          "Instrument / provision": "GS-23-001 I.4 vs SS-23-002 §10",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "3",
+          "Tractability": "5",
+          "Priority": "12",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §10",
+          "Owner": "State CIO",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G30=\"\",H30=\"\"),\"\",G30*H30)",
+          "Priority band": "IF(J30=\"\",\"\",IF(J30>=20,\"P1\",IF(J30>=11,\"P2\",IF(J30>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N30=\"\",\"\",TODAY()-N30)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F30",
+      "summary": "The algorithmic impact assessment and the ethics framework operate as compliance referents from the guideline tier and an unversioned webpage",
+      "category": "conflict",
+      "severity": "medium",
+      "rationale": "Historical BASE-1 suggestion for agency review: The algorithmic impact assessment and the ethics framework operate as compliance referents from the guideline tier and an unversioned webpage",
+      "status": "pending",
+      "finding_type": "internal_conflict",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Two or more exact instrument passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 31,
+        "fields": {
+          "ID": "BASE-2026-01-F30",
+          "Finding": "The algorithmic impact assessment and the ethics framework operate as compliance referents from the guideline tier and an unversioned webpage",
+          "Defect class": "D9 [D3]",
+          "Instrument / provision": "SS-23-002 §9; GS-25-002 §10; ethics framework webpage",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "3",
+          "Likelihood": "4",
+          "Tractability": "4",
+          "Priority": "12",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §9; GS-25-002 §10",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G31=\"\",H31=\"\"),\"\",G31*H31)",
+          "Priority band": "IF(J31=\"\",\"\",IF(J31>=20,\"P1\",IF(J31>=11,\"P2\",IF(J31>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N31=\"\",\"\",TODAY()-N31)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F31",
+      "summary": "The AI note-taker control is unverifiable and trivially evadable",
+      "category": "missing_obligation",
+      "severity": "low",
+      "rationale": "Historical BASE-1 suggestion for agency review: The AI note-taker control is unverifiable and trivially evadable",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 32,
+        "fields": {
+          "ID": "BASE-2026-01-F31",
+          "Finding": "The AI note-taker control is unverifiable and trivially evadable",
+          "Defect class": "D2 [D4]",
+          "Instrument / provision": "GS-25-001, AI note-taker passage",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "2",
+          "Likelihood": "4",
+          "Tractability": "4",
+          "Priority": "8",
+          "Priority band": "P3",
+          "Destination instrument": "GS-25-001",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G32=\"\",H32=\"\"),\"\",G32*H32)",
+          "Priority band": "IF(J32=\"\",\"\",IF(J32>=20,\"P1\",IF(J32>=11,\"P2\",IF(J32>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N32=\"\",\"\",TODAY()-N32)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F32",
+      "summary": "Recommends routine password rotation, contrary to current NIST authentication guidance",
+      "category": "stale_reference",
+      "severity": "low",
+      "rationale": "Historical BASE-1 suggestion for agency review: Recommends routine password rotation, contrary to current NIST authentication guidance",
+      "status": "pending",
+      "finding_type": "external_gap",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "",
+      "evidence_gaps": [
+        "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 33,
+        "fields": {
+          "ID": "BASE-2026-01-F32",
+          "Finding": "Recommends routine password rotation, contrary to current NIST authentication guidance",
+          "Defect class": "D1",
+          "Instrument / provision": "GS-25-001, password guidance",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "1",
+          "Likelihood": "4",
+          "Tractability": "5",
+          "Priority": "4",
+          "Priority band": "P4",
+          "Destination instrument": "GS-25-001",
+          "Owner": "GTA OIS",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G33=\"\",H33=\"\"),\"\",G33*H33)",
+          "Priority band": "IF(J33=\"\",\"\",IF(J33>=20,\"P1\",IF(J33>=11,\"P2\",IF(J33>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N33=\"\",\"\",TODAY()-N33)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F33",
+      "summary": "Automation bias in reviewers is unaddressed; adding reviewers does not counter the tendency to defer to machine output",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: Automation bias in reviewers is unaddressed; adding reviewers does not counter the tendency to defer to machine output",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 34,
+        "fields": {
+          "ID": "BASE-2026-01-F33",
+          "Finding": "Automation bias in reviewers is unaddressed; adding reviewers does not counter the tendency to defer to machine output",
+          "Defect class": "D5",
+          "Instrument / provision": "SS-23-002 §5(c); GS-23-001 V",
+          "Evidence tier": "E2",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "4",
+          "Tractability": "3",
+          "Priority": "16",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §5",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G34=\"\",H34=\"\"),\"\",G34*H34)",
+          "Priority band": "IF(J34=\"\",\"\",IF(J34>=20,\"P1\",IF(J34>=11,\"P2\",IF(J34>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N34=\"\",\"\",TODAY()-N34)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F34",
+      "summary": "AI used internally in IT operations, security, and software development, and AI in elections, law-enforcement, and public-safety contexts, is neither addressed nor restricted",
+      "category": "missing_obligation",
+      "severity": "high",
+      "rationale": "Historical BASE-1 suggestion for agency review: AI used internally in IT operations, security, and software development, and AI in elections, law-enforcement, and public-safety contexts, is neither addressed nor restricted",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 35,
+        "fields": {
+          "ID": "BASE-2026-01-F34",
+          "Finding": "AI used internally in IT operations, security, and software development, and AI in elections, law-enforcement, and public-safety contexts, is neither addressed nor restricted",
+          "Defect class": "D5",
+          "Instrument / provision": "Family-wide; SS-23-002 scope",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "4",
+          "Likelihood": "3",
+          "Tractability": "3",
+          "Priority": "12",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 restricted-use schedule",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G35=\"\",H35=\"\"),\"\",G35*H35)",
+          "Priority band": "IF(J35=\"\",\"\",IF(J35>=20,\"P1\",IF(J35>=11,\"P2\",IF(J35>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N35=\"\",\"\",TODAY()-N35)"
+        }
+      }
+    },
+    {
+      "original_finding_id": "BASE-2026-01-F35",
+      "summary": "The training duty has no content specification, cadence, role differentiation, or completion tracking, and no competence standard for staff exercising human oversight",
+      "category": "missing_obligation",
+      "severity": "medium",
+      "rationale": "Historical BASE-1 suggestion for agency review: The training duty has no content specification, cadence, role differentiation, or completion tracking, and no competence standard for staff exercising human oversight",
+      "status": "pending",
+      "finding_type": "absence",
+      "evidence": [],
+      "search_source_ids": [],
+      "search_description": "BASE-1 declares a seven-instrument historical review. This conversion has not searched or confirmed the current workspace corpus.",
+      "evidence_gaps": [
+        "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+        "Historical legal claims and applicability have not been verified for this workspace or review date.",
+        "Agency must review the provisional evidence structure; combined issues may require separate findings."
+      ],
+      "method_record": {
+        "sheet": "1 Active Findings",
+        "row": 36,
+        "fields": {
+          "ID": "BASE-2026-01-F35",
+          "Finding": "The training duty has no content specification, cadence, role differentiation, or completion tracking, and no competence standard for staff exercising human oversight",
+          "Defect class": "D2 [D3]",
+          "Instrument / provision": "SS-23-002 §7; GS-25-002 §7",
+          "Evidence tier": "E1",
+          "Status": "OPEN",
+          "Severity": "3",
+          "Likelihood": "5",
+          "Tractability": "4",
+          "Priority": "15",
+          "Priority band": "P2",
+          "Destination instrument": "SS-23-002 §7",
+          "Owner": "GTA Office of AI",
+          "Opened": "46230",
+          "Last reviewed": "46230",
+          "Days open": "0"
+        },
+        "formulas": {
+          "Priority": "IF(OR(G36=\"\",H36=\"\"),\"\",G36*H36)",
+          "Priority band": "IF(J36=\"\",\"\",IF(J36>=20,\"P1\",IF(J36>=11,\"P2\",IF(J36>=6,\"P3\",\"P4\"))))",
+          "Days open": "IF(N36=\"\",\"\",TODAY()-N36)"
+        }
+      }
+    }
+  ],
+  "import_report": {
+    "total": 35,
+    "pending": 35,
+    "type_counts": {
+      "absence": 16,
+      "internal_conflict": 7,
+      "external_gap": 12
+    },
+    "classification_status": "Provisional developer mapping; agency review pending",
+    "incomplete_or_needing_type_review": [
+      {
+        "original_finding_id": "BASE-2026-01-F01",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F02",
+        "finding_type": "internal_conflict",
+        "reasons": [
+          "Two or more exact instrument passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F03",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F04",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings.",
+          "Review the linked Georgia ERRATA.md before relying on related legal premises or dates."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F05",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F06",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F07",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F08",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings.",
+          "Review the linked Georgia ERRATA.md before relying on related legal premises or dates."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F09",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F10",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F11",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F12",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F13",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F14",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F15",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F16",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F17",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F18",
+        "finding_type": "internal_conflict",
+        "reasons": [
+          "Two or more exact instrument passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F19",
+        "finding_type": "internal_conflict",
+        "reasons": [
+          "Two or more exact instrument passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F20",
+        "finding_type": "internal_conflict",
+        "reasons": [
+          "Two or more exact instrument passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F21",
+        "finding_type": "internal_conflict",
+        "reasons": [
+          "Two or more exact instrument passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F22",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F23",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F24",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F25",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F26",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F27",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F28",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings.",
+          "Review the linked Georgia ERRATA.md before relying on related legal premises or dates."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F29",
+        "finding_type": "internal_conflict",
+        "reasons": [
+          "Two or more exact instrument passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F30",
+        "finding_type": "internal_conflict",
+        "reasons": [
+          "Two or more exact instrument passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F31",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F32",
+        "finding_type": "external_gap",
+        "reasons": [
+          "Exact instrument and external-source passages must be attached from this run's pinned sources.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F33",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F34",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      },
+      {
+        "original_finding_id": "BASE-2026-01-F35",
+        "finding_type": "absence",
+        "reasons": [
+          "No workspace source IDs or authorized completeness review establish the complete in-scope search corpus.",
+          "Historical legal claims and applicability have not been verified for this workspace or review date.",
+          "Agency must review the provisional evidence structure; combined issues may require separate findings."
+        ]
+      }
+    ],
+    "conclusion": "All 35 rows can be preserved as suggestions. None is yet a fully evidenced D-1 finding; this does not establish that a fourth finding type is needed."
+  }
+}

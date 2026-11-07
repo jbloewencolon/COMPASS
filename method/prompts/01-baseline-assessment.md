@@ -1,5 +1,8 @@
 # 01: Baseline assessment
 
+**Method version:** `0.1.0-draft`
+**Policy review status:** draft — agency review pending; no approval recorded.
+
 Jurisdiction-neutral adaptation of the annual-baseline stage. Use the
 [intake worksheet](../templates/jurisdiction-intake.md); the original Georgia
 prompt and its alternate are catalogued in the [case study](../../case-studies/georgia/CATALOG.md).
@@ -10,6 +13,8 @@ prompt and its alternate are catalogued in the [case study](../../case-studies/g
 - Complete current instruments, including definitions, exceptions, and appendices.
 - Source/anchor register with verification status separate from source type.
 - Prior baseline and governance/decision register, or an explicit first-run note.
+- The exact version of the [draft method catalogue](../catalogue.yaml), its agency
+  review status, and the owner's reviewed [priority rubric](../priority-rubric.md).
 
 ## Review instructions
 
@@ -25,6 +30,12 @@ prompt and its alternate are catalogued in the [case study](../../case-studies/g
    counterevidence and provisions that need no change.
 5. Apply the owner's recorded priority rubric. Explain evidence, uncertainty,
    proposed owner/action, and ties; do not use authority weights to establish law.
+6. Use D1–D9 diagnostics, C1–C7 coherence questions, the full coverage sweep and
+   recurring patterns as manual prompts to test, not findings to manufacture.
+   Attach locatable support or a documented search of the declared corpus; an
+   absence requires authorized completeness review and a not-applicable claim needs
+   a scoped reason. Unreviewed catalogue content does not enable automatic semantic
+   coverage classification.
 
 ## Outputs
 

@@ -1,0 +1,15 @@
+{
+  "name": "compass-development-checks",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Development-only browser accessibility checks; no application runtime JavaScript dependencies.",
+  "scripts": {
+    "check:ui": "node scripts/check_ui.mjs",
+    "check:import-ui": "node scripts/check_import_ui.mjs",
+    "check:review-ui": "node scripts/check_review_ui.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "4.14.0",
+    "playwright": "1.65.0"
+  }
+}

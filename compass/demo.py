@@ -32,7 +32,7 @@ def seed(store):
             }
             db.execute("INSERT OR IGNORE INTO tenants VALUES(?,?,?,?,?)", (tenant, persona["workspace"], persona["jurisdiction_id"], canonical(profile), digest(profile)))
             db.execute("INSERT OR IGNORE INTO users VALUES(?,?)", (user_id, persona["name"]))
-            db.execute("INSERT OR IGNORE INTO memberships VALUES(?,?,?)", (tenant, user_id, persona["role"]))
+            db.execute("INSERT OR IGNORE INTO memberships(tenant_id,user_id,role) VALUES(?,?,?)", (tenant, user_id, persona["role"]))
             current = db.execute("SELECT profile FROM tenants WHERE id=?", (tenant,)).fetchone()
             previous = json.loads(current["profile"])
             if previous.get("status") == "synthetic" and previous.get("version") == "demo-1" and "citation_patterns" not in previous:

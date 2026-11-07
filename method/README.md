@@ -15,6 +15,51 @@ scope review.
 These are document templates, not new executable application features. In
 particular, amendment drafting remains outside the current application's scope.
 
+## Versioned draft catalogue
+
+[catalogue.yaml](catalogue.yaml) is the single method-content file, version
+**0.1.0-draft**, with `policy_review_status: draft` and no recorded agency reviews.
+It uses JSON syntax (a YAML subset), so Python's standard library can load it
+without a YAML runtime dependency. `compass.catalogue.load_catalogue()` validates
+its supported schema and refuses malformed or unsupported content;
+`catalogue_hash()` identifies validated content. The local loader reads this
+checkout's `method/catalogue.yaml`, or an explicitly supplied path. Standalone
+wheel/data packaging is not implemented, and no duplicate catalogue is kept.
+
+The source was extracted from the actual Georgia Word packages with ZIP/XML
+tools: Prompt 01 Part 4.1 (D1–D9), Part 4A (C1–C7), Part 4.2 (50 coverage elements
+across seven headings, including `k2`) and Appendix B (22 recurring patterns),
+plus the audience/operative-provision structure in Prompt 04 and the amendment
+format. The catalogue records the original paths, SHA-256 hashes and section
+locators. Its questions are neutral adaptations, not source quotations, verified
+legal conclusions or proof that every jurisdiction needs every control. The
+original instruction to use multiplied priority scores is deliberately not adopted.
+Each coverage element records a topic, one-line description, two or three draft
+indicative phrasings, evidence needs and its original locator. These phrasings are
+neutral surface-text hints, not verbatim quotations, a complete synonym list or
+an implemented rule that can determine semantic coverage.
+
+Schema-validated `vague_terms` are literal advisory phrases available for the
+language check. That limited use is not agency approval of the catalogue and does
+not activate semantic coverage analysis. The diagnostics, coherence checks,
+coverage elements and recurring patterns remain manual review aids. **A-7 remains
+deferred** until agency review stabilizes the catalogue and its separate evaluated
+implementation is authorized. Existing topic-mention/evidence-presence results
+must not be described as these semantic classifications or compliance percentages.
+
+Two separately versioned `language_rules` record mandatory-wording discipline:
+law may “require” only with binding, in-force, verified authority applicable to
+the claimed scope; a bill never creates a current duty by itself. Valid local
+binding instruments can require conduct within their own authority and scope.
+These are draft manual wording guards, not automated legal determinations.
+
+Every neutral prompt records its method version and pending policy review status.
+Retain the version/hash used in a review; a changed catalogue must not rewrite
+old report inputs. Any future agency review is attributable to that agency and
+does not constitute approval for every other office. Illustrative legal leads in
+the catalogue are U.S. federal and unverified; retained foreign material remains
+clearly labeled context rather than presumed U.S. authority.
+
 ## Start with jurisdiction intake
 
 Complete the [jurisdiction intake worksheet](templates/jurisdiction-intake.md)
@@ -38,6 +83,9 @@ templates do not presume a central counsel, an appointment or completed approval
 Use the [amendment package outline](templates/amendment-package.md) for document
 organization. Cadence, deadlines, instrument tiers, and legal applicability must
 come from the jurisdiction intake, not from another state's example.
+Use the [draft one-page rubric](priority-rubric.md) to discuss severity,
+likelihood, concentrated/irreversible harm and ties separately from authority and
+certainty. No numerical product or automatic approval is created by this rubric.
 Run 06 at the locally agreed cadence, normally before scheduled surveillance.
 Its neutral number avoids the historical Georgia scan's “Prompt 03” collision;
 that original remains preserved and neutral Prompt 03 still assesses triggers.

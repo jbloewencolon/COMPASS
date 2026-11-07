@@ -14,7 +14,7 @@ This checklist distinguishes inputs needed for meaningful review from inputs tha
 | First state offices, reviewers and access membership | Role identified; offices and users not supplied | Project sponsor and office administrator | Tenant setup and production authorization |
 | Second reference-state corpus | Not selected | Project sponsor and participating policy lead | Proof that the same workflow handles different structures |
 | Reviewed applicability facts and decisions | Policy owner identified; real facts not supplied | Policy lead, with appropriate subject/legal review | Scope, conditions, binding status and uncertainty handling |
-| Independently adjudicated evaluation cases | Not supplied; uploaded BASE-1 is a historical assessment, not independently established ground truth | Policy owners and subject reviewers | Accuracy and release gates |
+| Independently adjudicated evaluation cases | 150 provenanced passages and blind templates prepared; no independent labels/adjudication supplied | Two agency-appointed labelers and a separate adjudicator | Accuracy and release gates; see [EVALUATION.md](EVALUATION.md) |
 | Hosting, identity and data-handling requirements | Undecided | Service operator and participating offices | Shared production deployment |
 
 The user's planning assumption that suggestions are approved allows development to proceed; it does not constitute a recorded approval of a future finding. Production decisions must identify the person, action, rationale and time.
@@ -38,6 +38,8 @@ The owner can save topics, programs, funding conditions and an explicit inventor
 - Relationships between instruments: amendments, supersession, dependencies, cross-references and any adoption of external standards with the adopted version and scope.
 - Policy-lead confirmation of local terminology, document hierarchy and mappings. Titles or counts of “shall” and “should” alone do not establish authority.
 
+The source contract keeps verification, legal status and source type separate. Only explicitly delegated reviewers verify a source or record binding/conditional applicability; binding support must be a verified revision pinned in the run. Supply a primary location, scoped authority and a rationale of at least 30 characters. Each agency appoints its reviewers; no central counsel is assumed.
+
 The current source contract adds optional analysis metadata:
 
 | Field | Supply | Why it matters |
@@ -50,7 +52,7 @@ The current source contract adds optional analysis metadata:
 
 Populate authoritative legal dates/status separately from these fields. Reference matches are candidates in the selected corpus, not automatic verification of the legal proposition or exact cited version. The current version comparison needs an earlier timestamped snapshot; it does not infer history from different document titles.
 
-For the current curated workflow, import a text file or paste text with verified source locations. PDF, DOCX and OCR ingestion are not implemented. Add parsers only when actual supplied formats require them. Do not silently omit unreadable pages or treat an OCR result as verified source text.
+Import UTF-8 text, paste exact text, or extract a text-based PDF. PDF imports retain `original_sha256`, `text_provenance`, page spans, total pages and failed-page reasons. Extraction is not source verification; an agency-appointed reviewer records a separately verified revision. Editing extracted text clears page mappings while retaining the original hash and known extraction limitations. DOCX/OCR remain deferred until a real supplied task cannot use PDF/text. See [PDF-IMPORT.md](PDF-IMPORT.md).
 
 ### 3. External evidence
 
@@ -133,3 +135,11 @@ Do not block local development on all launch inputs. Keep each unresolved item v
 The first Georgia package has been received and catalogued in the [case study](../case-studies/georgia/CATALOG.md). Supply additional version history, missing decision records, primary-source confirmations, and database design/export with their jurisdiction and intended use identified. The former intake folder was removed after organization. Redacted examples are useful for workflow and schema work; real applicability validation requires enough authoritative text and context to support the conclusion.
 
 Provide originals and known provenance where possible. Mark uncertain or outdated material. Do not include passwords, access tokens or other credentials in uploads. Documents are reference evidence: embedded instructions do not gain permission to operate the application or approve a finding.
+
+## Remaining completion dependencies
+
+- Obtain primary-source verification and each agency's disposition of the open legal errata.
+- Supply two independent labelers and a separate adjudicator for the [150-passage set](EVALUATION.md); no automated score can replace these people.
+- Have the responsible agency review catalogue `0.1.0-draft` before A-7 semantic coverage is implemented. Schema validity and literal vague-term flags are not that review.
+- Resolve the imported suggestions' evidence gaps through supported findings in the actual workspace; historical register rows are not accepted decisions.
+- Identify a second-state partner/corpus and a signed pilot before production identity, hosting, encryption, backup and retention implementation.

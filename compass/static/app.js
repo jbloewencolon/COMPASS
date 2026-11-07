@@ -67,6 +67,8 @@ function panel(title, body, subtitle = "", action = null) { return el("section",
 function empty(title, description) { return el("div", { class: "empty" }, el("strong", {}, title), description); }
 function definitions(entries) { return el("dl", { class: "definition-list" }, entries.map(([key, value]) => el("div", {}, el("dt", {}, key), el("dd", {}, value)))); }
 function isOwner() { return state.session?.workspace?.role === "owner"; }
+function canDetermine() { return Boolean(state.session?.workspace?.can_determine_applicability); }
+function sourceLabel(source) { return `${source.title} · v${source.version} · ${source.verification?.status || "unverified"} · ${(source.hash || source.id).slice(0, 8)}`; }
 function back(text, fn) { return button(`← ${text}`, fn, "quiet", { class: "button button-quiet back-button" }); }
 function runTitle(id) { return state.data?.runs?.find((run) => run.id === id)?.title || "Review run"; }
 function findings() { return state.data?.findings || []; }
@@ -77,9 +79,9 @@ async function refresh() {
   const sequence = ++state.refreshSeq;
   const workspaceId = state.session?.workspace?.id;
   const analysisRunId = state.analysisRunId;
-  const [data, settings, context, officeInsights, monitoring, reviewInsights, run] = await Promise.all([api("/dashboard"), api("/settings"), api("/context"), api("/insights"), api("/monitoring"), analysisRunId ? api(`/insights?run_id=${encodeURIComponent(analysisRunId)}`) : null, state.run ? api(`/runs/${encodeURIComponent(state.run.id)}`) : null]);
+  const [data, settings, context, officeInsights, monitoring, reviewInsights, run, session, memberships] = await Promise.all([api("/dashboard"), api("/settings"), api("/context"), api("/insights"), api("/monitoring"), analysisRunId ? api(`/insights?run_id=${encodeURIComponent(analysisRunId)}`) : null, state.run ? api(`/runs/${encodeURIComponent(state.run.id)}`) : null, api("/session"), api("/memberships")]);
   if (sequence !== state.refreshSeq || workspaceId !== state.session?.workspace?.id) return;
-  Object.assign(state, { data, settings, context, workspaceInsights: officeInsights, monitoring });
+  Object.assign(state, { data, settings, context, session, memberships: memberships.memberships, workspaceInsights: officeInsights, monitoring });
   state.insights = reviewInsights && analysisRunId === state.analysisRunId ? reviewInsights : officeInsights;
   if (run && run.id === state.run?.id) state.run = run;
   render();
@@ -123,7 +125,7 @@ function overview() {
 function reviews() {
   const runs = state.data.runs || [];
   return el("div", {}, heading("Reviews", "Deliberate review. Traceable results.", "Each run preserves its source snapshots, jurisdiction profile, and review date.", button("＋ New review", newRun, "primary")),
-    coverageNote(), el("div", { class: "run-list section-gap" }, runs.length ? runs.map((run) => el("article", { class: "panel run-card" }, el("div", { class: "row-meta" }, badge(run.analysis_method || "manual"), el("span", { class: "helper" }, `As of ${date(run.as_of)}`)), el("h3", {}, run.title), el("p", {}, run.coverage_note || "Coverage is unverified. Review only the sources pinned to this run."), el("div", { class: "helper" }, `${run.source_ids?.length ?? run.sources?.length ?? "—"} source snapshots · Created ${date(run.created_at)}`), el("div", { class: "run-actions" }, button("Open review →", () => openRun(run.id), "secondary"), button(advanced() ? "Export evidence" : "Export brief", () => advanced() ? exportRun(run.id) : exportBrief(run.id), "quiet")))) : el("div", { class: "panel" }, empty("No reviews yet", "Import at least one internal instrument and one external source, then create a review."))));
+    coverageNote(), el("div", { class: "run-list section-gap" }, runs.length ? runs.map((run) => el("article", { class: "panel run-card" }, el("div", { class: "row-meta" }, badge(run.analysis_method || "manual"), el("span", { class: "helper" }, `As of ${date(run.as_of)}`)), el("h3", {}, run.title), el("p", {}, run.coverage_note || "Coverage is unverified. Review only the sources pinned to this run."), el("div", { class: "helper" }, `${run.source_ids?.length ?? run.sources?.length ?? "—"} source snapshots · Created ${date(run.created_at)}`), el("div", { class: "run-actions" }, button("Open review →", () => openRun(run.id), "secondary"), button(advanced() ? "Export evidence" : "Export brief", () => advanced() ? exportRun(run.id) : exportBrief(run.id), "quiet")))) : el("div", { class: "panel" }, empty("No reviews yet", "Import the internal instruments you want to review. Add external sources when checking an external gap."))));
 }
 async function openRun(id) { const workspaceId = state.session?.workspace?.id; try { const [run, insights] = await Promise.all([api(`/runs/${encodeURIComponent(id)}`), api(`/insights?run_id=${encodeURIComponent(id)}`)]); if (workspaceId !== state.session?.workspace?.id) return; state.run = run; state.analysisRunId = id; state.insights = insights; navigate("run"); } catch (error) { announce(errorMessage(error), true); } }
 function runDetail() {
@@ -137,7 +139,7 @@ function runDetail() {
     el("div", { class: "action-group" }, button("↓ Export brief", () => exportBrief(run.id), "secondary"), advanced() ? button("Full evidence JSON", () => exportRun(run.id), "quiet") : null)));
   const pinnedSources = panel("Preserved sources", el("div", { class: "panel-body" }, runSources.map((source) => el("div", { class: "source-ref" }, badge(source.kind), el("p", { class: "helper" }, source.title), el("span", { class: advanced() ? "hash" : "helper" }, advanced() ? `v${source.version} · ${(source.hash || "").slice(0, 12)}…` : `Version ${source.version}`)))));
   return el("div", {}, back("All reviews", () => navigate("reviews")),
-    heading("Review", run.title, `Review date: ${date(run.as_of)} · Sources are preserved as they were when this review began.`, el("div", { class: "action-group" }, analyzeButton(run.id), button("＋ Add finding", () => newFinding(run), "secondary"))),
+    heading("Review", run.title, `Review date: ${date(run.as_of)} · Sources are preserved as they were when this review began.`, el("div", { class: "action-group" }, analyzeButton(run.id), button("＋ Add finding", () => newFinding(run), "secondary"), advanced() ? button("Import method suggestions", () => importMethodSuggestions(run), "quiet") : null)),
     el("div", { class: "two-column" },
       panel("Findings", el("div", {}, items.length ? items.map(findingRow) : empty("Ready for your first finding", "Compare the pinned sources and add a finding with exact excerpts. This foundation does not generate findings automatically."))),
       el("div", { class: "stack" }, reviewRecord, pinnedSources)), state.insights?.latest?.run_id === run.id ? el("div", { class: "section-gap" }, reviewResults(state.insights.latest)) : null);
@@ -146,18 +148,22 @@ function findingDetail() {
   const finding = currentFinding();
   if (!finding) return reviews();
   const applicability = finding.applicability || { determination: "unknown" };
-  const originalEvidence = el("div", {}, (finding.evidence || []).map((evidence) => el("article", { class: "evidence-card" }, badge(evidence.kind), el("h3", {}, evidence.title || "Source snapshot"), el("blockquote", {}, evidence.quote), el("div", { class: "evidence-location" }, `Location: ${evidence.location || "Not supplied"}`))));
+  const originalEvidence = el("div", {}, finding.finding_type === "absence" ? el("div", { class: "notice" }, el("strong", {}, "Absence search record"), el("p", {}, finding.search_description || "Search description missing"), el("p", {}, "Sources searched: " + (finding.search_source_ids || []).map((id) => state.data.sources.find((source) => source.id === id)?.title || id).join("; "))) : null, finding.evidence_gaps?.length ? el("div", { class: "notice" }, "Imported suggestion needs evidence before acceptance: " + finding.evidence_gaps.join("; ")) : null, (finding.evidence || []).map((evidence) => el("article", { class: "evidence-card" }, badge(evidence.kind), el("h3", {}, evidence.title || "Source snapshot"), el("blockquote", {}, evidence.quote), el("div", { class: "evidence-location" }, `Location: ${evidence.location || "Not supplied"}`))));
   const evidencePanel = advanced() ? originalEvidence : el("details", { class: "progressive-evidence" }, el("summary", {}, "Read the original evidence"), originalEvidence);
-  return el("div", {}, back("Review queue", () => navigate("overview")), el("div", { class: "page-heading" }, el("div", {}, el("div", { class: "row-meta" }, badge(finding.severity), badge(findStatus(finding)), badge(finding.category)), el("h1", { class: "detail-title" }, finding.summary), el("p", { class: "subtitle" }, runTitle(finding.run_id))), button(advanced() ? "Export review evidence" : "Export review brief", () => advanced() ? exportRun(finding.run_id) : exportBrief(finding.run_id), "secondary")),
+  return el("div", {}, back("Review queue", () => navigate("overview")), el("div", { class: "page-heading" }, el("div", {}, el("div", { class: "row-meta" }, badge(finding.severity), badge(findStatus(finding)), badge(finding.category), badge(finding.finding_type || "external_gap")), el("h1", { class: "detail-title" }, finding.summary), el("p", { class: "subtitle" }, runTitle(finding.run_id))), button(advanced() ? "Export review evidence" : "Export review brief", () => advanced() ? exportRun(finding.run_id) : exportBrief(finding.run_id), "secondary")),
     el("div", { class: "two-column" }, el("div", { class: "stack single-column" }, panel("Why this needs review", el("div", { class: "panel-body" }, el("p", { class: "prose" }, finding.rationale))), panel("Supporting evidence", el("div", { class: "panel-body" }, evidencePanel)), panel("Assignment and follow-up", el("div", { class: "panel-body" }, assignmentForm(finding)))),
-      el("div", { class: "stack single-column" }, panel("Applicability", el("div", { class: "panel-body" }, el("div", { class: "row-meta" }, badge(applicability.determination)), el("p", { class: "form-note" }, "Legal applicability is reviewed separately from severity. A score cannot create an obligation."), applicability.rationale ? el("p", { class: "prose" }, applicability.rationale) : null, applicability.reviewed_at ? el("p", { class: "helper" }, `Reviewed ${date(applicability.reviewed_at)}`) : null, isOwner() ? applicabilityForm(finding) : el("div", { class: "notice" }, "A policy owner must confirm applicability."))),
+      el("div", { class: "stack single-column" }, panel("Applicability", el("div", { class: "panel-body" }, el("div", { class: "row-meta" }, badge(applicability.determination)), el("p", { class: "form-note" }, "Legal applicability is reviewed separately from severity. A score cannot create an obligation."), applicability.rationale ? el("p", { class: "prose" }, applicability.rationale) : null, applicability.reviewed_at ? el("p", { class: "helper" }, `Reviewed ${date(applicability.reviewed_at)}`) : null, (isOwner() || canDetermine()) ? applicabilityForm(finding) : el("div", { class: "notice" }, "Your agency must appoint an applicability reviewer. A policy owner grants that permission in Settings."))),
         panel("Policy-owner decision", el("div", { class: "panel-body" }, isOwner() ? decisionForm(finding) : el("div", { class: "notice" }, "You can review and add findings. Acceptance and rejection require a policy-owner account."), el("p", { class: "helper section-gap" }, "Decisions preserve the person, outcome, rationale, and time in the review trail."))))));
 }
 function applicabilityForm(finding) {
   const form = el("form", { class: "inline-form section-gap" });
   const determination = field("select", "determination", "Determination", { options: [["unknown", "Unknown / needs review"], ["binding", "Binding within reviewed scope"], ["conditional", "Conditional"], ["persuasive", "Persuasive / nonbinding"], ["not_applicable", "Not applicable"]], value: finding.applicability?.determination || "unknown" });
-  const rationale = field("textarea", "rationale", "Applicability rationale", { required: true, minLength: 10, placeholder: "Explain scope, conditions, dates, and the supporting authority." });
-  form.append(determination.node, rationale.node); bindForm(form, async (values) => { await api(`/findings/${encodeURIComponent(finding.id)}/applicability`, { method: "POST", body: values }); await refresh(); announce("Applicability recorded with policy-owner attribution."); }, "Record applicability");
+  const rationale = field("textarea", "rationale", "Applicability rationale", { required: true, minLength: 30, placeholder: "Explain scope, conditions, dates, and the supporting authority (at least 30 characters)." });
+  const authority = field("textarea", "authority_relied_on", "Authority relied on", { required: true, minLength: 3, help: "Identify the specific law, policy, program, agreement, or nonbinding basis and its scope." });
+  const complete = finding.finding_type === "absence" ? toggle("scope_complete", "Confirm the searched sources are the complete in-scope set", "Only your agency's appointed applicability reviewer may confirm completeness of this declared corpus.", Boolean(finding.applicability?.scope_complete), !canDetermine()) : null;
+  form.append(determination.node, rationale.node, authority.node); if (complete) form.append(complete.node);
+  form.append(el("p", { class: "helper" }, "Binding and conditional determinations require delegated review permission. Binding support must be a verified revision pinned in this review. Updating a source creates a revision for a new review."));
+  bindForm(form, async (values) => { await api(`/findings/${encodeURIComponent(finding.id)}/applicability`, { method: "POST", body: { ...values, scope_complete: canDetermine() && Boolean(complete?.input.checked) } }); await refresh(); announce("Applicability recorded with reviewer attribution."); }, "Record applicability");
   return form;
 }
 function decisionForm(finding) {
@@ -171,8 +177,39 @@ function decisionForm(finding) {
 }
 function sources() {
   const items = state.data.sources || [];
+  const cards = items.map((source) => el("article", { class: "panel source-card" },
+    el("div", { class: "row-meta" }, badge(source.kind), badge(source.legal_status), badge(source.verification?.status || "unverified")),
+    el("h2", {}, source.title), definitions([["Jurisdiction", source.jurisdiction_id], ["Version", source.version],
+      ...(advanced() ? [["Stable source key", source.source_key || "Not supplied"], ["Authority type", label(source.authority_type)], ["Text provenance", label(source.text_provenance || "original")], ["Original file SHA-256", el("span", { class: "hash" }, source.original_sha256 || "Not supplied")], ["Reference access", label(source.reference_scope || "private")], ["Topic tags", (source.topics || []).join(", ") || "Not supplied"]] : []),
+      ["Effective from", date(source.effective_from)], ["Effective to", date(source.effective_to)]]), contextNotice(source),
+    source.failed_pages?.length ? el("p", { class: "notice" }, "Extraction incomplete: " + source.failed_pages.map((item) => `page ${item.page}: ${item.reason}`).join("; ")) : null,
+    source.verification?.verified_by ? el("p", { class: "helper" }, `Verified by ${source.verification.verified_by} · ${date(source.verification.verified_at)}`) : null,
+    advanced() ? el("p", { class: "helper hash" }, `Snapshot SHA-256 · ${source.hash || "—"}`) : null,
+    safeSourceLink(source.source_url), canDetermine() ? button("Review source status", () => reviewSource(source), "secondary") : null,
+    el("details", {}, el("summary", {}, "Read preserved text"), el("pre", { class: "source-text", tabindex: "0" }, source.text))));
   return el("div", {}, heading("Source library", "Start with the source.", "Immutable snapshots keep the original text, provenance, dates, and version attached to your review.", button("＋ Import source", newSource, "primary")), coverageNote(),
-    el("div", { class: "source-grid section-gap" }, items.length ? items.map((source) => el("article", { class: "panel source-card" }, el("div", { class: "row-meta" }, badge(source.kind), badge(source.legal_status)), el("h2", {}, source.title), definitions([["Jurisdiction", source.jurisdiction_id], ["Version", source.version], ...(advanced() ? [["Stable source key", source.source_key || "Not supplied"], ["Authority type", label(source.authority_type)], ["Reference access", label(source.reference_scope || "private")], ["Topic tags", (source.topics || []).join(", ") || "Not supplied"]] : []), ["Effective from", date(source.effective_from)], ["Effective to", date(source.effective_to)]]), contextNotice(source), advanced() ? el("p", { class: "helper hash" }, `SHA-256 · ${source.hash || "—"}`) : null, safeSourceLink(source.source_url), el("details", {}, el("summary", {}, "Read preserved text"), el("pre", { class: "source-text", tabindex: "0" }, source.text)))) : el("div", { class: "panel" }, empty("Build your evidence library", "Import a text file or paste source text to begin. PDF, DOCX, and live-source connectors are not connected."))));
+    el("div", { class: "source-grid section-gap" }, cards.length ? cards : el("div", { class: "panel" }, empty("Build your evidence library", "Import a text file, extract a PDF, or paste source text. Image-only PDFs need a separately prepared transcription; OCR and DOCX import are deferred."))));
+}
+function membershipSettings() {
+  return el("div", { class: "panel-body" }, (state.memberships || []).map((member) => {
+    const permission = toggle("can_determine_applicability", `${member.name} · ${label(member.role)}`, "Can verify sources and determine binding or conditional applicability. This grant does not establish legal qualifications.", member.can_determine_applicability, !isOwner());
+    const form = el("form", { class: "inline-form" }, permission.node);
+    if (isOwner()) bindForm(form, async () => { await api(`/memberships/${encodeURIComponent(member.user_id)}`, { method: "PATCH", body: { can_determine_applicability: permission.input.checked } }); await refresh(); announce("Agency review permission saved in the audit trail."); }, "Save review permission");
+    return form;
+  }));
+}
+function reviewSource(source) {
+  const form = el("form");
+  const status = field("select", "status", "Verification status", { options: [["unverified", "Unverified"], ["verified", "Verified against primary source"], ["disputed", "Disputed"]], value: source.verification?.status || "unverified" });
+  const primary = field("text", "primary_source_location", "Primary source location", { value: source.verification?.primary_source_location || source.source_url || "", help: "Required for verification: exact authoritative location and version checked. Leave unknown when recording an unresolved dispute." });
+  primary.input.required = status.input.value === "verified";
+  status.input.addEventListener("change", () => { primary.input.required = status.input.value === "verified"; });
+  form.append(el("p", { class: "notice" }, "This creates a revised snapshot. Existing reviews keep their original source. Create a new review using the verified revision before relying on it as binding support."),
+    status.node, primary.node,
+    field("select", "legal_status", "Reviewed legal status", { options: [["unknown", "Unknown"], ["in_force", "In force"], ["adopted_not_effective", "Adopted, not effective"], ["draft", "Draft"], ["guidance", "Guidance"], ["research", "Research"], ["repealed", "Repealed"]], value: source.legal_status }).node,
+    field("textarea", "rationale", "Review rationale", { required: true, minLength: 30, help: "Record what you checked, current status, scope, and unresolved issues." }).node);
+  bindForm(form, async (values) => { await api(`/sources/${encodeURIComponent(source.id)}/review`, { method: "PATCH", body: { verification: { status: values.status, primary_source_location: values.primary_source_location || null }, legal_status: values.legal_status, rationale: values.rationale } }); await refresh(); announce("Reviewed source preserved as a new revision. Earlier reviews retain their snapshots."); }, "Preserve reviewed revision", { dialogForm: true });
+  showDialog("Review source status", source.title, form);
 }
 function safeSourceLink(url) { if (!url) return null; try { const parsed = new URL(url); if (!["https:", "http:"].includes(parsed.protocol)) return null; return el("a", { href: parsed.href, target: "_blank", rel: "noopener noreferrer", class: "helper" }, "View source provenance ↗"); } catch { return null; } }
 function activity() {
@@ -295,7 +332,7 @@ function settingsView() {
   if (!settings) return empty("Settings unavailable", "Reload the workspace to try again.");
   return el("div", {}, heading("Settings", "Keep the workflow simple. Choose the depth.", "Your view changes what you see. Workspace settings change which checks actually run."),
     el("div", { class: "notice" }, el("strong", {}, `Your personal view is ${label(state.mode)}. `), "Use the Simple / Advanced control at the top of the page. It is saved for your account and does not change analysis for other people."),
-    el("div", { class: "settings-layout" }, panel("Workspace analysis", workspaceSettingsForm(settings), "These settings apply to future checks for this office."), panel("Target your review", contextForm(), "Tell COMPASS which topics, programs, and assets matter to your office.")));
+    el("div", { class: "settings-layout" }, panel("Workspace analysis", workspaceSettingsForm(settings), "These settings apply to future checks for this office."), panel("Target your review", contextForm(), "Tell COMPASS which topics, programs, and assets matter to your office.")), panel("Agency review permissions", membershipSettings(), "Each agency appoints its reviewers. Owners may combine roles through an explicit, audited grant."));
 }
 function workspaceSettingsForm(settings) {
   const form = el("form", { class: "panel-body" });
@@ -385,30 +422,68 @@ function newSource() {
   const form = el("form");
   const safety = el("p", { id: "source-import-safety", class: "notice", role: "note" }, "Do not import criminal-justice, federal tax, health, or other restricted information. Use public or non-confidential text only.");
   const kind = field("select", "kind", "Source role", { options: [["instrument", "Internal instrument"], ["external", "External reference"]] });
-  const jurisdiction = field("text", "jurisdiction_id", "Jurisdiction ID", { required: true, value: state.session.workspace.jurisdiction_id, help: "Use the workspace jurisdiction for internal instruments. Keep foreign references under their actual jurisdiction; they are context, not US authority." });
+  const jurisdiction = field("text", "jurisdiction_id", "Jurisdiction ID", { required: true, value: state.session.workspace.jurisdiction_id, help: "Internal instruments use your workspace's fixed US identifier. Federal sources use US-FED. Keep foreign references under their actual jurisdiction as context." });
   const title = field("text", "title", "Source title", { required: true, maxLength: 200 });
-  const preservedText = field("textarea", "text", "Preserved source text", { required: true, rows: 8, maxLength: 200000, help: "Paste exact text or choose a .txt file. Imports preserve a new version; they do not overwrite older evidence." });
+  const preservedText = field("textarea", "text", "Preserved source text", { required: true, rows: 8, maxLength: 200000, help: "Paste exact text or choose a .txt or text-based PDF file. Editing PDF text removes its page mapping and marks it transcribed." });
   preservedText.input.setAttribute("aria-describedby", `${preservedText.input.getAttribute("aria-describedby")} source-import-safety`);
-  const file = field("file", "text_file", "Choose a text file (optional)", { accept: ".txt,text/plain", help: "Plain text only, up to 200 KB. PDF and DOCX conversion are not connected." });
-  file.input.addEventListener("change", async () => { const selected = file.input.files?.[0]; if (!selected) return; try { if (selected.size > 200000) throw new Error("Choose a text file smaller than 200 KB."); if (!selected.name.toLowerCase().endsWith(".txt")) throw new Error("Choose a .txt file. PDF and DOCX conversion are not connected."); preservedText.input.value = await selected.text(); if (!title.input.value) title.input.value = selected.name.replace(/\.txt$/i, ""); } catch (error) { announce(errorMessage(error), true); file.input.value = ""; } });
+  const file = field("file", "text_file", "Choose a source file (optional)", { accept: ".txt,.pdf,text/plain,application/pdf", help: "UTF-8 text up to 200 KB or PDF up to 15 MiB. No OCR or DOCX import." });
+  const extractionNotice = el("p", { class: "helper", role: "status" });
+  let provenance = { text_provenance: "original", original_sha256: null, page_spans: [], page_count: null, failed_pages: [] };
+  let extracting = false;
+  let fileGeneration = 0;
+  file.input.addEventListener("change", async () => {
+    const generation = ++fileGeneration;
+    const selected = file.input.files?.[0];
+    if (!selected) { extracting = false; preservedText.input.disabled = false; return; }
+    extracting = true; preservedText.input.disabled = true; extractionNotice.textContent = "Reading source file…";
+    try {
+      let nextText, nextProvenance, message;
+      if (selected.name.toLowerCase().endsWith(".pdf")) {
+        if (selected.size > 15 * 1024 * 1024) throw new Error("Choose a PDF smaller than 15 MiB.");
+        const response = await fetch("/api/import/pdf-text", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/pdf" }, body: selected });
+        const result = await response.json();
+        if (!response.ok) throw new Error(typeof result.detail === "string" ? result.detail : "PDF extraction failed.");
+        nextText = result.text;
+        nextProvenance = { text_provenance: result.text_provenance, original_sha256: result.original_sha256, page_spans: result.page_spans, page_count: result.page_count, failed_pages: result.failed_pages };
+        message = result.failed_pages.length ? "Review incomplete extraction: " + result.failed_pages.map((item) => `page ${item.page}: ${item.reason}`).join("; ") : `Extracted ${result.page_count} pages. Check the text before importing.`;
+      } else {
+        if (!selected.name.toLowerCase().endsWith(".txt") || selected.size > 200000) throw new Error("Choose a UTF-8 .txt file up to 200 KB, or a text-based PDF. DOCX is not supported.");
+        const bytes = await selected.arrayBuffer();
+        nextText = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+        const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), (value) => value.toString(16).padStart(2, "0")).join("");
+        nextProvenance = { text_provenance: "original", original_sha256: hash, page_spans: [], page_count: null, failed_pages: [] };
+        message = "Original file hash recorded. Check the text before importing.";
+      }
+      if (generation !== fileGeneration) return;
+      preservedText.input.value = nextText; provenance = nextProvenance; extractionNotice.textContent = message;
+      if (!title.input.value) title.input.value = selected.name.replace(/\.(txt|pdf)$/i, "");
+    } catch (error) {
+      if (generation !== fileGeneration) return;
+      extractionNotice.textContent = errorMessage(error); announce(errorMessage(error), true); file.input.value = ""; preservedText.input.value = "";
+      provenance = { text_provenance: "original", original_sha256: null, page_spans: [], page_count: null, failed_pages: [] };
+    } finally { if (generation === fileGeneration) { extracting = false; preservedText.input.disabled = false; } }
+  });
+  preservedText.input.addEventListener("input", () => { if (provenance.original_sha256) { provenance = { ...provenance, text_provenance: "transcribed", page_spans: [] }; extractionNotice.textContent = "Text was edited. Original file hash and extraction limitations retained; page mapping removed. Review this transcription." + (provenance.failed_pages.length ? " Incomplete original extraction: " + provenance.failed_pages.map((item) => `page ${item.page}: ${item.reason}`).join("; ") : ""); } });
   const sourceKey = field("text", "source_key", "Stable source identifier (optional)", { maxLength: 200, help: "Use the same identifier across revisions so change detection can connect them." });
   const replaces = field("select", "replaces_source_id", "Replaces an earlier source version (optional)", { options: [["", "No earlier version"], ...(state.data.sources || []).map((source) => [source.id, `${source.title} · v${source.version}`])] });
   replaces.input.addEventListener("change", () => { const previous = (state.data.sources || []).find((source) => source.id === replaces.input.value); if (previous) sourceKey.input.value = previous.source_key || previous.id; });
   const metadata = el("details", { class: "settings-details", open: advanced() ? "" : null }, el("summary", {}, "Dates, authority, and analysis metadata"),
     el("div", { class: "field-grid" }, jurisdiction.node, field("url", "source_url", "Authoritative source URL (optional)", { placeholder: "https://…" }).node),
-    el("div", { class: "field-grid" }, field("select", "authority_type", "Authority type", { options: [["internal_policy", "Internal policy"], ["statute", "Statute"], ["regulation", "Regulation"], ["executive_order", "Executive order"], ["adopted_standard", "Adopted standard"], ["voluntary_standard", "Voluntary standard"], ["guidance", "Guidance"], ["research", "Research"], ["other", "Other / unconfirmed"]] }).node, field("select", "legal_status", "Legal status", { options: [["unknown", "Unknown / unconfirmed"], ["in_force", "In force"], ["adopted_not_effective", "Adopted, not effective"], ["draft", "Draft"], ["guidance", "Guidance"], ["research", "Research"], ["repealed", "Repealed"]] }).node),
-    el("div", { class: "field-grid" }, field("date", "effective_from", "Effective from (optional)", { help: "Required before a binding determination can be confirmed." }).node, field("date", "effective_to", "Effective to (optional)", { help: "The end date is exclusive." }).node), field("text", "adoption_reference", "Adoption reference and scope (if applicable)", { maxLength: 2000, help: "An adopted standard needs the adopting authority, exact version, and scope before a binding determination." }).node,
-    sourceKey.node, replaces.node, field("textarea", "reference_keys", "Referenced source identifiers", { rows: 3, help: "One identifier per line. Include the sources this document cites." }).node, field("textarea", "topics", "Topic tags", { rows: 3, help: "One topic per line. Match your office's topic list for targeted coverage checks." }).node, field("select", "reference_scope", "Reference scope", { options: [["private", "Private workspace material"], ["public", "Public reference, eligible for peer research"]], help: "Mark only genuinely public external material as public. This does not grant access to another office's private records." }).node);
-  form.append(safety, kind.node, title.node, field("text", "version", "Source version", { required: true, value: "1.0", maxLength: 80 }).node, file.node, preservedText.node, metadata);
-  bindForm(form, async (values) => { await api("/sources", { method: "POST", body: values }); state.view = "sources"; await refresh(); announce("Source version imported and preserved. Check now to include it in a new review."); }, "Import snapshot", { dialogForm: true, transform: (values) => { delete values.text_file; return { ...values, source_url: values.source_url || null, effective_from: values.effective_from || null, effective_to: values.effective_to || null, adoption_reference: values.adoption_reference || null, source_key: values.source_key || null, replaces_source_id: values.replaces_source_id || null, reference_keys: lines(values.reference_keys), topics: lines(values.topics) }; } });
-  showDialog("Add a source version", "Provide policy text or an external reference. Dates and analysis metadata are optional; missing inputs stay visible in the results.", form);
+    el("div", { class: "field-grid" }, field("select", "authority_type", "Authority type", { options: [["internal_policy", "Internal policy"], ["statute", "Statute"], ["regulation", "Regulation"], ["executive_order", "Executive order"], ["adopted_standard", "Adopted standard"], ["funding_condition", "Funding condition"], ["agreement", "Agreement / contract"], ["court_or_ag", "Court / Attorney General — flag for review"], ["voluntary_standard", "Voluntary standard"], ["guidance", "Guidance"], ["research", "Research"], ["other", "Other / unconfirmed"]] }).node,
+      field("select", "legal_status", "Legal status", { options: [["unknown", "Unknown / unconfirmed"], ["in_force", "In force"], ["adopted_not_effective", "Adopted, not effective"], ["draft", "Draft"], ["guidance", "Guidance"], ["research", "Research"], ["repealed", "Repealed"]] }).node),
+    el("div", { class: "field-grid" }, field("date", "effective_from", "Effective from (optional)", { help: "Required before a binding determination can be confirmed." }).node, field("date", "effective_to", "Effective to (optional)", { help: "The end date is exclusive." }).node), field("text", "adoption_reference", "Adoption reference and scope (if applicable)", { maxLength: 2000 }).node,
+    sourceKey.node, replaces.node, field("textarea", "reference_keys", "Referenced source identifiers", { rows: 3, help: "One identifier per line." }).node, field("textarea", "topics", "Topic tags", { rows: 3, help: "One topic per line." }).node,
+    field("select", "reference_scope", "Reference scope", { options: [["private", "Private workspace material"], ["public", "Public reference, eligible for US-state peer research"]], help: "Only public material is eligible. Foreign context is preserved in other checks." }).node);
+  form.append(safety, kind.node, title.node, field("text", "version", "Source version", { required: true, value: "1.0", maxLength: 80 }).node, file.node, extractionNotice, preservedText.node, metadata);
+  bindForm(form, async (values) => { if (extracting) throw new Error("Wait for file extraction to finish."); await api("/sources", { method: "POST", body: { ...values, ...provenance } }); state.view = "sources"; await refresh(); announce("Source version imported unverified. An appointed reviewer can record a verified revision; older snapshots stay preserved."); }, "Import snapshot", { dialogForm: true, transform: (values) => { delete values.text_file; return { ...values, source_url: values.source_url || null, effective_from: values.effective_from || null, effective_to: values.effective_to || null, adoption_reference: values.adoption_reference || null, source_key: values.source_key || null, replaces_source_id: values.replaces_source_id || null, reference_keys: lines(values.reference_keys), topics: lines(values.topics) }; } });
+  showDialog("Add a source version", "Provide public or non-confidential text. Extraction and source type do not establish current law; missing inputs stay visible.", form);
 }
 function newRun() {
   const available = state.data.sources || [];
-  if (!available.some((source) => source.kind === "instrument") || !available.some((source) => source.kind === "external")) { announce("Import at least one internal instrument and one external reference before creating a review.", true); navigate("sources"); announce("Import at least one internal instrument and one external reference before creating a review.", true); return; }
+  if (!available.some((source) => source.kind === "instrument")) { navigate("sources"); announce("Import at least one internal instrument before creating a review.", true); return; }
   const form = el("form");
   form.append(field("text", "title", "Review title", { required: true, maxLength: 200, placeholder: "e.g., Quarterly AI policy review" }).node, field("date", "as_of", "Review as-of date", { required: true, value: today() }).node,
-    el("fieldset", { class: "source-checkboxes" }, el("legend", {}, "Pinned source snapshots *"), el("p", { class: "helper" }, "Select at least one internal instrument and one external reference."), el("div", { class: "checkbox-list" }, available.map((source) => el("label", { class: "checkbox-item" }, el("input", { type: "checkbox", name: "source_ids", value: source.id, checked: true }), el("span", {}, source.title, el("small", {}, `${label(source.kind)} · v${source.version}`)))))),
+    el("fieldset", { class: "source-checkboxes" }, el("legend", {}, "Pinned source snapshots *"), el("p", { class: "helper" }, "Select at least one internal instrument. External-gap findings also need an external source."), el("div", { class: "checkbox-list" }, available.map((source) => el("label", { class: "checkbox-item" }, el("input", { type: "checkbox", name: "source_ids", value: source.id, checked: true }), el("span", {}, source.title, el("small", {}, `${label(source.kind)} · v${source.version} · ${source.verification?.status || "unverified"} · ${(source.hash || source.id).slice(0, 8)}`)))))),
     field("textarea", "coverage_note", "Coverage limitations", { required: true, minLength: 10, value: "Coverage is unverified. This manual review considers only the selected source snapshots.", help: "Make missing material, review scope, and uncertainty visible." }).node);
   bindForm(form, async (values) => { const created = await api("/runs", { method: "POST", body: values }); state.run = await api(`/runs/${encodeURIComponent(created.id)}`); state.view = "run"; await refresh(); announce("Review created with pinned sources and profile. Add findings manually from the evidence."); }, "Create review", { dialogForm: true, transform: (values, target) => ({ ...values, source_ids: new FormData(target).getAll("source_ids") }) });
   showDialog("Create a review", "This starts a manual, evidence-led review. It does not run automated legal analysis.", form);
@@ -418,17 +493,54 @@ function newFinding(run) {
   const internal = pinned.filter((source) => source.kind === "instrument");
   const external = pinned.filter((source) => source.kind === "external");
   const form = el("form");
-  form.append(field("text", "summary", "Finding summary", { required: true, minLength: 5, maxLength: 300 }).node,
-    el("div", { class: "field-grid" }, field("select", "category", "Category", { options: [["missing_obligation", "Potential uncovered obligation"], ["conflict", "Potential conflict"], ["stale_reference", "Stale reference"], ["public_commitment", "Unsupported public commitment"], ["opportunity", "Optional improvement"]] }).node, field("select", "severity", "Issue severity", { options: [["low", "Low"], ["medium", "Medium"], ["high", "High"], ["critical", "Critical"]] }).node),
-    field("textarea", "rationale", "Analysis rationale", { required: true, minLength: 10, help: "Explain the issue, scope, exceptions, and any counterevidence. Applicability is reviewed separately." }).node,
-    field("select", "instrument_source_id", "Internal instrument", { options: internal.map((source) => [source.id, source.title]), required: true }).node,
-    field("textarea", "instrument_quote", "Exact instrument excerpt", { required: true, help: "The excerpt must appear exactly in the selected source. Find preserved text in the source library." }).node,
-    field("text", "instrument_location", "Instrument location", { required: true, placeholder: "e.g., Section 2, paragraph 1" }).node,
-    field("select", "external_source_id", "External reference", { options: external.map((source) => [source.id, source.title]), required: true }).node,
-    field("textarea", "external_quote", "Exact external excerpt", { required: true }).node,
-    field("text", "external_location", "External source location", { required: true, placeholder: "e.g., Section 3, paragraph 2" }).node);
-  bindForm(form, async (values) => { const created = await api(`/runs/${encodeURIComponent(run.id)}/findings`, { method: "POST", body: values }); state.finding = created; state.view = "finding"; await refresh(); announce("Finding recorded with exact supporting excerpts. Applicability remains unconfirmed until reviewed."); }, "Record finding", { dialogForm: true });
-  showDialog("Add an evidence-linked finding", "Record analysis against this review’s pinned inputs. This is a manual proposal, not an automated legal determination.", form);
+  const findingType = field("select", "finding_type", "Evidence structure", { options: [["external_gap", "Gap against an external source"], ["internal_conflict", "Conflict between instrument passages"], ["absence", "Absence after a recorded search"]], value: external.length ? "external_gap" : "absence" });
+  const evidenceArea = el("div", { class: "stack" });
+  const searchDescription = field("textarea", "search_description", "Search description", { required: true, minLength: 30, help: "Describe what you searched, relevant terms, scope, and limitations. Do not quote text that was not found." });
+  const searchChoices = pinned.map((source) => ({ source, input: el("input", { type: "checkbox", value: source.id }) }));
+  const searchArea = el("div", {}, searchDescription.node, el("fieldset", { class: "source-checkboxes" }, el("legend", {}, "Sources actually searched"), searchChoices.map(({ source, input }) => el("label", { class: "checkbox-item" }, input, el("span", {}, source.title)))));
+  let evidenceEditors = [];
+  function addPassage(choices) {
+    const selected = field("select", "evidence_source", "Passage source", { required: true, options: choices.map((source) => [source.id, sourceLabel(source)]) });
+    const quote = field("textarea", "evidence_quote", "Exact passage", { required: true, help: "Must occur exactly in the pinned source; include the exception and conditions." });
+    const location = field("text", "evidence_location", "Passage location", { required: true, help: "Page/section or a precise location in the preserved source." });
+    evidenceEditors.push({ selected, quote, location });
+    evidenceArea.append(el("div", { class: "evidence-card" }, selected.node, quote.node, location.node));
+  }
+  function structureChanged() {
+    const absence = findingType.input.value === "absence";
+    evidenceEditors = []; evidenceArea.replaceChildren();
+    searchArea.hidden = !absence; searchDescription.input.required = absence;
+    if (absence) return;
+    if (findingType.input.value === "internal_conflict") { addPassage(internal); addPassage(internal); }
+    else { addPassage(internal); addPassage(external); }
+    evidenceArea.append(button("Add another passage", () => addPassage(findingType.input.value === "internal_conflict" ? internal : pinned), "secondary"));
+  }
+  findingType.input.addEventListener("change", structureChanged); structureChanged();
+  const concentrated = toggle("concentrated_harm", "Potential concentrated harm", "Optional review flag; does not change legal authority or calculate a priority score.", false);
+  const irreversible = toggle("irreversible", "Potential irreversible harm", "Optional review flag for the manual priority rubric.", false);
+  form.append(field("text", "summary", "Finding summary", { required: true, minLength: 5, maxLength: 500 }).node,
+    el("div", { class: "field-grid" }, field("select", "category", "Category", { options: [["missing_obligation", "Potential uncovered obligation"], ["conflict", "Potential conflict"], ["stale_reference", "Stale reference"], ["public_commitment", "Unsupported public commitment"], ["opportunity", "Optional improvement"]] }).node,
+      field("select", "severity", "Issue severity", { options: [["low", "Low"], ["medium", "Medium"], ["high", "High"], ["critical", "Critical"]] }).node),
+    field("textarea", "rationale", "Analysis rationale", { required: true, minLength: 30, help: "Explain the issue, scope, exceptions, and counterevidence. Applicability is reviewed separately." }).node,
+    findingType.node, el("p", { class: "helper" }, "Changing evidence structure clears the passage editors. An absence finding needs an appointed reviewer's completeness confirmation before acceptance."), evidenceArea, searchArea,
+    el("details", { class: "settings-details", open: advanced() ? "" : null }, el("summary", {}, "Program, contract, and priority flags"),
+      field("text", "program_or_contract", "Attached program or contract (if applicable)", { maxLength: 2000, help: "Required for binding funding-condition or agreement findings. Name the actual program/contract and scope." }).node, concentrated.node, irreversible.node));
+  bindForm(form, async (values) => { const created = await api(`/runs/${encodeURIComponent(run.id)}/findings`, { method: "POST", body: values }); state.finding = created; state.view = "finding"; await refresh(); announce("Finding recorded as pending. Source verification, applicability, and acceptance remain separate reviews."); }, "Record finding", { dialogForm: true, transform: (values) => ({
+    summary: values.summary, category: values.category, severity: values.severity, rationale: values.rationale,
+    finding_type: findingType.input.value, program_or_contract: values.program_or_contract || null,
+    concentrated_harm: concentrated.input.checked, irreversible: irreversible.input.checked,
+    evidence: findingType.input.value === "absence" ? [] : evidenceEditors.map(({ selected, quote, location }) => ({ source_id: selected.input.value, quote: quote.input.value, location: location.input.value })),
+    search_source_ids: findingType.input.value === "absence" ? searchChoices.filter(({ input }) => input.checked).map(({ source }) => source.id) : [],
+    search_description: findingType.input.value === "absence" ? searchDescription.input.value : null
+  }) });
+  showDialog("Add an evidence-linked finding", "Use the evidence structure that fits the issue. This records a proposal and does not determine legal force.", form);
+}
+function importMethodSuggestions(run) {
+  const form = el("form");
+  const file = field("file", "method_file", "Method suggestion JSON", { required: true, accept: ".json,application/json", help: "Use the register conversion script. This import never accepts findings or treats historical approvals as current decisions." });
+  form.append(file.node, el("p", { class: "notice" }, "Suggestions retain their original IDs and provenance. Missing passages and current applicability remain unresolved and block acceptance."));
+  bindForm(form, async () => { const selected = file.input.files?.[0]; if (!selected || selected.size > 2 * 1024 * 1024) throw new Error("Choose a method JSON file smaller than 2 MiB."); const bundle = JSON.parse(await selected.text()); const result = await api(`/runs/${encodeURIComponent(run.id)}/method-findings`, { method: "POST", body: bundle }); await refresh(); announce(`Imported ${result.imported_count} pending suggestions. ${result.skipped_count || 0} duplicates skipped.`); }, "Import pending suggestions", { dialogForm: true });
+  showDialog("Import method findings", "Import human-review suggestions from the preserved governance register.", form);
 }
 async function exportRun(id) {
   try {

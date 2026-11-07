@@ -106,7 +106,11 @@ and tenant-qualified composite FKs. Those FKs prevent linking a finding or run
 association to another tenant's source. They do not provide row-level security
 for arbitrary SQL access. There is no database RLS policy, separate database per
 tenant, or production provisioning flow. `jurisdiction_id` is a text field, with
-no `jurisdictions` table. Public reference metadata does not make a tenant's
+no `jurisdictions` table. Application validation uses the fixed 50-state/DC and
+`US-FED` authority identifiers. Internal instruments must match the workspace;
+external sources may retain a real foreign jurisdiction as labelled context.
+Unknown `US-` identifiers are rejected rather than treated as another state.
+Public reference metadata does not make a tenant's
 database rows accessible to other tenants.
 
 ## Table and key inventory
@@ -124,7 +128,7 @@ by the application, not normalized into additional tables.
 | --- | --- | --- |
 | `tenants` | PK `id`. | `name`, `jurisdiction_id`, current `profile` JSON, `profile_hash`. |
 | `users` | PK `id`. | `name`. |
-| `memberships` | PK `(tenant_id, user_id)`; separate FKs to `tenants.id` and `users.id`. | `role`, constrained to `owner` or `reviewer`. |
+| `memberships` | PK `(tenant_id, user_id)`; separate FKs to `tenants.id` and `users.id`. | `role`, constrained to `owner` or `reviewer`; `can_determine_applicability`, a boolean flag defaulting off. |
 | `sessions` | PK `token_hash`; composite FK `(tenant_id, user_id)` to `memberships`. | `expires_at`. Stores a token hash rather than a raw session token. |
 | `preferences` | PK `(tenant_id, user_id)`; composite FK to `memberships`. | `view_mode`, constrained to `simple` or `advanced`. |
 | `workspace_settings` | PK/FK `tenant_id` to `tenants.id`. | `payload` with analysis switches, feature switches, horizon, monitoring controls; `updated_at`. |
@@ -141,7 +145,7 @@ reading those defaults does not insert singleton rows. Profiles live in
 | `sources` | PK `id`; FK `tenant_id` to `tenants.id`; UQ `(tenant_id, id)`; UQ `(tenant_id, content_hash)`. | `payload`, `content_hash`, `created_at`. Re-adding identical canonical input within a tenant returns the existing snapshot. |
 | `runs` | PK `id`; FK `tenant_id` to `tenants.id`; UQ `(tenant_id, id)`. | `payload`, `created_at`. |
 | `run_sources` | PK `(tenant_id, run_id, source_id)`; composite FKs `(tenant_id, run_id)` to `runs` and `(tenant_id, source_id)` to `sources`. | Association only; no JSON payload. |
-| `findings` | PK `id`; UQ `(tenant_id, id)`; composite FK `(tenant_id, run_id)` to `runs`; composite FKs `(tenant_id, instrument_source_id)` and `(tenant_id, external_source_id)` to `sources`. | `payload`, `created_at`; the two evidence-source IDs are also explicit SQL columns. |
+| `findings` | PK `id`; UQ `(tenant_id, id)`; composite FK `(tenant_id, run_id)` to `runs`; nullable composite FKs `(tenant_id, instrument_source_id)` and `(tenant_id, external_source_id)` to `sources`. | `payload`, `created_at`; the legacy paired IDs remain for external-gap compatibility. Evidence of other structures is validated and stored as a JSON list. |
 | `audit` | PK `id`, integer autoincrement; FK `tenant_id` to `tenants.id`; FK `actor_id` to `users.id`. | `actor_name`, `action`, `entity_type`, `entity_id`, `details` JSON, `created_at`. Entity references are polymorphic application links. |
 
 ### Monitoring and saved analysis: 4 tables
@@ -177,9 +181,9 @@ behavior; the schema does not implement automatic workspace cleanup.
 
 | Location | Meaningful fields |
 | --- | --- |
-| `sources.payload` | `kind` (`instrument`/`external`), title, jurisdiction, version, verbatim `text`, authority type, legal status, URL, effective dates, adoption reference, `source_key`, `replaces_source_id`, `reference_keys`, topics, reference scope. `effective_to` is exclusive. |
+| `sources.payload` | `kind` (`instrument`/`external`), title, jurisdiction, version, verbatim `text`, authority type, legal status, URL, effective dates, adoption reference, `source_key`, `replaces_source_id`, `reference_keys`, topics, reference scope; `verification`, `text_provenance`, `original_sha256`, `page_spans`, `page_count`, `failed_pages`. `effective_to` is exclusive. |
 | `runs.payload` | Title, `as_of`, selected `source_ids`, coverage note, pinned `profile`/`profile_hash`, analysis method, coverage status, code version; worker-created runs also record the trigger. |
-| `findings.payload` | Run ID, summary, category, severity, rationale, current status, analysis method, exact evidence quotes and locations, applicability determination/rationale/reviewer/time; latest decision and assignment when present. |
+| `findings.payload` | Run ID, summary, category, severity, rationale, current status, analysis method, `finding_type`, exact `evidence` list, `search_source_ids`, `search_description`, `program_or_contract`, optional `concentrated_harm`/`irreversible`; applicability determination, rationale, `authority_relied_on`, reviewer/time and `scope_complete`; latest decision and assignment when present. Imported suggestions also retain their original IDs, method-run provenance and unresolved `evidence_gaps`. |
 | `workspace_settings.payload` | `advanced_analysis`, nine feature switches, `horizon_days`; monitoring opt-in, source/context/effective-date controls, check interval, digest interval, IANA timezone. |
 | `workspace_context.payload` | Topics, programs, funding conditions; assets with ID, name, program, owner, and `source_keys`. |
 | `monitoring_jobs.payload` | Trigger, authorized actor, frozen snapshot of sources/history, profile/hash, settings, context, findings, workflow audit, analysis date, snapshot time; retry history/reset attribution when applicable. |
@@ -192,6 +196,77 @@ citations, or feature-result tables. Finding decisions and assignments update th
 current finding JSON and append audit events. Changing applicability clears the
 current decision and returns the finding to pending; the audit retains the prior
 decision and the reason its premise changed.
+
+The downloadable evidence wrapper now uses `schema_version: 2`: findings may
+have zero, two or more evidence items and an explicit `finding_type`. Clients
+must not assume every finding has exactly one internal/external pair. Exporting
+a historical run uses this current wrapper without rewriting its saved source,
+run or analysis payloads and hashes.
+
+### Verification, evidence structures and provenance
+
+Source type and verification are separate dimensions. `verification.status` is
+`unverified`, `verified` or `disputed`; the verification record also carries
+`primary_source_location`, and server-attributed `verified_by`, `verified_by_id`
+and `verified_at` for
+an actual verification action. Clients cannot supply a different person's name
+or an invented verification time. Source type is retained as supplied; a foreign
+regulation is not silently converted into US guidance.
+
+An owner can grant or revoke `can_determine_applicability` for an existing
+same-workspace member, including the owner, through
+`PATCH /api/memberships/{user_id}`. The grant is audited and starts off by default.
+It does not create a new role or establish that a person is legally qualified.
+Only a flagged member may verify a source, label it in force, or make a binding
+or conditional applicability determination. A policy owner still records acceptance
+or rejection. Each agency appoints its reviewers and decides whether one person
+may combine these responsibilities.
+
+`PATCH /api/sources/{source_id}/review` receives a verification object, reviewed
+legal status and a rationale. It creates a **new source revision** with a new hash
+and predecessor link, rather than editing the old source payload. Earlier reviews
+continue to reference the earlier source. Use a new review pinned to the verified
+revision before relying on it for a binding determination. Status changes and the
+relationship between old and new revisions are recorded in the audit trail.
+Repeating an identical unverified/disputed review of the same predecessor returns
+the existing derived revision. Invalid legacy metadata is flagged with 422;
+the original is preserved rather than silently relabelled or changed.
+
+| `finding_type` | Required evidence | Acceptance boundary |
+|---|---|---|
+| `external_gap` | One or more internal and external passages; each quotation is an exact excerpt from a source pinned to the run | Resolve applicability against the actual external support, not a score |
+| `internal_conflict` | Two or more distinct instrument passages; changing a location label cannot duplicate a quotation into another passage | Review the conflict and governing authority within the declared scope |
+| `absence` | No quotation; record the searched source IDs and a useful search description | A flagged reviewer must confirm completeness; all sources in the run's declared pinned corpus must have been searched before confirmation |
+
+Finding types describe evidence structure, while `category` describes the issue.
+Every supplied evidence/search source is checked for tenant scope and membership
+in the run's pinned inputs. Applicability requires a rationale of at least 30
+characters and an `authority_relied_on` record. Binding support must be a verified,
+in-force source effective on the review date. `funding_condition` and `agreement`
+sources also need the finding's actual `program_or_contract` attachment.
+`court_or_ag` material is flagged for human review and cannot automatically
+establish a binding or conditional determination. Foreign context alone cannot
+establish a US duty. Imported records with unresolved evidence gaps remain pending
+suggestions and cannot be accepted.
+Fresh acceptance also requires a current applicability record with identified
+authority and reviewer. Binding/conditional reviews retain the server-recorded
+permission at the time of review; revoking permission later does not erase that
+historical action. Older owner-only determinations are preserved, but cannot be
+newly accepted without the current review controls. Binding acceptance checks
+the verified source revision pinned to that run again.
+
+`text_provenance` distinguishes `original`, `extracted` and `transcribed` text.
+`original_sha256` identifies the exact source-file bytes, separately from the
+canonical JSON snapshot hash. PDF `page_spans` contain one-based page numbers and
+zero-based, half-open character offsets into the saved text. `page_count` includes
+unextractable pages, and `failed_pages` explicitly records their numbers/reasons.
+Editing extracted text clears its page mapping and marks it transcribed while
+retaining known extraction limitations. A hash does not mean the original binary
+is retained by the app, nor does successful extraction establish legal accuracy.
+
+The optional concentration-of-harm and irreversibility flags are exported with
+the finding. They support the manual priority rubric; they do not multiply scores
+or change authority, certainty or source verification.
 
 `content_hash` is SHA-256 over the canonical source input JSON, including metadata
 and text. It is not only a text checksum. `basis_hash` includes tenant, selected
@@ -207,6 +282,8 @@ duplicating work for the same basis within their unique-key scope.
 | Set analysis and automation controls | `workspace_settings`, `audit`; eligible pending jobs are cancelled and a new check may be queued. | Previous settings; analysis switches are independent of display mode. |
 | Maintain topics and inventory | `workspace_context`, `audit`; pending jobs may be cancelled and a new check queued. | Current context and declared source-key mappings. |
 | Add a source or source version | New `sources`, `audit`; optional `monitoring_jobs`. | Existing same-tenant hash or declared predecessor. Older rows remain. |
+| Review a source's verification or legal status | New revised `sources`, `audit`; optional `monitoring_jobs`. | Exact predecessor snapshot and delegated review permission; historical reviews remain unchanged. |
+| Grant or revoke applicability permission | `memberships`, `audit`. | Owner authority and existing same-tenant membership. |
 | Start a review | New `runs`, `run_sources`, `audit`. | Selected same-tenant source snapshots and current profile. |
 | Record evidence and review a finding | New/current `findings`, `audit`; optional `monitoring_jobs`. | Pinned run sources; exact quotes; owner applicability/decision checks. |
 | Run analysis or process a queued check | New `analysis_reports`, `audit`; worker may create `runs`/`run_sources`, update `monitoring_jobs`/`monitoring_state`, add `inapp_notices`. | Frozen analysis basis, local rules, source evidence. |
@@ -238,9 +315,12 @@ in the current storage workflow.
   keys, sets a 10-second connection timeout, and opens an explicit transaction.
   Reads use `BEGIN`; writes use `BEGIN IMMEDIATE`. Commit or rollback closes the
   connection. The read snapshot keeps exports coherent during concurrent edits.
-- Schema creation uses `CREATE TABLE/INDEX IF NOT EXISTS`; there is no versioned
-  migration framework. Adding columns or changing constraints requires an
-  explicit migration strategy, not just editing the creation SQL.
+- Schema creation uses `CREATE TABLE/INDEX IF NOT EXISTS`. Milestone 2 includes
+  an explicit local migration: add the membership flag with its default off and
+  rebuild the existing findings table with nullable legacy evidence columns in
+  a transaction, retaining existing rows and payload bytes. It adds no table or
+  migration framework. Reopening an already migrated database is repeatable;
+  future constraint changes still need an explicit strategy and tests.
 - A shared production service still needs production identity/provisioning,
   database-enforced tenant isolation, migrations, and operating procedures for
   backups, retention, restore, and workers. See [the roadmap](ROADMAP.md).

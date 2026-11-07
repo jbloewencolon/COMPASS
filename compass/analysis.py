@@ -11,10 +11,11 @@ import hashlib
 import json
 import re
 
-from .jurisdictions import is_us_authority
+from .jurisdictions import US_STATE_IDS, is_us_authority
+from .catalogue import catalogue_hash, load_catalogue, vague_terms
 
 
-ENGINE_VERSION = "rules-v3"
+ENGINE_VERSION = "rules-v4"
 FEATURES = (
     "change_detection", "obligations", "citations", "terminology", "coverage",
     "impact", "language", "deadlines", "peer_research",
@@ -34,11 +35,10 @@ SENTENCE_ABBREVIATIONS = (
     "O.C.G.A.", "Stat.", "Sec.", "No.", "e.g.", "i.e.", "Inc.", "Co.", "Corp.",
     "Dr.", "Mr.", "Ms.", "vs.", "et al.", "H.R.", "S.", "pt.", "subpt.", "ch.",
 )
-VAGUE_WORDING = (
-    "timely", "as needed", "appropriate", "reasonable", "promptly", "periodically", "regularly",
-    "where possible", "rigorous", "robust", "sufficient", "adequate", "best efforts",
-    "as appropriate", "to the extent practicable", "to extent practicable",
-)
+_CATALOGUE = load_catalogue()
+VAGUE_WORDING = vague_terms(_CATALOGUE)
+METHOD_CATALOGUE = {"version": _CATALOGUE["catalogue_version"], "hash": catalogue_hash(_CATALOGUE),
+                    "policy_review_status": _CATALOGUE["policy_review_status"], "vague_terms": list(VAGUE_WORDING)}
 VAGUE_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(value) for value in sorted(VAGUE_WORDING, key=len, reverse=True)) + r")\b", re.I)
 # Federal citation syntax is shared. State code and instrument patterns are
 # office-profile configuration, rather than assumptions in this pipeline.
@@ -101,9 +101,12 @@ def _evidence(source, start=0, end=None):
     end = min(len(text), start + 1500) if end is None else min(end, start + 1500)
     if not text or end <= start:
         return None
+    pages = [str(span["page"]) for span in source.get("page_spans", [])
+             if span["start"] < end and span["end"] > start]
+    page_location = "Page " + pages[0] if len(pages) == 1 else "Pages " + ", ".join(pages) if pages else ""
     return {
         "source_id": source["id"], "quote": text[start:end],
-        "location": f"Line {text.count(chr(10), 0, start) + 1}; characters {start + 1}–{end}",
+        "location": (page_location + "; " if pages else "") + f"Line {text.count(chr(10), 0, start) + 1}; characters {start + 1}–{end}",
     }
 
 
@@ -217,7 +220,7 @@ def _context_scope(source, jurisdiction_id):
     return "other_us_jurisdiction_context"
 
 
-def analyze(sources, history, settings, context, as_of, findings, audit_events, jurisdiction_id, profile=None):
+def analyze(sources, history, settings, context, as_of, findings, audit_events, jurisdiction_id, profile=None, method_catalogue=None):
     """Return bounded, reproducible review aids from explicitly supplied inputs.
 
     `as_of` is legal calendar time. Snapshot history is separately bounded by each
@@ -228,7 +231,9 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
     sources, history = sources or [], history or []
     findings, audit_events = findings or [], audit_events or []
     flags = settings.get("features", {})
-    report = {"method": ENGINE_VERSION, "engine_version": ENGINE_VERSION, "as_of": as_of,
+    catalogue = json.loads(json.dumps(method_catalogue or METHOD_CATALOGUE))
+    vague_pattern = VAGUE_PATTERN if catalogue == METHOD_CATALOGUE else re.compile(r"\b(?:" + "|".join(re.escape(term) for term in sorted(catalogue["vague_terms"], key=len, reverse=True)) + r")\b", re.I)
+    report = {"method": ENGINE_VERSION, "engine_version": ENGINE_VERSION, "method_catalogue": catalogue, "as_of": as_of,
               "features": {}, "summary": {}, "warnings": [], "coverage_status": "unverified"}
     counts = {}
     for feature in FEATURES:
@@ -453,7 +458,7 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
                 word_count = len(re.findall(r"\b[\w'-]+\b", sentence))
                 if word_count > 40:
                     reasons.append(f"Long sentence ({word_count} words)")
-                vague = VAGUE_PATTERN.findall(sentence)
+                vague = vague_pattern.findall(sentence)
                 if vague:
                     reasons.append("Potentially vague wording: " + ", ".join(dict.fromkeys(vague)))
                 if re.search(r"^(?:shall|must|should)\b|\bit is (?:required|expected)|\b(?:shall|must|should) be\b", sentence, re.I):
@@ -510,9 +515,9 @@ def analyze(sources, history, settings, context, as_of, findings, audit_events, 
 
     if active("peer_research"):
         local = [source for source in sources if source.get("kind") == "instrument" and source.get("jurisdiction_id") == jurisdiction_id]
-        public = [source for source in sources if source.get("kind") == "external" and source.get("reference_scope") == "public" and source.get("jurisdiction_id") != jurisdiction_id]
+        public = [source for source in sources if source.get("kind") == "external" and source.get("reference_scope") == "public" and source.get("jurisdiction_id") in US_STATE_IDS and source.get("jurisdiction_id") != jurisdiction_id]
         if not local or not public:
-            needs("peer_research", "Select local instruments and explicitly approved public external material from other jurisdictions for optional comparison.")
+            needs("peer_research", "Select local instruments and explicitly approved public external material from another US state or DC for optional comparison. Foreign and federal context remains in the source library.")
         local_tokens = [(source, _words(source.get("text", ""))) for source in local]
         for peer in public:
             best = None

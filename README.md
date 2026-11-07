@@ -17,7 +17,7 @@ external policy database, and language-model connection are still future work.
 [Policy materials](#policy-materials) |
 [Current boundaries and next inputs](#current-boundaries-and-next-inputs)
 
-The current delivery starts with correctness Milestones 0–1:
+The correctness cycle now includes Milestones 0–4 and accessibility CI:
 [implementation plan](docs/IMPLEMENTATION-PLAN.md). Legal errata are drafts for
 each agency's appointed reviewers; no central counsel or completed approval is
 assumed. Historical files remain unchanged.
@@ -26,9 +26,9 @@ assumed. Historical files remain unchanged.
 
 ### What does COMPASS do?
 
-Bring your office's policy text and the external references you want to compare.
-COMPASS highlights passages and missing information worth reviewing. A policy
-owner decides whether a finding applies, records a reason, and assigns follow-up.
+Bring your office's policy text and any external references you want to compare.
+COMPASS highlights passages and missing information worth reviewing. Your agency
+appoints an applicability reviewer; a policy owner records decisions and follow-up.
 
 ```text
   Your inputs          Local checks          Your review
@@ -54,18 +54,23 @@ Once an engineer has started the [local demo](#start-the-local-demo):
 
 1. **Choose a demo workspace.** Start with a policy-owner persona and keep the
    **View** selector set to **Simple**. All demo people, policies, and laws are
-   fictional examples.
-2. **Add sources.** In **Sources**, paste text or import a text file. Include at
-   least one internal policy and one external reference. Keep the title, version,
-   source location, and known dates with the text. PDF, DOCX, and scanned-document
-   import are not yet available.
+   fictional seeded examples.
+2. **Add sources.** In **Sources**, paste text, import UTF-8 text, or extract a
+   text-based PDF. Keep the title, version, source location, and known dates.
+   PDF extraction keeps the original file hash and page locations and lists any
+   unreadable pages. Use public or non-confidential text only. An internal-only
+   review can examine conflicts or absences; an external gap also needs an external
+   reference. DOCX and OCR remain deferred.
 3. **Select Check now.** Read the review cues, evidence, and missing-input notices.
    A message saying coverage is unverified means COMPASS cannot establish that
    all relevant material was supplied.
-4. **Record a finding and decision.** Open a review and use **Add finding** with
-   exact source quotations. A policy owner confirms applicability and chooses
-   accept, reject, or request more information, with a reason. Unknown
-   applicability prevents acceptance.
+4. **Review and decide.** The policy owner appoints reviewers through **Settings →
+   Agency review permissions**. An appointed reviewer can verify a source, which
+   creates a new revision; pin that revision in a new review to use it as binding
+   support. **Add finding** records an external gap, an internal conflict with
+   exact passages, or an absence with the actual sources searched. Absence needs
+   an appointed reviewer's completeness confirmation. Applicability records its
+   authority and rationale; the owner then accepts, rejects, or requests information.
 5. **Follow up and share.** Assign a person or team and an optional due date.
    Export a readable review brief. Advanced view also provides the full evidence
    JSON export.
@@ -82,6 +87,7 @@ checks the latest available source versions across your workspace.
 | **Settings: individual checks** | Which checks execute in new reports. | Policy owner, for the office workspace |
 | **Settings: Enable complex analysis** | Together enables or disables terminology, mapped impact, language, and peer/research checks, subject to their individual switches. The other five checks keep their own switches. | Policy owner |
 | **Settings: monitoring** | Local change triggers, recurring checks, date checks, and in-app digests. | Policy owner |
+| **Settings: Agency review permissions** | Explicitly delegates source verification and binding/conditional applicability review; defaults off. | Policy owner, with each grant audited |
 
 Switching views preserves your work and permissions. It does not turn analysis
 on or off. Changing analysis settings affects new reports; older reports keep
@@ -145,7 +151,8 @@ restart and is ignored by Git. Demo seeding is repeatable and preserves existing
 demo work. Fixtures include two Georgia offices and one California office to
 exercise office isolation independently of jurisdiction.
 
-The current engine is `rules-v3`. Default federal/bill reference patterns can be
+The current engine is `rules-v4`. Reports pin the draft method catalogue version,
+hash and advisory terms used, alongside their other inputs. Default federal/bill reference patterns can be
 extended through a profile's `citation_patterns` list and literal
 `sentence_abbreviations` list. Georgia identifier patterns are explicit profile
 data. Original synthetic demo profiles upgrade to `demo-2` without changing
@@ -189,14 +196,16 @@ saved review aids; the decision API separately records authorized human actions.
 | [`compass/static/`](compass/static/) | Simple/Advanced UI, accessible native controls, source import |
 | [`tests/`](tests/) | Synthetic API, analysis, evidence, tenant, and worker regressions |
 
-FastAPI and Uvicorn are runtime dependencies; HTTPX supports tests. Standard
+FastAPI and Uvicorn run the app; the named R-1 exception adds pinned pypdf for
+PDF extraction. HTTPX supports tests. Locked Playwright and axe packages are
+development-only browser/CI tooling. Standard
 library JSON, SQLite, dates, hashing, regular expressions, and text comparison
 cover the current analysis. There is no frontend build step or external broker.
 
 ### Analysis, state, and API contracts
 
-Each saved report pins its engine version, as-of date, source evidence, profile,
-settings, context, findings, and relevant workflow audit inputs. A changed basis
+Each saved report pins its engine version, catalogue identity/terms, as-of date,
+source evidence, profile, settings, context, findings, and workflow audit inputs. A changed basis
 produces a new report; matching work can be reused. Settings changes cancel
 pending obsolete work while retaining completed history.
 
@@ -210,7 +219,9 @@ history. Jobs and scheduled checks never approve findings or amend policies.
 |---|---|
 | Local demo identity | `/api/demo/personas`, `/api/demo/session`, `/api/session`, `/api/logout` |
 | Personal vs office configuration | `/api/preferences`, `/api/settings`, `/api/context` |
-| Sources and reviews | `/api/sources`, `/api/runs`, `/api/runs/{id}/analyze` |
+| Sources and reviews | `/api/sources`, `/api/sources/{id}/review`, `/api/import/pdf-text`, `/api/runs`, `/api/runs/{id}/analyze` |
+| Review permissions | `/api/memberships`, `/api/memberships/{user_id}` |
+| Method suggestions | `/api/runs/{id}/method-findings` imports BASE-1 as pending suggestions |
 | Results | `/api/insights` for workspace results; `?run_id={id}` for a selected review |
 | Decisions and follow-up | `/api/findings/{id}/applicability`, `/decisions`, `/assignment` under the same finding |
 | Monitoring | `/api/monitoring`, `/api/monitoring/check`, `/api/jobs/{id}/retry`, `/api/notices/{id}/read` |
@@ -227,6 +238,7 @@ evidence prerequisites, heuristics, output limits, and scheduling semantics.
 .venv/bin/python -m unittest discover -s tests -v
 python3 scripts/check_case_study.py
 node --check compass/static/app.js
+.venv/bin/python scripts/evaluate_rules.py --baseline tests/evaluation/baseline.json
 ```
 
 Tests use temporary databases and synthetic text. They check implementation
@@ -265,13 +277,13 @@ SQL-enforced relationship, and application-managed link.
 
 | Product concept | Physical storage |
 |---|---|
-| People, office access, and login | `users`, `tenants`, `memberships`, `sessions` |
+| People, office access, review permission, and login | `users`, `tenants`, `memberships`, `sessions` |
 | Simple/Advanced selection | `preferences`, keyed by office and user |
 | Current analysis switches | `workspace_settings.payload` |
 | Current topics, programs, funding descriptions, inventory mappings | `workspace_context.payload` |
 | Preserved policy/reference versions | `sources.payload`, `sources.content_hash` |
 | Review date, pinned profile, and selected inputs | `runs.payload`, `run_sources` |
-| Findings, current applicability/decision, assignment | `findings.payload` |
+| Finding type/evidence/search scope, applicability/decision, priority flags | `findings.payload` |
 | Historical attributed actions | `audit`, including JSON `details` |
 | Durable analysis work and saved outputs | `monitoring_jobs`, `analysis_reports` |
 | Schedule progress and workspace inbox | `monitoring_state`, `inapp_notices` |
@@ -321,7 +333,7 @@ still needs identity integration, a production database/isolation design,
 tenant provisioning, deployment/TLS policy, retention, backup/restore, operational
 limits, and real-source evaluation.
 
-No live external feed, LLM/embeddings, email delivery, PDF/DOCX/OCR ingestion,
+No live external feed, LLM/embeddings, email delivery, DOCX/OCR ingestion,
 profile onboarding/sign-off UI, or amendment generation is connected. Pattern
 checks do not establish semantic contradiction, legal force, a compliance
 percentage, or complete coverage. Audit records retain application history but
@@ -331,7 +343,10 @@ The Georgia prompts, registers, seven instrument PDFs, and BASE-1 report have
 been received and organized. Their legal currency, decision records, and internal
 consistency still need review. Next inputs include the future database contract,
 additional authoritative version history, a second-state partner corpus, and
-independently reviewed evaluation cases.
+three agency-appointed people to label/adjudicate the prepared 150-sentence set.
+The evaluation runner deliberately reports pending, with no accuracy or severe-miss
+claims, until those independent labels exist. Catalogue-driven semantic coverage
+(A-7) also waits for agency review of the draft catalogue.
 
 The former intake folder was removed from `main` after organization. Use the
 case-study catalog and preservation manifest to find the uploaded materials;
@@ -345,8 +360,12 @@ additional uploads should identify their jurisdiction, source version and purpos
 | [ROADMAP.md](docs/ROADMAP.md) | Phased delivery, implementation choices, and production gates |
 | [Method](method/README.md) | Reusable review workflow and jurisdiction-neutral templates |
 | [Georgia case study](case-studies/georgia/README.md) | Uploaded source pack, BASE-1, variants, and review status |
-| [Implementation plan](docs/IMPLEMENTATION-PLAN.md) | Milestone 0–1 delivery, agreed decisions, subsequent work and deferral triggers |
+| [Implementation plan](docs/IMPLEMENTATION-PLAN.md) | Correctness-cycle ticket status, human dependencies and deferral triggers |
 | [Georgia errata](case-studies/georgia/ERRATA.md) | Snapshot-keyed legal/content review items, all pending agency review |
+| [PDF import](docs/PDF-IMPORT.md) | Page provenance, extraction limits and the single runtime dependency exception |
+| [Evaluation](docs/EVALUATION.md) | 150 passages, blind labeling instructions, metrics and severe-miss gates |
+| [Method import](docs/METHOD-IMPORT.md) | Convert/import all 35 BASE-1 suggestions without adopting historical decisions |
+| [Accessibility](docs/ACCESSIBILITY.md) | Automated CI checks and remaining human review |
 
 ---
 
@@ -364,6 +383,9 @@ COMPASS/
 |   |-- app.py               API, authorization, and review workflow
 |   |-- analysis.py          Rule-based analysis checks
 |   |-- monitoring.py        Jobs, schedules, and in-app notices
+|   |-- pdf_import.py        Page-aware PDF extraction
+|   |-- method_import.py     BASE-1 suggestions with provenance
+|   |-- catalogue.py         Standard-library method data validation
 |   |-- models.py            Validated input and settings contracts
 |   |-- configuration.py     Workspace settings and context
 |   |-- store.py             SQLite schema and storage helpers
@@ -371,6 +393,8 @@ COMPASS/
 |   |-- __init__.py          Package version
 |   `-- __main__.py          Local application entry point
 |-- method/                  Jurisdiction-neutral review method
+|   |-- catalogue.yaml       Versioned draft method data (JSON syntax)
+|   |-- priority-rubric.md    Manual anchors, harm flags and tie-breaks
 |   |-- prompts/             Portable workflow adaptations
 |   `-- templates/           Jurisdiction intake and package outline
 |-- case-studies/
@@ -386,13 +410,18 @@ COMPASS/
 |       |-- maintenance/    Historical task checklist
 |       |-- archive/        Distinct variants and upload metadata
 |       `-- provenance/     Original paths and preservation hashes
+|-- data/method-import/      Generated pending BASE-1 suggestions
+|-- scripts/                 Preservation, import and evaluation tools
+|-- .github/workflows/       Regression and accessibility CI
 |-- docs/                    Reference documentation
 |   |-- ANALYSIS.md          Analysis controls, behavior, and limits
 |   |-- DATABASE.md          Tables, relationships, and data lifecycle
 |   |-- INPUTS.md            Required inputs and integration contract
 |   `-- ROADMAP.md           Development phases and release gates
 |-- tests/                   Automated regression tests
+|   `-- evaluation/          150 passages and blank independent labels
 |-- README.md                User and engineering guides
+|-- package.json             Locked development-only browser tooling
 |-- pyproject.toml           Package metadata and dependencies
 |-- uv.lock                  Locked dependency versions
 `-- .gitignore               Local files excluded from version control

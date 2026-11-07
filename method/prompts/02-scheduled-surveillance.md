@@ -1,5 +1,8 @@
 # 02: Scheduled surveillance
 
+**Method version:** `0.1.0-draft`
+**Policy review status:** draft — agency review pending; no approval recorded.
+
 Use the cadence set in the [jurisdiction intake](../templates/jurisdiction-intake.md).
 No month or legislative-session variant is assumed by this template.
 

@@ -1,5 +1,8 @@
 # 03: Trigger assessment
 
+**Method version:** `0.1.0-draft`
+**Policy review status:** draft — agency review pending; no approval recorded.
+
 Use this for a legal, operational, or technical event that may affect the
 in-scope instruments. The response window comes from the jurisdiction intake
 and the event's verified dates, not another state's calendar.

@@ -1,0 +1,76 @@
+name: Correctness and accessibility
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install application and development checks
+        run: |
+          python -m pip install -e '.[test]'
+          npm ci --ignore-scripts
+          npx --no-install playwright install --with-deps chromium
+      - name: Test rules, API and migrations
+        run: python -m unittest discover -s tests -v
+      - name: Record evaluation status and enforce an available severe-miss baseline
+        run: python scripts/evaluate_rules.py --baseline tests/evaluation/baseline.json --output test-results/evaluation.json
+      - name: Verify preserved originals and JavaScript syntax
+        run: |
+          python scripts/check_case_study.py
+          node --check compass/static/app.js
+          node --check scripts/check_ui.mjs
+          node --check scripts/check_import_ui.mjs
+          node --check scripts/check_review_ui.mjs
+      - name: Audit core pages with axe
+        shell: bash
+        run: |
+          python -m compass --demo --db "$RUNNER_TEMP/compass-ci.sqlite3" --port 8765 > "$RUNNER_TEMP/compass-ci.log" 2>&1 &
+          COMPASS_PID=$!
+          trap 'kill "$COMPASS_PID" 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import time
+          from urllib.error import URLError
+          from urllib.request import urlopen
+          deadline = time.monotonic() + 30
+          while True:
+              try:
+                  with urlopen('http://127.0.0.1:8765/api/health', timeout=1) as response:
+                      if response.status == 200:
+                          break
+              except (URLError, TimeoutError):
+                  pass
+              if time.monotonic() >= deadline:
+                  raise SystemExit('Local demo did not become ready')
+              time.sleep(0.2)
+          PY
+          npm run check:ui -- --url http://127.0.0.1:8765 --output test-results/accessibility.json
+          npm run check:import-ui -- --url http://127.0.0.1:8765 --output test-results/import-ui.json
+          npm run check:review-ui -- --url http://127.0.0.1:8765 --output test-results/review-ui.json
+      - name: Retain evaluation and accessibility review reports
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: validation-review
+          path: |
+            test-results/accessibility.json
+            test-results/evaluation.json
+            test-results/import-ui.json
+            test-results/review-ui.json
+          if-no-files-found: warn
+          retention-days: 14

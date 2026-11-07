@@ -25,12 +25,19 @@ class WorkflowTests(unittest.TestCase):
         self.counter = 0
         self.login()
 
-    def login(self, persona="ga-owner"):
+    def login(self, persona="ga-owner", appoint=True):
         response = self.client.post("/api/demo/session", json={"persona": persona})
         self.assertEqual(response.status_code, 200, response.text)
         session = self.client.get("/api/session")
         self.assertEqual(session.status_code, 200, session.text)
         self.session = session.json()
+        # These existing workflow tests exercise a combined owner/reviewer office.
+        # The permission is a real, attributed API grant; new D-2 tests separately
+        # exercise the default-off and unappointed-owner cases.
+        if appoint and self.session["workspace"]["role"] == "owner":
+            granted = self.client.patch(f"/api/memberships/{persona}", json={"can_determine_applicability": True})
+            self.assertEqual(granted.status_code, 200, granted.text)
+            self.session = self.client.get("/api/session").json()
         return self.session
 
     def dashboard(self):
@@ -57,6 +64,7 @@ class WorkflowTests(unittest.TestCase):
             "source_url": None,
             "effective_from": "2026-01-01",
             "effective_to": None,
+            "verification": {"status": "verified", "primary_source_location": "Synthetic test fixture; not actual legal verification"},
         }
         payload.update(overrides)
         response = self.client.post("/api/sources", json=payload)
@@ -112,6 +120,7 @@ class WorkflowTests(unittest.TestCase):
             json={
                 "determination": value,
                 "rationale": "Policy owner reviewed the scope and supporting fixture.",
+                "authority_relied_on": "Synthetic fixture authority only; not a real legal assertion.",
             },
         )
 
@@ -340,6 +349,7 @@ class WorkflowTests(unittest.TestCase):
         source = self.source()
         before = self.dashboard()["counts"]["sources"]
         payload = {key: value for key, value in source.items() if key not in {"id", "hash", "created_at"}}
+        payload["verification"] = {key: value for key, value in payload["verification"].items() if key in {"status", "primary_source_location"}}
         response = self.client.post("/api/sources", json=payload)
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.json(), source)
@@ -462,7 +472,7 @@ class WorkflowTests(unittest.TestCase):
         for source in dashboard["sources"]:
             self.assertIn("synthetic", (source["title"] + " " + source["text"]).lower())
 
-    def test_run_requires_both_instrument_and_external_inputs(self):
+    def test_run_allows_an_internal_only_absence_review_but_not_external_only(self):
         instrument = self.source()
         response = self.client.post(
             "/api/runs",
@@ -473,7 +483,10 @@ class WorkflowTests(unittest.TestCase):
                 "coverage_note": "Missing external source.",
             },
         )
-        self.assertIn(response.status_code, (400, 422))
+        self.assertEqual(response.status_code, 201, response.text)
+        external = self.source("external")
+        payload = {"title": "External only review", "as_of": "2026-11-03", "source_ids": [external["id"]], "coverage_note": "No internal source supplied"}
+        self.assertEqual(self.client.post("/api/runs", json=payload).status_code, 422)
 
 
 if __name__ == "__main__":

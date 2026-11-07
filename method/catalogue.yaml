@@ -1,0 +1,1366 @@
+{
+  "schema_version": 1,
+  "catalogue_version": "0.1.0-draft",
+  "policy_review_status": "draft",
+  "agency_reviews": [],
+  "scope": {
+    "primary": [
+      "US-FED",
+      "US-STATES",
+      "US-DC"
+    ],
+    "foreign_context": "retained_labelled_not_presumed_binding"
+  },
+  "provenance": [
+    {
+      "path": "case-studies/georgia/prompts/prompt-01-annual-baseline-assessment.docx",
+      "sha256": "be34d3c673425fa45182779796ab17940a4dd9abdca39fbb0414df74177e879c",
+      "sections": [
+        "Part 4.1 D1-D9",
+        "Part 4A C1-C7",
+        "Part 4.2 a-ww including k2",
+        "Appendix B 1-22",
+        "Part 5 rule 11; Notes adversarial second pass",
+        "Part 3.3 and 3.5: authority and confidence discipline, adapted without conflating technical evidence with binding law"
+      ],
+      "derivation": "Neutral adaptation of extracted Word XML; not a legal verification or verbatim source replacement"
+    },
+    {
+      "path": "case-studies/georgia/prompts/prompt-04-amendment-package.docx",
+      "sha256": "c91d995995fa13b1c3aacf0d2feeb89e54afbc1e1878b6ff992a73e2925d08b9",
+      "sections": [
+        "Part 2 drafting rules",
+        "Part 3 required output"
+      ],
+      "derivation": "Audience and operative-provision review adapted without Georgia defaults"
+    },
+    {
+      "path": "case-studies/georgia/templates/amendment-package-format.docx",
+      "sha256": "65f75f487a7dd9ee68654c90289b383c266fd08a2b5e716037a320b17212e42e",
+      "sections": [
+        "Amendment card: plain-language Today/After; five-point check"
+      ],
+      "derivation": "Presentation structure only; historical worked legal examples are not defaults"
+    }
+  ],
+  "defect_classes": [
+    {
+      "id": "D1",
+      "label": "Outdated assumption",
+      "diagnostic": "Does the provision assume a technical, market or legal condition that no longer holds? Check embedded AI, changing models, actions and actual review practices.",
+      "source_locator": "Prompt 01 Part 4.1 D1",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "D2",
+      "label": "Ambiguous or unfalsifiable language",
+      "diagnostic": "Could competent reviewers reach opposite conclusions on the same facts because the actor, threshold, frequency or standard is unspecified?",
+      "source_locator": "Prompt 01 Part 4.1 D2",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "D3",
+      "label": "Governance gap",
+      "diagnostic": "Who decides, on what evidence, by when, with what escalation, retained record and consequence?",
+      "source_locator": "Prompt 01 Part 4.1 D3",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "D4",
+      "label": "Unenforceable or unverifiable provision",
+      "diagnostic": "What artifact demonstrates compliance, and can it be obtained? For a third-party duty, identify an actual legal, procurement or contract hook.",
+      "source_locator": "Prompt 01 Part 4.1 D4",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "D5",
+      "label": "Missing safeguard",
+      "diagnostic": "Does a supported material in-scope risk lack a corresponding control within the declared corpus? Do not infer an external legal obligation from absence alone.",
+      "source_locator": "Prompt 01 Part 4.1 D5",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "D6",
+      "label": "Scope or threshold mismatch",
+      "diagnostic": "Do definitions, thresholds, tiers and coverage boundaries match the verified legal and operational scope?",
+      "source_locator": "Prompt 01 Part 4.1 D6",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "D7",
+      "label": "Internal conflict or legal incoherence",
+      "diagnostic": "Does exact text conflict with another in-scope provision, a separately verified binding obligation or a public commitment? Preserve context before claiming contradiction.",
+      "source_locator": "Prompt 01 Part 4.1 D7",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "D8",
+      "label": "Overcommitment",
+      "diagnostic": "Does a claim promise a capability, guarantee or standard the agency cannot demonstrate, and who may rely on it?",
+      "source_locator": "Prompt 01 Part 4.1 D8",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "D9",
+      "label": "Tier misallocation",
+      "diagnostic": "Does a duty or public commitment sit in an instrument unable to carry it under the local hierarchy, or lack an operational counterpart?",
+      "source_locator": "Prompt 01 Part 4.1 D9",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    }
+  ],
+  "coherence_checks": [
+    {
+      "id": "C1",
+      "label": "Definition integrity",
+      "diagnostic": "Compare exact definitions across the declared family and explain what changes with each scope difference.",
+      "source_locator": "Prompt 01 Part 4A C1",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "C2",
+      "label": "Obligation force",
+      "diagnostic": "Map mandatory, advisory, permissive and reserved-right wording; distinguish wording from actual authority and feasibility.",
+      "source_locator": "Prompt 01 Part 4A C2",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "C3",
+      "label": "Tier allocation",
+      "diagnostic": "Locate notice, explanation, contestability, evaluation, reporting, nondeployment, human authority, bias assessment and data governance in the actual local tiers.",
+      "source_locator": "Prompt 01 Part 4A C3",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "C4",
+      "label": "Cross-reference integrity",
+      "diagnostic": "Check internal and external references, exact target versions, broken links, cycles and missing targets; unresolved is not invalid.",
+      "source_locator": "Prompt 01 Part 4A C4",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "C5",
+      "label": "Public-facing consistency",
+      "diagnostic": "Compare public statements with operative internal instruments and describe supported divergence and reliance implications.",
+      "source_locator": "Prompt 01 Part 4A C5",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "C6",
+      "label": "Framework provenance",
+      "diagnostic": "Identify the source of adopted frameworks, current status and omitted elements; preserve the distinction between provenance and governing authority.",
+      "source_locator": "Prompt 01 Part 4A C6",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    },
+    {
+      "id": "C7",
+      "label": "Currency and maintenance",
+      "diagnostic": "Check review dates, revisions, owners, off-cycle triggers and the jurisdiction-specific legislative calendar.",
+      "source_locator": "Prompt 01 Part 4A C7",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ]
+    }
+  ],
+  "coverage_domains": [
+    {
+      "id": "residents_due_process",
+      "label": "Residents and due process",
+      "elements": [
+        {
+          "id": "a",
+          "source_locator": "Prompt 01 Part 4.2 a",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Individual notice",
+          "description": "Is notice of automated involvement addressed for the covered agency action and audience?",
+          "indicative_phrasings": [
+            "automated system is being used",
+            "notice to affected individuals"
+          ]
+        },
+        {
+          "id": "b",
+          "source_locator": "Prompt 01 Part 4.2 b",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Adverse-outcome explanation",
+          "description": "Is an explanation of an adverse outcome specified with appropriate scope and risk?",
+          "indicative_phrasings": [
+            "explanation of an adverse outcome",
+            "reason for denial"
+          ]
+        },
+        {
+          "id": "c",
+          "source_locator": "Prompt 01 Part 4.2 c",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Contestability and review",
+          "description": "Are any applicable appeal, human redetermination and timing requirements addressed for the particular program, protected interest and action?",
+          "indicative_phrasings": [
+            "appeal route",
+            "human redetermination"
+          ]
+        },
+        {
+          "id": "d",
+          "source_locator": "Prompt 01 Part 4.2 d",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Human alternative or fallback",
+          "description": "Is a supported resident alternative/fallback need addressed, including accessible nonautomated channels?",
+          "indicative_phrasings": [
+            "human alternative",
+            "fallback channel"
+          ]
+        },
+        {
+          "id": "e",
+          "source_locator": "Prompt 01 Part 4.2 e",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Procedural due process",
+          "description": "Is procedural due-process analysis tied to an actual protected interest, agency action and governing source rather than all funded benefits?",
+          "indicative_phrasings": [
+            "protected property interest",
+            "opportunity to be heard"
+          ]
+        },
+        {
+          "id": "f",
+          "source_locator": "Prompt 01 Part 4.2 f",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Language access",
+          "description": "Are verified recipient/program-specific language-access requirements and consequential translation risks addressed? Keep distinct legal bases and enforcement routes separate.",
+          "indicative_phrasings": [
+            "meaningful language access",
+            "consequential translation"
+          ]
+        },
+        {
+          "id": "g",
+          "source_locator": "Prompt 01 Part 4.2 g",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Accessible AI interfaces and content",
+          "description": "Are accessible interfaces, generated documents, captions and mobile/web content addressed under the separately verified applicable regimes and dates?",
+          "indicative_phrasings": [
+            "accessible web content",
+            "mobile application accessibility"
+          ]
+        },
+        {
+          "id": "h",
+          "source_locator": "Prompt 01 Part 4.2 h",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Minors and conversational systems",
+          "description": "Are child-facing systems, safety, privacy and any verified restrictions addressed within actual agency scope?",
+          "indicative_phrasings": [
+            "minors",
+            "child safety guardrails"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "records_transparency_evidence",
+      "label": "Records, transparency and evidence",
+      "elements": [
+        {
+          "id": "i",
+          "source_locator": "Prompt 01 Part 4.2 i",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Artifact classification and retention",
+          "description": "Are prompts, inputs, outputs, logs and model/configuration artifacts classified and retained/disposed of under the applicable schedule?",
+          "indicative_phrasings": [
+            "record retention schedule",
+            "prompts outputs and logs"
+          ]
+        },
+        {
+          "id": "j",
+          "source_locator": "Prompt 01 Part 4.2 j",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Disclosure and exemptions",
+          "description": "Are disclosure processes and verified exemptions addressed, including vendor claims over public-decision artifacts?",
+          "indicative_phrasings": [
+            "disclosure exemption",
+            "trade secrecy claim"
+          ]
+        },
+        {
+          "id": "k",
+          "source_locator": "Prompt 01 Part 4.2 k",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Litigation hold and evidence",
+          "description": "Are preservation holds and evidentiary reliability addressed for the material actually held?",
+          "indicative_phrasings": [
+            "litigation hold",
+            "evidentiary reliability"
+          ]
+        },
+        {
+          "id": "k2",
+          "source_locator": "Prompt 01 Part 4.2 k2",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Inherited access restrictions",
+          "description": "Do retrieval, indexing and generation preserve applicable restrictions on existing holdings, including sensitive cultural-resource or human-remains information where relevant?",
+          "indicative_phrasings": [
+            "restricted holding",
+            "archaeological site location"
+          ]
+        },
+        {
+          "id": "l",
+          "source_locator": "Prompt 01 Part 4.2 l",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Public inventory",
+          "description": "Is any required or adopted public AI inventory supported by a schema, cadence, validation and accountable custodian?",
+          "indicative_phrasings": [
+            "inventory schema",
+            "accountable custodian"
+          ]
+        },
+        {
+          "id": "m",
+          "source_locator": "Prompt 01 Part 4.2 m",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Reporting readiness",
+          "description": "Can the agency satisfy verified reporting duties and distinguish readiness for proposals from current obligations?",
+          "indicative_phrasings": [
+            "statutory reporting",
+            "usage plan requirements"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "acquisition_supply_chain",
+      "label": "Acquisition and supply chain",
+      "elements": [
+        {
+          "id": "n",
+          "source_locator": "Prompt 01 Part 4.2 n",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Embedded capability changes",
+          "description": "Are newly activated AI features in existing software reviewed even without a procurement event?",
+          "indicative_phrasings": [
+            "AI feature activated",
+            "software already owned"
+          ]
+        },
+        {
+          "id": "o",
+          "source_locator": "Prompt 01 Part 4.2 o",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Free and consumer tools",
+          "description": "Are trials, browser extensions, embedded features and consumer tools within supported scope?",
+          "indicative_phrasings": [
+            "free trial",
+            "browser extension"
+          ]
+        },
+        {
+          "id": "p",
+          "source_locator": "Prompt 01 Part 4.2 p",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Personal accounts and devices",
+          "description": "Are shadow use and exposure of agency data through personal accounts/devices addressed?",
+          "indicative_phrasings": [
+            "personal account",
+            "personal device"
+          ]
+        },
+        {
+          "id": "q",
+          "source_locator": "Prompt 01 Part 4.2 q",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Enforceable vendor clauses",
+          "description": "Do vendor duties have corresponding supported contract/procurement terms?",
+          "indicative_phrasings": [
+            "contract clause",
+            "procurement condition"
+          ]
+        },
+        {
+          "id": "r",
+          "source_locator": "Prompt 01 Part 4.2 r",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Vendor evaluation evidence",
+          "description": "What evaluation evidence is received and checked, and is attestation distinguished from verification?",
+          "indicative_phrasings": [
+            "vendor evaluation evidence",
+            "attestation and verification"
+          ]
+        },
+        {
+          "id": "s",
+          "source_locator": "Prompt 01 Part 4.2 s",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Supplier change notice",
+          "description": "Are model, version and subprocessor changes notified and reviewed?",
+          "indicative_phrasings": [
+            "model version change",
+            "subprocessor notification"
+          ]
+        },
+        {
+          "id": "t",
+          "source_locator": "Prompt 01 Part 4.2 t",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Exit and continuity",
+          "description": "Are portability, withdrawal and supplier-failure dependencies addressed?",
+          "indicative_phrasings": [
+            "exit portability",
+            "vendor withdrawal"
+          ]
+        },
+        {
+          "id": "u",
+          "source_locator": "Prompt 01 Part 4.2 u",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Underlying dependencies",
+          "description": "Are third-party models, APIs and subprocessors below the direct product understood?",
+          "indicative_phrasings": [
+            "third-party model",
+            "API dependency"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "agentic_operation",
+      "label": "Agentic and autonomous operation",
+      "elements": [
+        {
+          "id": "v",
+          "source_locator": "Prompt 01 Part 4.2 v",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Action authority and limits",
+          "description": "Are agent commitments, permitted actions and spend/transaction limits defined?",
+          "indicative_phrasings": [
+            "spend limit",
+            "transaction authority"
+          ]
+        },
+        {
+          "id": "w",
+          "source_locator": "Prompt 01 Part 4.2 w",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Identity and tool access",
+          "description": "Are credentials, least privilege and attribution to an authorizing human principal specified?",
+          "indicative_phrasings": [
+            "least-privilege tool access",
+            "human principal"
+          ]
+        },
+        {
+          "id": "x",
+          "source_locator": "Prompt 01 Part 4.2 x",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Interruptibility",
+          "description": "Who can pause/terminate operation and how is that possible outside business hours?",
+          "indicative_phrasings": [
+            "pause a system",
+            "terminate a running agent"
+          ]
+        },
+        {
+          "id": "y",
+          "source_locator": "Prompt 01 Part 4.2 y",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Delegation chains",
+          "description": "Are multi-agent and cross-vendor delegation boundaries visible and controlled?",
+          "indicative_phrasings": [
+            "multi-agent delegation",
+            "cross-vendor delegation"
+          ]
+        },
+        {
+          "id": "z",
+          "source_locator": "Prompt 01 Part 4.2 z",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Memory and long-running tasks",
+          "description": "Are persistent memory and long-horizon authorizations scoped and revocable?",
+          "indicative_phrasings": [
+            "persistent memory",
+            "long-horizon authorization"
+          ]
+        },
+        {
+          "id": "aa",
+          "source_locator": "Prompt 01 Part 4.2 aa",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Action reconstruction",
+          "description": "Do retained logs support reconstruction of agent actions?",
+          "indicative_phrasings": [
+            "reconstruct actions",
+            "agent action log"
+          ]
+        },
+        {
+          "id": "bb",
+          "source_locator": "Prompt 01 Part 4.2 bb",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Untrusted-content injection",
+          "description": "Are retrieved/emailed inputs treated as data and are injection consequences addressed when tools hold agency credentials?",
+          "indicative_phrasings": [
+            "prompt injection",
+            "untrusted retrieved content"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data_security",
+      "label": "Data and security",
+      "elements": [
+        {
+          "id": "cc",
+          "source_locator": "Prompt 01 Part 4.2 cc",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Sector and program regimes",
+          "description": "Are actual program/data/contract regimes identified before processing, with scope and conditions verified?",
+          "indicative_phrasings": [
+            "applicable program data regime",
+            "grant conditions"
+          ]
+        },
+        {
+          "id": "dd",
+          "source_locator": "Prompt 01 Part 4.2 dd",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Operational protection standard",
+          "description": "Are anonymization, encryption and other protection claims defined and achievable for the modalities used?",
+          "indicative_phrasings": [
+            "operational protection standard",
+            "achievable anonymization"
+          ]
+        },
+        {
+          "id": "ee",
+          "source_locator": "Prompt 01 Part 4.2 ee",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Training and vendor retention",
+          "description": "Are training, fine-tuning, provider retention and model-improvement uses of agency data addressed?",
+          "indicative_phrasings": [
+            "fine-tuning on agency data",
+            "vendor retention"
+          ]
+        },
+        {
+          "id": "ff",
+          "source_locator": "Prompt 01 Part 4.2 ff",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Inference and re-identification",
+          "description": "Are memorization, sensitive inference and re-identification risks considered where supported?",
+          "indicative_phrasings": [
+            "sensitive trait inference",
+            "re-identification"
+          ]
+        },
+        {
+          "id": "gg",
+          "source_locator": "Prompt 01 Part 4.2 gg",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Breach routes",
+          "description": "Are verified breach-notification duties reconciled with internal reporting paths and clocks?",
+          "indicative_phrasings": [
+            "breach notification",
+            "data officer reporting"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "assurance_incident_management",
+      "label": "Assurance and incident management",
+      "elements": [
+        {
+          "id": "hh",
+          "source_locator": "Prompt 01 Part 4.2 hh",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Incident definition and clock",
+          "description": "Are AI incidents distinguished from misuse/data breach, with severity, internal timing and verified external reporting routes?",
+          "indicative_phrasings": [
+            "incident severity",
+            "notification clock"
+          ]
+        },
+        {
+          "id": "ii",
+          "source_locator": "Prompt 01 Part 4.2 ii",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Predeployment gate",
+          "description": "Who evaluates, against which standard and with what deployment-blocking threshold?",
+          "indicative_phrasings": [
+            "predeployment evaluation",
+            "deployment-blocking threshold"
+          ]
+        },
+        {
+          "id": "jj",
+          "source_locator": "Prompt 01 Part 4.2 jj",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Evaluation validity",
+          "description": "Are test contamination, construct validity and system-versus-model evidence addressed?",
+          "indicative_phrasings": [
+            "construct validity",
+            "benchmark contamination"
+          ]
+        },
+        {
+          "id": "kk",
+          "source_locator": "Prompt 01 Part 4.2 kk",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Independent evaluation capacity",
+          "description": "Is evaluation authority supported by actual triggers, resources and evidence of use?",
+          "indicative_phrasings": [
+            "independent evaluation",
+            "reserved right to evaluate"
+          ]
+        },
+        {
+          "id": "ll",
+          "source_locator": "Prompt 01 Part 4.2 ll",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Postdeployment re-evaluation",
+          "description": "Are drift and model, prompt, fine-tuning, tool or capability changes tied to review triggers?",
+          "indicative_phrasings": [
+            "postdeployment monitoring",
+            "drift review"
+          ]
+        },
+        {
+          "id": "mm",
+          "source_locator": "Prompt 01 Part 4.2 mm",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Good-faith reporting",
+          "description": "Are safety reporting and nonretaliation protections addressed separately from misuse reporting?",
+          "indicative_phrasings": [
+            "good-faith safety report",
+            "nonretaliation"
+          ]
+        },
+        {
+          "id": "nn",
+          "source_locator": "Prompt 01 Part 4.2 nn",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Audit authority and capacity",
+          "description": "What is audited, by whom, at what cadence and under what supported authority/resources?",
+          "indicative_phrasings": [
+            "audit cadence",
+            "audit capacity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "institutional_workforce",
+      "label": "Institutional and workforce",
+      "elements": [
+        {
+          "id": "oo",
+          "source_locator": "Prompt 01 Part 4.2 oo",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Accountability chain",
+          "description": "Are staff, office and enterprise decision rights and handoffs explicit?",
+          "indicative_phrasings": [
+            "accountability chain",
+            "decision rights"
+          ]
+        },
+        {
+          "id": "pp",
+          "source_locator": "Prompt 01 Part 4.2 pp",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Review resources and independence",
+          "description": "Can the review function act independently with capacity proportionate to supported workload?",
+          "indicative_phrasings": [
+            "review independence",
+            "review resources"
+          ]
+        },
+        {
+          "id": "qq",
+          "source_locator": "Prompt 01 Part 4.2 qq",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Advisory body authority",
+          "description": "Are any advisory council charter, powers and instrument relationships actually established?",
+          "indicative_phrasings": [
+            "council charter",
+            "advisory authority"
+          ]
+        },
+        {
+          "id": "rr",
+          "source_locator": "Prompt 01 Part 4.2 rr",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Role-specific competence",
+          "description": "Are training content, cadence and completion appropriate to each role, including meaningful human review?",
+          "indicative_phrasings": [
+            "role-specific training",
+            "competence for human oversight"
+          ]
+        },
+        {
+          "id": "ss",
+          "source_locator": "Prompt 01 Part 4.2 ss",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Automation bias",
+          "description": "Is review designed and evaluated to counter overreliance on output?",
+          "indicative_phrasings": [
+            "automation bias",
+            "overreliance"
+          ]
+        },
+        {
+          "id": "tt",
+          "source_locator": "Prompt 01 Part 4.2 tt",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Workforce change and consultation",
+          "description": "Are affected roles, workforce changes and appropriate consultation considered?",
+          "indicative_phrasings": [
+            "workforce consultation",
+            "role change"
+          ]
+        },
+        {
+          "id": "uu",
+          "source_locator": "Prompt 01 Part 4.2 uu",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Internal technical use",
+          "description": "Are IT operations, security and software-development uses within declared scope?",
+          "indicative_phrasings": [
+            "IT operations",
+            "software development"
+          ]
+        },
+        {
+          "id": "vv",
+          "source_locator": "Prompt 01 Part 4.2 vv",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Shared-service interfaces",
+          "description": "Are local-government and other shared-platform consumers and boundaries addressed?",
+          "indicative_phrasings": [
+            "shared state platform",
+            "local government consumer"
+          ]
+        },
+        {
+          "id": "ww",
+          "source_locator": "Prompt 01 Part 4.2 ww",
+          "evidence_required": [
+            "Locatable current provision or documented declared-corpus search",
+            "Reviewed applicability and scope rationale; unknown when unsupported"
+          ],
+          "topic": "Sensitive public functions",
+          "description": "Are elections, law-enforcement and public-safety uses scoped, with verified restrictions distinguished from proposed policy?",
+          "indicative_phrasings": [
+            "elections",
+            "law enforcement and public safety"
+          ]
+        }
+      ]
+    }
+  ],
+  "recurring_patterns": [
+    {
+      "id": "RP01",
+      "label": "Underspecified human oversight",
+      "diagnostic": "A human is the universal control without a defined information set, authority, competence, time budget or protection against automation bias.",
+      "source_locator": "Prompt 01 Appendix B 1",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D2",
+        "D4"
+      ]
+    },
+    {
+      "id": "RP02",
+      "label": "One-time risk assessment",
+      "diagnostic": "Predeployment review has no supported reassessment triggers for model, prompt, tuning, tools or discovered capability.",
+      "source_locator": "Prompt 01 Appendix B 2",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D3",
+        "D5"
+      ]
+    },
+    {
+      "id": "RP03",
+      "label": "Audience-free transparency",
+      "diagnostic": "Transparency or explanation promises do not identify resident, operator, auditor or other audiences and required artifacts.",
+      "source_locator": "Prompt 01 Appendix B 3",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "RP04",
+      "label": "Classifier-era bias methods",
+      "diagnostic": "Classifier methods are reused for generative/multimodal systems without checking transferability.",
+      "source_locator": "Prompt 01 Appendix B 4",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D1",
+        "D4"
+      ]
+    },
+    {
+      "id": "RP05",
+      "label": "Procurement-only scope",
+      "diagnostic": "Scope omits features activated inside already-owned software.",
+      "source_locator": "Prompt 01 Appendix B 5",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D5",
+        "D6"
+      ]
+    },
+    {
+      "id": "RP06",
+      "label": "Undefined incident response",
+      "diagnostic": "Incident meaning, severity, clocks and statutory-route checks are missing.",
+      "source_locator": "Prompt 01 Appendix B 6",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "RP07",
+      "label": "Unspecified accountable role",
+      "diagnostic": "A committee or unnamed role lacks decision rights, evidence requirements and a record.",
+      "source_locator": "Prompt 01 Appendix B 7",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D3"
+      ]
+    },
+    {
+      "id": "RP08",
+      "label": "Unreferenced quality promise",
+      "diagnostic": "Rigorous, robust, appropriate or sufficient measures have no referent standard; public claims may add reliance risk.",
+      "source_locator": "Prompt 01 Appendix B 8",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D2",
+        "D8"
+      ]
+    },
+    {
+      "id": "RP09",
+      "label": "Absent maintenance machinery",
+      "diagnostic": "Review cadence, versioning or off-cycle triggers are unsupported.",
+      "source_locator": "Prompt 01 Appendix B 9",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D3"
+      ]
+    },
+    {
+      "id": "RP10",
+      "label": "Output-only governance",
+      "diagnostic": "Rules address generated outputs but not the actions a system can take.",
+      "source_locator": "Prompt 01 Appendix B 10",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D1",
+        "D5"
+      ]
+    },
+    {
+      "id": "RP11",
+      "label": "Unattached third-party duty",
+      "diagnostic": "A claimed supplier duty lacks an identified contract, procurement or statutory hook.",
+      "source_locator": "Prompt 01 Appendix B 11",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D4"
+      ]
+    },
+    {
+      "id": "RP12",
+      "label": "Missing good-faith reporting protection",
+      "diagnostic": "A misuse-reporting duty is treated as a substitute for protection of safety reporting.",
+      "source_locator": "Prompt 01 Appendix B 12",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D5"
+      ]
+    },
+    {
+      "id": "RP13",
+      "label": "Protective duty in advisory tier",
+      "diagnostic": "Resident protection exists only in a tier that cannot carry it under the verified local hierarchy.",
+      "source_locator": "Prompt 01 Appendix B 13",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D9"
+      ]
+    },
+    {
+      "id": "RP14",
+      "label": "Definition drift across tiers",
+      "diagnostic": "Procurement and operational definitions omit different technology classes without a supported reason.",
+      "source_locator": "Prompt 01 Appendix B 14",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D6",
+        "D7"
+      ]
+    },
+    {
+      "id": "RP15",
+      "label": "Email-only inventory",
+      "diagnostic": "An email reporting address substitutes for a maintained schema, register, cadence and custodian.",
+      "source_locator": "Prompt 01 Appendix B 15",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D3",
+        "D4"
+      ]
+    },
+    {
+      "id": "RP16",
+      "label": "Unexercised reserved right",
+      "diagnostic": "An audit/evaluation/termination right has no trigger, resources or evidence of exercise.",
+      "source_locator": "Prompt 01 Appendix B 16",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D4",
+        "D8"
+      ]
+    },
+    {
+      "id": "RP17",
+      "label": "Unestablished role",
+      "diagnostic": "A referenced ethics, privacy or compliance role lacks a charter, appointment mechanism or reporting line.",
+      "source_locator": "Prompt 01 Appendix B 17",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D3"
+      ]
+    },
+    {
+      "id": "RP18",
+      "label": "Unclassified AI records",
+      "diagnostic": "Prompts, outputs and logs are left outside classification, retention and disclosure analysis.",
+      "source_locator": "Prompt 01 Appendix B 18",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D5"
+      ]
+    },
+    {
+      "id": "RP19",
+      "label": "No resident-facing route",
+      "diagnostic": "Affected people cannot identify an actionable supported notice, explanation or review route.",
+      "source_locator": "Prompt 01 Appendix B 19",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D5"
+      ]
+    },
+    {
+      "id": "RP20",
+      "label": "Ungoverned scope interface",
+      "diagnostic": "Exclusions leave shared services, data or vendors without an accountable instrument on an interface.",
+      "source_locator": "Prompt 01 Appendix B 20",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D3",
+        "D6"
+      ]
+    },
+    {
+      "id": "RP21",
+      "label": "Attestation without acceptance criteria",
+      "diagnostic": "Supplier descriptions replace verification, criteria and a consequence for deficient evidence.",
+      "source_locator": "Prompt 01 Appendix B 21",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D4"
+      ]
+    },
+    {
+      "id": "RP22",
+      "label": "Tool-only continuity planning",
+      "diagnostic": "Exit plans omit workforce and process dependence created by adoption.",
+      "source_locator": "Prompt 01 Appendix B 22",
+      "evidence_required": [
+        "Locatable text and current version in the declared review corpus",
+        "Scope, counterevidence and an agency reviewer rationale"
+      ],
+      "defect_class_ids": [
+        "D5"
+      ]
+    }
+  ],
+  "vague_terms": [
+    "timely",
+    "as needed",
+    "appropriate",
+    "reasonable",
+    "promptly",
+    "periodically",
+    "regularly",
+    "where possible",
+    "rigorous",
+    "robust",
+    "sufficient",
+    "adequate",
+    "best efforts",
+    "as appropriate",
+    "to the extent practicable",
+    "to extent practicable"
+  ],
+  "coverage_review": {
+    "execution": "manual_only_pending_agency_review",
+    "statuses": [
+      "covered",
+      "partial",
+      "absent",
+      "not_applicable",
+      "unknown"
+    ],
+    "absence_scope": "declared_corpus_only",
+    "require_evidence": true,
+    "automatic_semantic_classification": false
+  },
+  "illustrative_federal_examples": [
+    {
+      "citation": "42 U.S.C. § 12132; 28 C.F.R. part 35",
+      "purpose": "Accessibility research lead; verify actual entity/activity scope and current dates",
+      "verification_status": "unverified"
+    },
+    {
+      "citation": "42 C.F.R. part 431 subpart E; 7 C.F.R. § 273.15",
+      "purpose": "Program/action-specific hearing-rule research leads, not universal funded-benefits appeal rights",
+      "verification_status": "unverified"
+    },
+    {
+      "citation": "25 U.S.C. § 3001 et seq.; 43 C.F.R. part 10",
+      "purpose": "NAGPRA research lead where particular holdings/activities and responsible entities bring it into scope; verify current text and consultation/confidentiality requirements",
+      "verification_status": "unverified"
+    }
+  ],
+  "priority_rubric": {
+    "path": "priority-rubric.md",
+    "version": "0.1.0-draft",
+    "numeric_product": false
+  },
+  "audience_review": {
+    "resident_target_grade": 8,
+    "estimate_is_advisory": true,
+    "adversarial_reader_required": true
+  },
+  "prompts": [
+    {
+      "id": "01",
+      "path": "prompts/01-baseline-assessment.md",
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "02",
+      "path": "prompts/02-scheduled-surveillance.md",
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "03",
+      "path": "prompts/03-trigger-assessment.md",
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "04",
+      "path": "prompts/04-amendment-preparation.md",
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "05",
+      "path": "prompts/05-session-readiness.md",
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "06",
+      "path": "prompts/06-horizon-scan.md",
+      "version": "0.1.0-draft"
+    }
+  ],
+  "language_rules": [
+    {
+      "id": "LR1",
+      "version": "0.1.0-draft",
+      "label": "Support mandatory wording with actual authority",
+      "instruction": "Say that law requires or prohibits an action only when the identified authority is binding, in force, verified and applicable to the claimed entity/activity/date. Name the source and locator. A valid local binding instrument may also require conduct within its actual authority and scope; published research or a voluntary standard does not become law because it is strong evidence.",
+      "required_basis": [
+        "binding_authority",
+        "in_force",
+        "verified",
+        "applicable_scope"
+      ],
+      "valid_local_instruments_may_bind": true
+    },
+    {
+      "id": "LR2",
+      "version": "0.1.0-draft",
+      "label": "A bill is not a current duty",
+      "instruction": "A bill reference never establishes a current duty by itself. Label introduced, pending or dead bills and adopted-not-effective instruments with their actual status. Explain a proposal as would require, not requires; only separately verified enacted and effective authority may support an existing legal duty.",
+      "bill_creates_duty": false
+    }
+  ]
+}

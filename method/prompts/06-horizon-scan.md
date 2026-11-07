@@ -1,5 +1,8 @@
 # 06: Horizon scan and source-register maintenance
 
+**Method version:** `0.1.0-draft`
+**Policy review status:** draft — agency review pending; no approval recorded.
+
 **Status: draft neutral method; agency review required before operational use.**
 This document adapts the research and source-maintenance stage of the preserved
 [Georgia horizon scan](../../case-studies/georgia/research/Anchor-horizon-scan-v1.0.md).

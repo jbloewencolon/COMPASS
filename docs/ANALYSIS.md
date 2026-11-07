@@ -1,6 +1,6 @@
 # Local analysis and monitoring
 
-COMPASS currently uses deterministic Python standard-library rules over the source snapshots and review records supplied to the active office workspace. It does not connect a language model, embeddings, the future external database, an email service, or the web. Text-file import and paste are supported; PDF, DOCX and OCR extraction are not implemented.
+COMPASS currently uses deterministic Python standard-library rules over the source snapshots and review records supplied to the active office workspace. It does not connect a language model, embeddings, the future external database, an email service, or the web. UTF-8 text import, paste and bounded text-based PDF extraction are supported. PDF extraction uses the named pypdf dependency exception; the analysis rules remain standard-library code. DOCX and OCR are deferred.
 
 The result is a set of **review aids** with evidence or an explicit input need. A suggestion is not an approved finding, a legal applicability determination, proof of contradiction, or a compliance score. A policy lead still reviews the source, scope, conditions and exceptions before recording a decision.
 
@@ -22,15 +22,66 @@ Simple view keeps source evidence accessible through progressive disclosure and 
 
 Changes affect new reports. Previously saved reports retain their settings/context and evidence snapshots; they are not rewritten to appear as though disabled checks never ran. If current inputs/settings differ from the latest saved analysis, obtain a new report rather than assume old results describe the new configuration.
 
+## Evidence, verification and decisions
+
+Internal sources use recognized state/DC identifiers and the active workspace's
+jurisdiction; federal references use `US-FED`. Unknown `US-*` codes are refused.
+Foreign external sources retain their actual type and jurisdiction with a context
+label; they cannot alone establish a US binding or conditional duty.
+
+Source type, legal status and verification are separate. Verification defaults
+unverified. The owner explicitly grants `can_determine_applicability` to an
+appointed member, including themselves if the agency combines roles. Grants and
+revocations are audited. Only delegated reviewers verify a source, mark it in
+force, or determine binding/conditional applicability. The server supplies the
+reviewer's identity and timestamp; input cannot forge them.
+
+A source review creates an immutable revision. Earlier source hashes, run inputs
+and saved reports remain unchanged. Pin the verified revision in a new run before
+using it as binding evidence. Binding requires in-force, date-appropriate verified
+support; funding conditions/agreements also name their attached program/contract.
+Court/AG material is flagged for agency review and cannot be automatically assigned
+binding or conditional force. Every determination records the authority relied on
+and a rationale of at least 30 characters. Acceptance remains owner-only.
+
+Finding type describes evidence structure independently of issue category:
+
+| Type | Required record | Refusal/limit |
+|---|---|---|
+| `external_gap` | Exact pinned instrument and external-source passages | Unsupported/unpinned quotations or a missing source role are refused |
+| `internal_conflict` | At least two distinct pinned instrument passages | An external passage or a repeated passage with a different typed location is refused |
+| `absence` | Sources actually searched and a search description; no invented quotation | Acceptance needs delegated confirmation that the search covers the declared run corpus; an absence search alone cannot establish a binding duty |
+
+The optional `concentrated_harm` and `irreversible` flags support the manual
+[priority rubric](../method/priority-rubric.md); they do not calculate a score or
+change authority. A run may contain internal instruments only. Imported BASE-1
+rows remain pending suggestions with original IDs/provenance and explicit evidence
+gaps; neither import nor a persuasive determination makes them acceptable. Record
+a supported follow-up finding using actual pinned sources.
+
+PDF source records retain the original byte hash, extracted text, page spans and
+failed-page list. Quotes show intersecting original page numbers. The original
+binary is not retained by the app; keep it through the agency's appropriate source
+records process. Manually editing extracted text marks it transcribed, removes
+page mapping and retains known extraction limitations. See [PDF-IMPORT.md](PDF-IMPORT.md).
+
 ## The nine checks
 
-`rules-v3` adds a small abbreviation-aware splitter, prohibition handling,
+`rules-v3` introduced a small abbreviation-aware splitter, prohibition handling,
 additional candidate drafting forms, and federal/bill reference patterns.
 Recognizing a form does not verify its legal status or meaning. State-specific
 patterns come from the pinned profile's `citation_patterns` list; literal
 `sentence_abbreviations` entries extend the default abbreviation list. Invalid
 profile patterns are skipped with a warning. Georgia's patterns are in its
 synthetic demo profile, not a universal state identifier rule.
+
+`rules-v4` adds page-aware evidence, US-state/DC-only peer comparisons, and reads
+literal vague phrases from validated catalogue `0.1.0-draft`. Reports and job
+snapshots pin the catalogue version/hash and actual advisory terms; a changed
+catalogue changes the analysis cache basis. Older outputs remain preserved.
+The catalogue's diagnostic/coherence/coverage content is manual draft method data.
+**A-7 semantic coverage is deferred until agency review stabilizes it.** A literal
+phrase flag or topic mention does not satisfy that gate.
 
 Foreign source text is retained under its supplied jurisdiction and source type,
 with context labels. It is not silently relabelled as US guidance. Such a source
@@ -49,7 +100,7 @@ or automatically classify source text.
 | **6. Mapped impact** (`impact`) | Owner-supplied inventory items explicitly linked to stable source keys | Mapped systems/programs/vendors/processes that may need review; whether their linked source appears in the version-change results | Inferred inventory relationships, actual operational harm/cost, legal severity, or a causal impact prediction |
 | **7. Advisory language flags** (`language`) | Preserved source sentences and recognized acronym/definition wording | Flags for long sentences, potentially vague terms, unclear actors, mixed modal wording and acronyms without recognized expansions | A legal defect, grade-level certification, a duty in advisory text, or a reason to sacrifice necessary legal precision |
 | **8. Dates and workload** (`deadlines`) | Explicit effective dates/status and supplied findings/audit records; owner-entered assignments for follow-up | Upcoming source dates within the configured horizon, date/status reconciliation cues and counts of pending/blocked/reopened review work | New compliance deadlines, a late task without an explicit due date, an automatic change in legal status, or proof that an old effective date makes a task overdue |
-| **9. Public peer/research suggestions** (`peer_research`) | Local instruments plus selected external references from other jurisdictions explicitly marked `reference_scope: public` | Related passages suggested by overlapping nontrivial vocabulary, with supporting text | Semantic similarity, comprehensive research, peer-policy applicability, equivalence, access to another tenant's private material, or binding force |
+| **9. Public peer/research suggestions** (`peer_research`) | Local instruments plus selected external references from other US states/DC explicitly marked `reference_scope: public` | Related passages suggested by overlapping nontrivial vocabulary, with supporting text | Semantic similarity, comprehensive research, peer-policy applicability, equivalence, access to another tenant's private material, or binding force |
 
 All checks work with the active workspace's authorized inputs. Marking a reference public does not publish it globally or bypass tenant access. The optional peer check does not retrieve other offices' sources; an appropriate public reference must already be supplied to the active workspace and selected for the analysis.
 
@@ -111,3 +162,13 @@ Applicability review, assignment and accept/reject/request-information actions r
 Use synthetic cases to test exact rule behavior, disabled-check handling, source links, saved snapshots, tenant/role boundaries and job recovery. Real-world accuracy needs independently reviewed positive/negative cases covering exceptions, future-effective and conditional rules, conflicting definitions, missing references, public peer material and irrelevant matches.
 
 Provide the [required inputs](INPUTS.md) before treating these aids as evidence of value on real policies. Improve authoritative coverage, provenance and evaluation before adding larger models or broader infrastructure. The [roadmap](ROADMAP.md) separates local implementation from shared production gates and later analytical expansion.
+
+## Evaluation and CI
+
+[The evaluation set](EVALUATION.md) contains 150 provenanced passages and blind
+label templates. Two independent people and a third adjudicator are still needed.
+The pending baseline has null accuracy/agreement/severe-miss values. CI reports
+that pending status; strict adjudication mode refuses it. Once real labels exist,
+the runner computes per-check metrics and refuses increased severe misses on the
+same corpus/labels. Automated [accessibility and import checks](ACCESSIBILITY.md)
+run in CI and retain their manual-review items; they do not certify WCAG compliance.
